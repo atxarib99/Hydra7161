@@ -71,9 +71,10 @@ public class FtcOpModeRegister implements OpModeRegister {
      */
     manager.register("NullOp", NullOp.class);
     manager.register("hydraDrive", hydraDrive.class);
-    manager.register("Trashbb", revTrollBot.class);
     manager.register("testDriveFront", testDriveFront.class);
     manager.register("justTheServos", justTheServos.class);
+    manager.register("AutonomousBlue", hydraAutonomousBlue.class);
+    manager.register("AutonomousRed", hydraAutonomousRed.class);
 
     /*
      * The following example op modes are designed to work with a K9-style robot.

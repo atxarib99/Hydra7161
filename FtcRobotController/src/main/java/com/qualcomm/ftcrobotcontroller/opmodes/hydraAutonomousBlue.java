@@ -30,12 +30,12 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.LightSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.robocol.Telemetry;
 
 /**
- * TeleOp Mode
- * <p>
- *Enables control of the robot via the gamepad
+ * Autonomous mode
+ * enable movement based on sensors and preset code
  */
 public class hydraAutonomousBlue extends OpMode {
   //creates motors
@@ -45,9 +45,13 @@ public class hydraAutonomousBlue extends OpMode {
   DcMotor motorFR;
   Servo servo1;
   Servo servo2;
-  LightSensor color;
-  OpticalDistanceSensor distance;
+//  LightSensor color;
+//  OpticalDistanceSensor distance;
     Telemetry test;
+    ElapsedTime time = new ElapsedTime();
+    double timeCurrent;
+    boolean firstLoop;
+    boolean secondLoop;
 
   //defines set motors at the start
   @Override
@@ -58,22 +62,47 @@ public class hydraAutonomousBlue extends OpMode {
     motorFR = hardwareMap.dcMotor.get("motorFR");
     servo1 = hardwareMap.servo.get("servo1");
     servo2 = hardwareMap.servo.get("servo2");
-    color = hardwareMap.lightSensor.get("color"); //THIS MAY BE INCORRECT
-    distance = hardwareMap.opticalDistanceSensor.get("distance"); //THIS MAY BE INCORRECT
+//    color = hardwareMap.lightSensor.get("color"); //THIS MAY BE INCORRECT
+//    distance = hardwareMap.opticalDistanceSensor.get("distance"); //THIS MAY BE INCORRECT
       test = new Telemetry();
+      timeCurrent = 0.0;
+      firstLoop = true;
+      secondLoop = false;
   }
 
   //calculates movement
   @Override
   public void loop() {
       test.addData("Distance", distance.getLightDetected());
-      double firstLoop = distance.getLightDetected();
-      if (firstLoop > .5 ) {
-        motorBR.setPower(-1);
-        motorFR.setPower(-1);
-        motorFL.setPower(1);
-        motorBL.setPower(1);
+      double timeF1 = 1.5;
+      double timeF2 = 1.75;
+      time.startTime();
+      if (firstLoop) {
+          while(timeCurrent < timeF1) {
+              motorBL.setPower(-1);
+              motorFL.setPower(-1);
+              motorFR.setPower(1);
+              motorBR.setPower(1);
+              timeCurrent = time.time();
+              if (timeCurrent >= timeF) {
+                  firstLoop = false;
+                  secondLoop = true;
+              }
+          }
       }
+      if(secondLoop) {
+          while (timeCurrent < timeF2) {
+              motorBL.setPower(1);
+              motorBR.setPower(1);
+              motorFL.setPower(1);
+              motorFR.setPower(1);
+              if(time)
+          }
+
+      }
+
+
+
 
   }
 
