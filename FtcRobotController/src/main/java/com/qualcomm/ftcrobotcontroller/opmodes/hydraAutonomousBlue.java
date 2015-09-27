@@ -25,10 +25,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.LightSensor;
-import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+//import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.robocol.Telemetry;
@@ -37,77 +39,50 @@ import com.qualcomm.robotcore.robocol.Telemetry;
  * Autonomous mode
  * enable movement based on sensors and preset code
  */
-public class hydraAutonomousBlue extends OpMode {
-  //creates motors
-  DcMotor motorBL;
-  DcMotor motorBR;
-  DcMotor motorFL;
-  DcMotor motorFR;
-  Servo servo1;
-  Servo servo2;
-//  LightSensor color;
-//  OpticalDistanceSensor distance;
-    Telemetry test;
+public class hydraAutonomousBlue extends LinearOpMode {
+    //creates motors
+    DcMotor motorBL;
+    DcMotor motorBR;
+    DcMotor motorFL;
+    DcMotor motorFR;
+    ColorSensor color;
+    //  OpticalDistanceSensor distance;
+    Telemetry test = new Telemetry();
     ElapsedTime time = new ElapsedTime();
-    double timeCurrent;
-    boolean firstLoop;
-    boolean secondLoop;
 
-  //defines set motors at the start
-  @Override
-  public void init() {
-    motorBL = hardwareMap.dcMotor.get("motorBL");
-    motorBR = hardwareMap.dcMotor.get("motorBR");
-    motorFL = hardwareMap.dcMotor.get("motorFL");
-    motorFR = hardwareMap.dcMotor.get("motorFR");
-    servo1 = hardwareMap.servo.get("servo1");
-    servo2 = hardwareMap.servo.get("servo2");
-//    color = hardwareMap.lightSensor.get("color"); //THIS MAY BE INCORRECT
-//    distance = hardwareMap.opticalDistanceSensor.get("distance"); //THIS MAY BE INCORRECT
-      test = new Telemetry();
-      timeCurrent = 0.0;
-      firstLoop = true;
-      secondLoop = false;
-  }
-
-  //calculates movement
-  @Override
-  public void loop() {
-      test.addData("Distance", distance.getLightDetected());
-      double timeF1 = 1.5;
-      double timeF2 = 1.75;
-      time.startTime();
-      if (firstLoop) {
-          while(timeCurrent < timeF1) {
-              motorBL.setPower(-1);
-              motorFL.setPower(-1);
-              motorFR.setPower(1);
-              motorBR.setPower(1);
-              timeCurrent = time.time();
-              if (timeCurrent >= timeF) {
-                  firstLoop = false;
-                  secondLoop = true;
-              }
-          }
-      }
-      if(secondLoop) {
-          while (timeCurrent < timeF2) {
-              motorBL.setPower(1);
-              motorBR.setPower(1);
-              motorFL.setPower(1);
-              motorFR.setPower(1);
-              if(time)
-          }
-
-      }
-
-
-
-
-  }
-
-  //stops all motors
-  @Override
-  public void stop() {
-  }
+    @Override
+    public void runOpMode() {
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+        color = hardwareMap.colorSensor.get("color");
+        time.startTime();
+        double timeF1 = 1.5;
+        double timeF2 = 1.75;
+        double timeF3 = 2.75;
+        while (time.time() < timeF1) {
+            motorBL.setPower(-1);
+            motorBR.setPower(1);
+            motorFL.setPower(-1);
+            motorFR.setPower(1);
+        }
+        while (time.time() < timeF2) {
+            motorBL.setPower(-1);
+            motorFL.setPower(-1);
+            motorFR.setPower(-1);
+            motorBR.setPower(-1);
+        }
+        while (time.time() < timeF3) {
+            motorBL.setPower(-1);
+            motorBR.setPower(1);
+            motorFL.setPower(-1);
+            motorFR.setPower(1);
+        }
+        test.addData("COLOR DETECTED", color.argb());
+        test.addData("BLUE", color.blue());
+        test.addData("GREEN", color.green());
+        test.addData("RED", color.red());
+        stop();
+    }
 }
