@@ -45,10 +45,10 @@ public class hydraAutonomousBlue extends LinearOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    ColorSensor color;
-    //  OpticalDistanceSensor distance;
-    Telemetry test = new Telemetry();
+//    ColorSensor color;
+    //  OpticalDistanceSensor distance
     ElapsedTime time = new ElapsedTime();
+
 
     @Override
     public void runOpMode() {
@@ -56,33 +56,108 @@ public class hydraAutonomousBlue extends LinearOpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        color = hardwareMap.colorSensor.get("color");
-        time.startTime();
-        double timeF1 = 1.5;
-        double timeF2 = 1.75;
-        double timeF3 = 2.75;
-        while (time.time() < timeF1) {
-            motorBL.setPower(-1);
-            motorBR.setPower(1);
-            motorFL.setPower(-1);
-            motorFR.setPower(1);
-        }
-        while (time.time() < timeF2) {
-            motorBL.setPower(-1);
-            motorFL.setPower(-1);
-            motorFR.setPower(-1);
+//        color = hardwareMap.colorSensor.get("color");
+        int distance1 = 5500;
+        int distance2 = 7100;
+        int distance3 = 12700;
+        while (motorBL.getCurrentPosition() < distance1) {
+            motorBL.setPower(1);
             motorBR.setPower(-1);
+            motorFL.setPower(1);
+            motorFR.setPower(-1);
+            telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+            telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+            telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+            telemetry.addData("motorFL", motorFL.getCurrentPosition());
         }
-        while (time.time() < timeF3) {
+        while (motorBL.getCurrentPosition() < distance2) {
+            motorBL.setPower(1);
+            motorFL.setPower(1);
+            motorFR.setPower(1);
+            motorBR.setPower(1);
+            telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+            telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+            telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+        }
+        while (motorBL.getCurrentPosition() < distance3) {
+            motorBL.setPower(1);
+            motorBR.setPower(-1);
+            motorFL.setPower(1);
+            motorFR.setPower(-1);
+            telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+            telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+            telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+        }
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFR.setPower(0);
+        motorFL.setPower(0);
+        time.startTime();
+        double currentTime = 0.0;
+        double finalTime = 5.0;
+        while (currentTime < finalTime) {
+
+            telemetry.addData("currentTime", time.time());
+            currentTime = time.time();
+        }
+        while (motorBL.getCurrentPosition() > 9000) { //9034
             motorBL.setPower(-1);
             motorBR.setPower(1);
             motorFL.setPower(-1);
             motorFR.setPower(1);
+            motorFR.setPower(-1);
+            telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+            telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+            telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+            telemetry.addData("motorFL", motorFL.getCurrentPosition());
         }
-        test.addData("COLOR DETECTED", color.argb());
-        test.addData("BLUE", color.blue());
-        test.addData("GREEN", color.green());
-        test.addData("RED", color.red());
-        stop();
+        while (motorBL.getCurrentPosition() > 9800) {
+            motorBL.setPower(1);
+            motorBR.setPower(1);
+            motorFR.setPower(1);
+            motorFL.setPower(1);
+            motorFR.setPower(-1);
+            telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+            telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+            telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+        }
+        time.reset();
+        currentTime = 0;
+        while (currentTime < 5.0) {
+            motorBL.setPower(1);
+            motorBR.setPower(-1);
+            motorFL.setPower(1);
+            motorFR.setPower(-1);
+            motorFR.setPower(-1);
+            telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+            telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+            telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+        }
+        motorBL.close();
+        motorFL.close();
+        motorBR.close();
+        motorFR.close();
     }
 }

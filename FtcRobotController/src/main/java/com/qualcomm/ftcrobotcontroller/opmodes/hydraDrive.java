@@ -28,6 +28,8 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.robocol.Telemetry;
+
 /**
  * TeleOp Mode
  * <p>
@@ -39,21 +41,38 @@ public class hydraDrive extends OpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    Servo servo1;
+    int motorBLE;
+    int motorBRE;
+    int motorFLE;
+    int motorFRE;
 
     //defines set motors at the start
     @Override
     public void init() {
+        motorBRE = 0;
+        motorFLE = 0;
+        motorBLE = 0;
+        motorFRE = 0;
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        servo1 = hardwareMap.servo.get("servo1");
     }
 
     //calculates movement
     @Override
     public void loop() {
+        motorBRE = motorBR.getCurrentPosition();
+        motorBLE = motorBL.getCurrentPosition();
+        motorFLE = motorFL.getCurrentPosition();
+        motorFRE = motorFR.getCurrentPosition();
+
+        telemetry.addData("motorBL", motorBLE);
+        telemetry.addData("motorFR", motorFRE);
+
+        telemetry.addData("motorBR", motorBRE);
+
+        telemetry.addData("motorFL", motorFLE);
         if (Math.abs(gamepad1.left_stick_y) > .5 || Math.abs(gamepad1.right_stick_y) > .5) {
             motorBR.setPower(gamepad1.right_stick_y);
             motorFR.setPower(gamepad1.right_stick_y);
@@ -66,12 +85,6 @@ public class hydraDrive extends OpMode {
             motorBL.setPower(0);
             motorFR.setPower(0);
             motorFL.setPower(0);
-        }
-        if (gamepad2.b == true) {
-            servo1.setPosition(1);
-        }
-        if (gamepad2.x) {
-            servo1.setPosition(0);
         }
     }
 

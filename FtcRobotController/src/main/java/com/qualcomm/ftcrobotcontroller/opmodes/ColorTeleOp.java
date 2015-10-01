@@ -13,7 +13,6 @@ public class ColorTeleOp extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBR;
-    Telemetry getColors;
     ColorSensor colors;
     @Override
     public void init() {
@@ -21,7 +20,6 @@ public class ColorTeleOp extends OpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        getColors = new Telemetry();
         colors = hardwareMap.colorSensor.get("color");
     }
     @Override
@@ -41,11 +39,11 @@ public class ColorTeleOp extends OpMode {
             colors.enableLed(true);
         }
         if(gamepad1.x) {
-            getColors.addData("blue", colors.blue());
-            getColors.addData("red", colors.blue());
-            getColors.addData("green", colors.green());
-            getColors.addData("hue", colors.argb());
-            getColors.addData("Light", colors.alpha());
+            telemetry.addData("blue", colors.blue());
+            telemetry.addData("red", colors.blue());
+            telemetry.addData("green", colors.green());
+            telemetry.addData("hue", colors.argb());
+            telemetry.addData("Light", colors.alpha());
         }
 
     }
