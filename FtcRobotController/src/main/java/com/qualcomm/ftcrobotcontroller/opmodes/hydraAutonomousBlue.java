@@ -47,19 +47,21 @@ public class hydraAutonomousBlue extends LinearOpMode {
     DcMotor motorFR;
 //    ColorSensor color;
     //  OpticalDistanceSensor distance
-    ElapsedTime time = new ElapsedTime();
+    ElapsedTime elapsedTime;
 
 
     @Override
     public void runOpMode() {
+        elapsedTime = new ElapsedTime();
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
+        elapsedTime.startTime();
         motorFR = hardwareMap.dcMotor.get("motorFR");
 //        color = hardwareMap.colorSensor.get("color");
-        int distance1 = 5500;
-        int distance2 = 7100;
-        int distance3 = 12700;
+        int distance1 = 5550;
+        int distance2 = 7075;
+        int distance3 = 12750;
         while (motorBL.getCurrentPosition() < distance1) {
             motorBL.setPower(1);
             motorBR.setPower(-1);
@@ -103,20 +105,21 @@ public class hydraAutonomousBlue extends LinearOpMode {
         motorBR.setPower(0);
         motorFR.setPower(0);
         motorFL.setPower(0);
-        time.startTime();
+        elapsedTime.reset();
         double currentTime = 0.0;
-        double finalTime = 5.0;
-        while (currentTime < finalTime) {
-
-            telemetry.addData("currentTime", time.time());
-            currentTime = time.time();
+        while (currentTime < 5.0) {
+            motorBL.setPower(0);
+            motorBR.setPower(0);
+            motorFR.setPower(0);
+            motorFL.setPower(0);
+            telemetry.addData("currentTime", elapsedTime.time());
+            currentTime = elapsedTime.time();
         }
         while (motorBL.getCurrentPosition() > 9000) { //9034
             motorBL.setPower(-1);
             motorBR.setPower(1);
             motorFL.setPower(-1);
             motorFR.setPower(1);
-            motorFR.setPower(-1);
             telemetry.addData("motorBL", motorBL.getCurrentPosition());
 
             telemetry.addData("motorFR", motorFR.getCurrentPosition());
@@ -125,12 +128,11 @@ public class hydraAutonomousBlue extends LinearOpMode {
 
             telemetry.addData("motorFL", motorFL.getCurrentPosition());
         }
-        while (motorBL.getCurrentPosition() > 9800) {
+        while (motorBL.getCurrentPosition() < 9400) {
             motorBL.setPower(1);
             motorBR.setPower(1);
             motorFR.setPower(1);
             motorFL.setPower(1);
-            motorFR.setPower(-1);
             telemetry.addData("motorBL", motorBL.getCurrentPosition());
 
             telemetry.addData("motorFR", motorFR.getCurrentPosition());
@@ -139,14 +141,13 @@ public class hydraAutonomousBlue extends LinearOpMode {
 
             telemetry.addData("motorFL", motorFL.getCurrentPosition());
         }
-        time.reset();
-        currentTime = 0;
+        elapsedTime.reset();
+        currentTime = 0.0;
         while (currentTime < 5.0) {
             motorBL.setPower(1);
             motorBR.setPower(-1);
             motorFL.setPower(1);
             motorFR.setPower(-1);
-            motorFR.setPower(-1);
             telemetry.addData("motorBL", motorBL.getCurrentPosition());
 
             telemetry.addData("motorFR", motorFR.getCurrentPosition());
@@ -154,7 +155,12 @@ public class hydraAutonomousBlue extends LinearOpMode {
             telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
             telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            telemetry.addData("Time", elapsedTime.time());
+            currentTime = elapsedTime.time();
         }
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFR.setPower(0);
         motorBL.close();
         motorFL.close();
         motorBR.close();

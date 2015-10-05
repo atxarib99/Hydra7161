@@ -27,6 +27,7 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robocol.Telemetry;
 
@@ -45,7 +46,12 @@ public class hydraDrive extends OpMode {
     int motorBRE;
     int motorFLE;
     int motorFRE;
-
+    public void resetEncoders() {
+        motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+    }
     //defines set motors at the start
     @Override
     public void init() {
@@ -85,6 +91,9 @@ public class hydraDrive extends OpMode {
             motorBL.setPower(0);
             motorFR.setPower(0);
             motorFL.setPower(0);
+        }
+        if (gamepad1.a) {
+            resetEncoders();
         }
     }
 
