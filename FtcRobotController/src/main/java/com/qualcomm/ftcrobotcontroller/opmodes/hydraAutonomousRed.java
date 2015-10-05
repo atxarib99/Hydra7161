@@ -25,44 +25,154 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoController;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.GyroSensor;
+//import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.robotcore.hardware.I2cController;
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 /**
- * TeleOp Mode
- * <p>
- *Enables control of the robot via the gamepad
+ * Autonomous mode
+ * enable movement based on sensors and preset code
  */
-public class hydraAutonomousRed extends OpMode {
+public class hydraAutonomousRed extends LinearOpMode {
   //creates motors
   DcMotor motorBL;
   DcMotor motorBR;
   DcMotor motorFL;
   DcMotor motorFR;
-  Servo servo1;
-  Servo servo2;
+  //    ColorSensor color;
+  //  OpticalDistanceSensor distance
+  ElapsedTime elapsedTime;
+  DeviceInterfaceModule dim;
+    GyroSensor gyro;
 
-  //defines set motors at the start
+
+    static final int GYROSCOPE_SPOT = 1; //TODO: put actual value for gyro.
   @Override
-  public void init() {
+  public void runOpMode() {
+    elapsedTime = new ElapsedTime();
+    dim = hardwareMap.deviceInterfaceModule.get("dim");
+    dim.setDigitalChannelMode(GYROSCOPE_SPOT, DigitalChannelController.Mode.OUTPUT);
+      gyro = hardwareMap.gyroSensor.get("gyro");
+      dim.setDigitalChannelState(GYROSCOPE_SPOT, true);
     motorBL = hardwareMap.dcMotor.get("motorBL");
     motorBR = hardwareMap.dcMotor.get("motorBR");
     motorFL = hardwareMap.dcMotor.get("motorFL");
+    elapsedTime.startTime();
     motorFR = hardwareMap.dcMotor.get("motorFR");
-    servo1 = hardwareMap.servo.get("servo1");
-    servo2 = hardwareMap.servo.get("servo2");
-  }
+//        color = hardwareMap.colorSensor.get("color");
+    int distance1 = 5550;
+    int distance3 = 9700;
+    double currentAngle = 0.0;
+    while (motorBL.getCurrentPosition() < distance1) {
+      motorBL.setPower(1);
+      motorBR.setPower(-1);
+      motorFL.setPower(1);
+      motorFR.setPower(-1);
+      telemetry.addData("motorBL", motorBL.getCurrentPosition());
 
-  //calculates movement
-  @Override
-  public void loop() {
-    
+      telemetry.addData("motorFR", motorFR.getCurrentPosition());
 
-  }
+      telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
-  //stops all motors
-  @Override
-  public void stop() {
+      telemetry.addData("motorFL", motorFL.getCurrentPosition());
+    }
+    while (currentAngle < 90.0) {
+      motorBL.setPower(-1);
+      motorFL.setPower(-1);
+      motorFR.setPower(-1);
+      motorBR.setPower(-1);
+      telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+      telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+      telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+      telemetry.addData("motorFL", motorFL.getCurrentPosition());
+      currentAngle = gyro.getRotation();
+    }
+    while (motorBL.getCurrentPosition() < distance3) {
+      motorBL.setPower(1);
+      motorBR.setPower(-1);
+      motorFL.setPower(1);
+      motorFR.setPower(-1);
+      telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+      telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+      telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+      telemetry.addData("motorFL", motorFL.getCurrentPosition());
+    }
+    motorBL.setPower(0);
+    motorBR.setPower(0);
+    motorFR.setPower(0);
+    motorFL.setPower(0);
+    elapsedTime.reset();
+    double currentTime = 0.0;
+    while (currentTime < 5.0) {
+      motorBL.setPower(0);
+      motorBR.setPower(0);
+      motorFR.setPower(0);
+      motorFL.setPower(0);
+      telemetry.addData("currentTime", elapsedTime.time());
+      currentTime = elapsedTime.time();
+    }
+    while (motorBL.getCurrentPosition() > 9000) { //9034
+      motorBL.setPower(-1);
+      motorBR.setPower(1);
+      motorFL.setPower(-1);
+      motorFR.setPower(1);
+      telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+      telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+      telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+      telemetry.addData("motorFL", motorFL.getCurrentPosition());
+    }
+    while (currentAngle > 45.0) {
+      motorBL.setPower(-1);
+      motorBR.setPower(-1);
+      motorFR.setPower(-1);
+      motorFL.setPower(-1);
+      telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+      telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+      telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+      telemetry.addData("motorFL", motorFL.getCurrentPosition());
+      currentAngle = gyro.getRotation();
+    }
+
+    elapsedTime.reset();
+    currentTime = 0.0;
+    while (currentTime < 5.0) {
+      motorBL.setPower(1);
+      motorBR.setPower(-1);
+      motorFL.setPower(1);
+      motorFR.setPower(-1);
+      telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+      telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+      telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+      telemetry.addData("motorFL", motorFL.getCurrentPosition());
+      telemetry.addData("Time", elapsedTime.time());
+      currentTime = elapsedTime.time();
+    }
+    motorBL.setPower(0);
+    motorBR.setPower(0);
+    motorFR.setPower(0);
+    motorBL.close();
+    motorFL.close();
+    motorBR.close();
+    motorFR.close();
   }
 }

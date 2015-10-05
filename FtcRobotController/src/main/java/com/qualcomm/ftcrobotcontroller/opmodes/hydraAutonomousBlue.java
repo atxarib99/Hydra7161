@@ -29,6 +29,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.LightSensor;
 //import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -45,14 +48,20 @@ public class hydraAutonomousBlue extends LinearOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
+    GyroSensor gyro;
+    DeviceInterfaceModule dim;
 //    ColorSensor color;
     //  OpticalDistanceSensor distance
     ElapsedTime elapsedTime;
 
-
+    static final int GYROSCOPE_SPOT = 1;
     @Override
     public void runOpMode() {
         elapsedTime = new ElapsedTime();
+        dim = hardwareMap.deviceInterfaceModule.get("dim");
+        dim.setDigitalChannelMode(GYROSCOPE_SPOT, DigitalChannelController.Mode.OUTPUT);
+        gyro = hardwareMap.gyroSensor.get("gyro");
+        dim.setDigitalChannelState(GYROSCOPE_SPOT, true);
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -60,8 +69,9 @@ public class hydraAutonomousBlue extends LinearOpMode {
         motorFR = hardwareMap.dcMotor.get("motorFR");
 //        color = hardwareMap.colorSensor.get("color");
         int distance1 = 5550;
-        int distance2 = 7075;
+       // int distance2 = 7075; Dont need this if we are using gyros but im leaving this for future reference
         int distance3 = 12750;
+        double currentAngle = 0.0;
         while (motorBL.getCurrentPosition() < distance1) {
             motorBL.setPower(1);
             motorBR.setPower(-1);
@@ -75,7 +85,7 @@ public class hydraAutonomousBlue extends LinearOpMode {
 
             telemetry.addData("motorFL", motorFL.getCurrentPosition());
         }
-        while (motorBL.getCurrentPosition() < distance2) {
+        while (currentAngle < 90.0) {
             motorBL.setPower(1);
             motorFL.setPower(1);
             motorFR.setPower(1);
@@ -87,6 +97,7 @@ public class hydraAutonomousBlue extends LinearOpMode {
             telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
             telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            currentAngle = gyro.getRotation();
         }
         while (motorBL.getCurrentPosition() < distance3) {
             motorBL.setPower(1);
@@ -128,7 +139,7 @@ public class hydraAutonomousBlue extends LinearOpMode {
 
             telemetry.addData("motorFL", motorFL.getCurrentPosition());
         }
-        while (motorBL.getCurrentPosition() < 9400) {
+        while (currentAngle > 45.0) {
             motorBL.setPower(1);
             motorBR.setPower(1);
             motorFR.setPower(1);
@@ -140,6 +151,7 @@ public class hydraAutonomousBlue extends LinearOpMode {
             telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
             telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            currentAngle = gyro.getRotation();
         }
         elapsedTime.reset();
         currentTime = 0.0;
