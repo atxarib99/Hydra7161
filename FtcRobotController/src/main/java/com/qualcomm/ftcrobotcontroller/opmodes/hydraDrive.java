@@ -42,15 +42,31 @@ public class hydraDrive extends OpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    int motorBLE;
+    int motorBLE; //These are encoder values for each motor.
     int motorBRE;
     int motorFLE;
     int motorFRE;
+    int divider;
     public void resetEncoders() {
         motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
         motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
         motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
         motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+    }
+    public void startMotors(double power1, double power2, double power3, double power4) {
+        motorBR.setPower(power1 * divider);
+        motorBL.setPower(power2 * divider);
+        motorFL.setPower(power3 * divider);
+        motorFR.setPower(power4 * divider);
+    }
+    public void stopMotors() {
+        motorBR.setPower(0);
+        motorBL.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+    }
+    public void setDivider(int divide) {
+        divider = divide;
     }
     //defines set motors at the start
     @Override
@@ -59,13 +75,14 @@ public class hydraDrive extends OpMode {
         motorFLE = 0;
         motorBLE = 0;
         motorFRE = 0;
+        divider = 1;
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
     }
 
-    //calculates movement
+    //calculates movement updates encoders and looks for buttons pressed
     @Override
     public void loop() {
         motorBRE = motorBR.getCurrentPosition();
@@ -80,25 +97,33 @@ public class hydraDrive extends OpMode {
 
         telemetry.addData("motorFL", motorFLE);
         if (Math.abs(gamepad1.left_stick_y) > .5 || Math.abs(gamepad1.right_stick_y) > .5) {
-            motorBR.setPower(gamepad1.right_stick_y);
-            motorFR.setPower(gamepad1.right_stick_y);
-            motorBL.setPower(-gamepad1.left_stick_y);
-            motorFL.setPower(-gamepad1.left_stick_y);
+            startMotors(gamepad1.left_stick_y, gamepad1.left_stick_y, gamepad1.right_stick_y, gamepad1.right_stick_y);
         }
 
         else {
-            motorBR.setPower(0);
-            motorBL.setPower(0);
-            motorFR.setPower(0);
-            motorFL.setPower(0);
+            stopMotors();
         }
+        //resets encoders
         if (gamepad1.a) {
             resetEncoders();
+        }
+        //sets speed to 1/2
+        if (gamepad1.x) {
+            setDivider(2);
+        }
+        //sets speed to 1/4
+        if (gamepad1.b) {
+            setDivider(4);
+        }
+        //resets speed to normal
+        if(gamepad1.y) {
+            setDivider(1);
         }
     }
 
     //stops all motors
     @Override
     public void stop() {
+        resetEncoders();
     }
 }

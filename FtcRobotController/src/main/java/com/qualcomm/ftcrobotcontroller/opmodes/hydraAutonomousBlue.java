@@ -55,6 +55,30 @@ public class hydraAutonomousBlue extends LinearOpMode {
     ElapsedTime elapsedTime;
 
     static final int GYROSCOPE_SPOT = 1;
+    public void startMotors(double power1, double power2, double power3, double power4) {
+        motorBR.setPower(power1);
+        motorBL.setPower(power2);
+        motorFL.setPower(power3);
+        motorFR.setPower(power4);
+    }
+    public void stopMotors() {
+        motorBR.setPower(0);
+        motorBL.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+    }
+    public void getEncoderValues() {
+        telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+        telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+        telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+        telemetry.addData("motorFL", motorFL.getCurrentPosition());
+    }
+    public void getTime() {
+        telemetry.addData("time", elapsedTime.time());
+    }
     @Override
     public void runOpMode() {
         elapsedTime = new ElapsedTime();
@@ -73,106 +97,44 @@ public class hydraAutonomousBlue extends LinearOpMode {
         int distance3 = 12750;
         double currentAngle = 0.0;
         while (motorBL.getCurrentPosition() < distance1) {
-            motorBL.setPower(1);
-            motorBR.setPower(-1);
-            motorFL.setPower(1);
-            motorFR.setPower(-1);
-            telemetry.addData("motorBL", motorBL.getCurrentPosition());
-
-            telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
-            telemetry.addData("motorBR", motorBR.getCurrentPosition());
-
-            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            startMotors(-1, 1, 1, -1);
+            getEncoderValues();
         }
         while (currentAngle < 90.0) {
-            motorBL.setPower(1);
-            motorFL.setPower(1);
-            motorFR.setPower(1);
-            motorBR.setPower(1);
-            telemetry.addData("motorBL", motorBL.getCurrentPosition());
-
-            telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
-            telemetry.addData("motorBR", motorBR.getCurrentPosition());
-
-            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            startMotors(1, 1, 1, 1);
+            getEncoderValues();
             currentAngle = gyro.getRotation();
         }
         while (motorBL.getCurrentPosition() < distance3) {
-            motorBL.setPower(1);
-            motorBR.setPower(-1);
-            motorFL.setPower(1);
-            motorFR.setPower(-1);
-            telemetry.addData("motorBL", motorBL.getCurrentPosition());
-
-            telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
-            telemetry.addData("motorBR", motorBR.getCurrentPosition());
-
-            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            startMotors(-1, 1, 1, -1);
+            getEncoderValues();
         }
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-        motorFR.setPower(0);
-        motorFL.setPower(0);
+        stopMotors();
         elapsedTime.reset();
         double currentTime = 0.0;
         while (currentTime < 5.0) {
-            motorBL.setPower(0);
-            motorBR.setPower(0);
-            motorFR.setPower(0);
-            motorFL.setPower(0);
-            telemetry.addData("currentTime", elapsedTime.time());
+            stopMotors();
+            getEncoderValues();
             currentTime = elapsedTime.time();
         }
         while (motorBL.getCurrentPosition() > 9000) { //9034
-            motorBL.setPower(-1);
-            motorBR.setPower(1);
-            motorFL.setPower(-1);
-            motorFR.setPower(1);
-            telemetry.addData("motorBL", motorBL.getCurrentPosition());
-
-            telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
-            telemetry.addData("motorBR", motorBR.getCurrentPosition());
-
-            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            startMotors(1, -1, -1, 1);
+            getEncoderValues();
         }
         while (currentAngle > 45.0) {
-            motorBL.setPower(1);
-            motorBR.setPower(1);
-            motorFR.setPower(1);
-            motorFL.setPower(1);
-            telemetry.addData("motorBL", motorBL.getCurrentPosition());
-
-            telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
-            telemetry.addData("motorBR", motorBR.getCurrentPosition());
-
-            telemetry.addData("motorFL", motorFL.getCurrentPosition());
+            startMotors(1, 1, 1, 1);
+            getEncoderValues();
             currentAngle = gyro.getRotation();
         }
         elapsedTime.reset();
         currentTime = 0.0;
         while (currentTime < 5.0) {
-            motorBL.setPower(1);
-            motorBR.setPower(-1);
-            motorFL.setPower(1);
-            motorFR.setPower(-1);
-            telemetry.addData("motorBL", motorBL.getCurrentPosition());
-
-            telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
-            telemetry.addData("motorBR", motorBR.getCurrentPosition());
-
-            telemetry.addData("motorFL", motorFL.getCurrentPosition());
-            telemetry.addData("Time", elapsedTime.time());
+            startMotors(-1, 1 ,1, -1);
+            getEncoderValues();
+            getTime();
             currentTime = elapsedTime.time();
         }
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-        motorFR.setPower(0);
+        stopMotors();
         motorBL.close();
         motorFL.close();
         motorBR.close();

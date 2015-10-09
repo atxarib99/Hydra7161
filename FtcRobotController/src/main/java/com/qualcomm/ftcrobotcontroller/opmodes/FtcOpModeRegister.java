@@ -75,7 +75,8 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("justTheServos", justTheServos.class);
     manager.register("AutonomousBlue", hydraAutonomousBlue.class);
     manager.register("AutonomousRed", hydraAutonomousRed.class);
-    manager.register("testColors", ColorTeleOp.class);
+    manager.register("testcolors", ColorTeleOp.class);
+    manager.register("Colortest", AdafruitRGBExample.class);
 
     /*
      * The following example op modes are designed to work with a K9-style robot.
