@@ -53,17 +53,52 @@ public class hydraDrive extends OpMode {
         motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
         motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
     }
-    public void startMotors(double power1, double power2, double power3, double power4) {
-        motorBR.setPower(power1 * divider);
-        motorBL.setPower(power2 * divider);
-        motorFL.setPower(power3 * divider);
-        motorFR.setPower(power4 * divider);
+    private void startMotors(double power1, double power2, double power3, double power4) {
+        motorBR.setPower(power1 / divider);
+        motorBL.setPower(power2 / divider);
+        motorFL.setPower(power3 / divider);
+        motorFR.setPower(power4 / divider);
     }
-    public void stopMotors() {
+    private void stopMotors() {
         motorBR.setPower(0);
         motorBL.setPower(0);
         motorFL.setPower(0);
         motorFR.setPower(0);
+    }
+    private void decreaseSpeed() {
+        boolean rightTrue = false;
+        boolean leftTrue = false;
+        if(motorBR.getPower() > .2) { rightTrue = true; }
+        if(motorBL.getPower() > .2) { leftTrue = true; }
+        while(rightTrue && leftTrue) {
+            motorBR.setPower(motorBR.getPower() / 4);
+            motorFL.setPower(motorFL.getPower() / 4);
+            motorFR.setPower(motorFR.getPower() / 4);
+            motorBL.setPower(motorBL.getPower() / 4);
+            if(motorBR.getPower() < .2) {
+                rightTrue = false;
+            }
+            if(motorBL.getPower() < .2) {
+                leftTrue = false;
+            }
+        }
+        while(rightTrue && !leftTrue){
+            motorBR.setPower(motorBR.getPower() / 4);
+            motorFR.setPower(motorFR.getPower() / 4);
+            if(motorBR.getPower() < .2) {
+                rightTrue = false;
+            }
+
+        }
+        while(!rightTrue && leftTrue){
+            motorBL.setPower(motorBL.getPower() / 4);
+            motorFL.setPower(motorFL.getPower() / 4);
+            if(motorBL.getPower() < .2) {
+                leftTrue = false;
+            }
+
+        }
+
     }
     public void setDivider(int divide) {
         divider = divide;
@@ -97,7 +132,7 @@ public class hydraDrive extends OpMode {
 
         telemetry.addData("motorFL", motorFLE);
         if (Math.abs(gamepad1.left_stick_y) > .5 || Math.abs(gamepad1.right_stick_y) > .5) {
-            startMotors(gamepad1.left_stick_y, gamepad1.left_stick_y, gamepad1.right_stick_y, gamepad1.right_stick_y);
+            startMotors(gamepad1.right_stick_y, -gamepad1.left_stick_y, -gamepad1.left_stick_y, gamepad1.right_stick_y);
         }
 
         else {
