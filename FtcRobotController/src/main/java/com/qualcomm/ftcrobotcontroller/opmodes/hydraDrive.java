@@ -43,6 +43,8 @@ public class hydraDrive extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor lift;
+    servo basket;
+
     double motorBLE; //These are encoder values for each motor.
     double motorBRE;
     double motorFLE;
@@ -130,6 +132,7 @@ public class hydraDrive extends OpMode {
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
+        basket = hardwareMap.servo.get("basket");
     }
 
     //calculates movement updates encoders and looks for buttons pressed
@@ -137,11 +140,11 @@ public class hydraDrive extends OpMode {
     public void loop() {
         telemetry.addData("EncoderAverage", getEncoderAvg());
         telemetry.addData("motorBL", motorBR.getCurrentPosition());
-        telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
+        telemetry.addData("motorFR", motorFR.getCurrentPosition())
         telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
         telemetry.addData("motorFL", motorFL.getCurrentPosition());
+
         //controls motion motors
         if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
             startMotors(gamepad1.right_stick_y, -gamepad1.left_stick_y, -gamepad1.left_stick_y, gamepad1.right_stick_y);
@@ -150,16 +153,24 @@ public class hydraDrive extends OpMode {
         else {
             stopMotors();
         }
+
         //raises lift
-        if(Math.abs(gamepad2.right_trigger) > .05)
-            changeLift(gamepad2.right_trigger);
+        if(Math.abs(gamepad2.right_stick_y) > .05)
+            changeLift(-gamepad2.right_stick_y);
         else
             stopLift();
-        //lowers lift
-        if(Math.abs(gamepad2.left_trigger) > .05)
-            changeLift(-gamepad2.left_trigger);
+
+        //moves basket
+        if(gamepad2.left_stick_y < -.05)
+            basket.setPosition(basket.getPosition + 1);
         else
-            stopLift();
+            stopBasket();
+
+        if(gamepad2.left_stick_y > .05)
+            basket.setPosition(basket.getPosition - 1);
+        else
+            stopBasket();
+
         //resets encoders
         if (gamepad1.a) {
             resetEncoders();
