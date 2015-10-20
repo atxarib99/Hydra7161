@@ -43,7 +43,7 @@ public class hydraDrive extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor lift;
-    servo basket;
+    Servo basket;
 
     double motorBLE; //These are encoder values for each motor.
     double motorBRE;
@@ -78,6 +78,7 @@ public class hydraDrive extends OpMode {
     private void changeLift(double change) {
         lift.setPower(change);
     }
+
     private void stopLift() {
         lift.setPower(0.0);
     }
@@ -133,6 +134,7 @@ public class hydraDrive extends OpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         basket = hardwareMap.servo.get("basket");
+
     }
 
     //calculates movement updates encoders and looks for buttons pressed
@@ -162,14 +164,14 @@ public class hydraDrive extends OpMode {
 
         //moves basket
         if(gamepad2.left_stick_y < -.05)
-            basket.setPosition(basket.getPosition + 1);
-        else
-            stopBasket();
+            if(basket.getPosition() == Servo.MAX_POSITION)
+                basket.setPosition(Servo.MIN_POSITION);
+            basket.setPosition(basket.getPosition() + 1);
 
         if(gamepad2.left_stick_y > .05)
-            basket.setPosition(basket.getPosition - 1);
-        else
-            stopBasket();
+            if(basket.getPosition() == Servo.MIN_POSITION)
+                basket.setPosition(Servo.MIN_POSITION);
+            basket.setPosition(basket.getPosition() - 1);
 
         //resets encoders
         if (gamepad1.a) {
