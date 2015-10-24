@@ -36,13 +36,14 @@ import com.qualcomm.robotcore.robocol.Telemetry;
  * <p>
  *Enables control of the robot via the gamepad
  */
-public class hydraDrive extends OpMode {
+public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface, ClawInterface {
     //creates motors
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor lift;
+    DcMotor claws;
     Servo basket;
 
     double motorBLE; //These are encoder values for each motor.
@@ -56,31 +57,38 @@ public class hydraDrive extends OpMode {
         motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
         motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
     }
-    private void startMotors(double power1, double power2, double power3, double power4) {
+    public void startMotors(double power1, double power2, double power3, double power4) {
         motorBR.setPower(power1 / divider);
         motorBL.setPower(power2 / divider);
         motorFL.setPower(power3 / divider);
         motorFR.setPower(power4 / divider);
     }
-    private double getEncoderAvg() {
+    public double getEncoderAvg() {
         motorBLE = motorBL.getCurrentPosition();
         motorBRE = motorBR.getCurrentPosition();
         motorFLE = motorFL.getCurrentPosition();
         motorFRE = motorFR.getCurrentPosition();
         return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
     }
-    private void stopMotors() {
+    public void stopMotors() {
         motorBR.setPower(0);
         motorBL.setPower(0);
         motorFL.setPower(0);
         motorFR.setPower(0);
     }
-    private void changeLift(double change) {
+    public void changeLift(double change) {
         lift.setPower(change);
     }
 
-    private void stopLift() {
+    public void stopLift() {
         lift.setPower(0.0);
+    }
+
+    public void changeClaw(double change) {
+        claws.setPower(change);
+    }
+    public void stopClaw() {
+        claws.setPower(0);
     }
 /*    private void decreaseSpeed() {
         boolean rightTrue = false;
@@ -117,7 +125,7 @@ public class hydraDrive extends OpMode {
         }
 
     } */
-    public void setDivider(int divide) {
+    private void setDivider(int divide) {
         divider = divide;
     }
     //defines set motors at the start
@@ -128,12 +136,13 @@ public class hydraDrive extends OpMode {
         motorBLE = 0;
         motorFRE = 0;
         divider = 1;
-        lift = hardwareMap.dcMotor.get("motorLift");
+        lift = hardwareMap.dcMotor.get("lift");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         basket = hardwareMap.servo.get("basket");
+        claws = hardwareMap.dcMotor.get("claws");
 
     }
 
@@ -142,7 +151,7 @@ public class hydraDrive extends OpMode {
     public void loop() {
         telemetry.addData("EncoderAverage", getEncoderAvg());
         telemetry.addData("motorBL", motorBR.getCurrentPosition());
-        telemetry.addData("motorFR", motorFR.getCurrentPosition())
+        telemetry.addData("motorFR", motorFR.getCurrentPosition());
         telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
         telemetry.addData("motorFL", motorFL.getCurrentPosition());
@@ -163,15 +172,30 @@ public class hydraDrive extends OpMode {
             stopLift();
 
         //moves basket
-        if(gamepad2.left_stick_y < -.05)
+        if(gamepad2.left_stick_x < -.05)
             if(basket.getPosition() == Servo.MAX_POSITION)
                 basket.setPosition(Servo.MIN_POSITION);
             basket.setPosition(basket.getPosition() + 1);
 
-        if(gamepad2.left_stick_y > .05)
-            if(basket.getPosition() == Servo.MIN_POSITION)
-                basket.setPosition(Servo.MIN_POSITION);
+        if(gamepad2.left_stick_x > .05)
+            if(basket.getPosition() <= Servo.MIN_POSITION)
+                basket.setPosition(Servo.MAX_POSITION);
             basket.setPosition(basket.getPosition() - 1);
+
+        //manipulates hooks/claws for hang.
+        if(gamepad2.right_trigger > .05) {
+            changeClaw(gamepad2.right_trigger);
+        }
+        else {
+            stopClaw();
+        }
+
+        if(gamepad2.left_trigger > .05) {
+            changeClaw(-gamepad2.left_trigger);
+        }
+        else {
+            stopClaw();
+        }
 
         //resets encoders
         if (gamepad1.a) {
