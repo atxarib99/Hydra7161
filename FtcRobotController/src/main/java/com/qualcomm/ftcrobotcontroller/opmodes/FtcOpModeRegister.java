@@ -69,7 +69,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     /*
      * The NullOp op mode
      */
-    manager.register("NullOp", NullOp.class);
+//    manager.register("NullOp", NullOp.class);
     manager.register("hydraDrive", hydraDrive.class);
     manager.register("testDriveFront", testDriveFront.class);
     manager.register("justTheServos", justTheServos.class);
@@ -78,6 +78,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("testcolors", ColorTeleOp.class);
     manager.register("Colortest", AdafruitRGBExample.class);
     manager.register("justTheMotors", justTheMotors.class);
+    manager.register("OneLiftTest", OneLiftTest.class);
 
     /*
      * The following example op modes are designed to work with a K9-style robot.
