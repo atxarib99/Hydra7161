@@ -25,10 +25,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.GyroSensor;
@@ -41,31 +45,40 @@ import com.qualcomm.robotcore.robocol.Telemetry;
 /**
  * Autonomous mode
  * enable movement based on sensors and preset code
- */
-public class hydraAutonomousBlue extends LinearOpMode {
+ */`
+public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
     //creates motors
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    GyroSensor gyro;
+    AdafruitIMU gyro;
+    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
+    private static final String LOG_TAG = hydraAutonomousBlue.class.getSimpleName();
     DeviceInterfaceModule dim;
 //    ColorSensor color;
     //  OpticalDistanceSensor distance
     ElapsedTime elapsedTime;
-
-    static final int GYROSCOPE_SPOT = 1;
     public void startMotors(double power1, double power2, double power3, double power4) {
         motorBR.setPower(power1);
         motorBL.setPower(power2);
         motorFL.setPower(power3);
         motorFR.setPower(power4);
     }
+    public int getEncoderAvg() {
+        return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
+    }
     public void stopMotors() {
         motorBR.setPower(0);
         motorBL.setPower(0);
         motorFL.setPower(0);
         motorFR.setPower(0);
+    }
+    public void resetEncoders() {
+        motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
     }
     public void getEncoderValues() {
         telemetry.addData("motorBL", motorBL.getCurrentPosition());
@@ -83,9 +96,12 @@ public class hydraAutonomousBlue extends LinearOpMode {
     public void runOpMode() {
         elapsedTime = new ElapsedTime();
         dim = hardwareMap.deviceInterfaceModule.get("dim");
-        dim.setDigitalChannelMode(GYROSCOPE_SPOT, DigitalChannelController.Mode.OUTPUT);
-        gyro = hardwareMap.gyroSensor.get("gyro");
-        dim.setDigitalChannelState(GYROSCOPE_SPOT, true);
+        try {
+            gyro = new AdafruitIMU(hardwareMap, "gyro", (byte) (AdafruitIMU.BNO055_ADDRESS_A), (byte) AdafruitIMU.OPERATION_MODE_IMU);
+        } catch (RobotCoreException e) {
+            Log.e("SEVERE ERROR: ", "ROBOT CORE EXCEPTION", e);
+        }
+        gyro.startIMU();
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -95,16 +111,21 @@ public class hydraAutonomousBlue extends LinearOpMode {
         int distance1 = 5550;
        // int distance2 = 7075; Dont need this if we are using gyros but im leaving this for future reference
         int distance3 = 12750;
-        double currentAngle = 0.0;
+        double currentAngle = yawAngle[0];
         while (motorBL.getCurrentPosition() < distance1) {
             startMotors(-1, 1, 1, -1);
             getEncoderValues();
         }
-        while (currentAngle < 90.0) {
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        currentAngle = yawAngle[0];
+        while (currentAngle > -90.0) {
             startMotors(1, 1, 1, 1);
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
+            telemetry.addData("yaw", currentAngle);
             getEncoderValues();
-            currentAngle = gyro.getRotation();
         }
+        resetEncoders();
         while (motorBL.getCurrentPosition() < distance3) {
             startMotors(-1, 1, 1, -1);
             getEncoderValues();
@@ -121,10 +142,12 @@ public class hydraAutonomousBlue extends LinearOpMode {
             startMotors(1, -1, -1, 1);
             getEncoderValues();
         }
-        while (currentAngle > 45.0) {
+        while (currentAngle > -135.0) {
             startMotors(1, 1, 1, 1);
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
+            telemetry.addData("yaw", currentAngle);
             getEncoderValues();
-            currentAngle = gyro.getRotation();
         }
         elapsedTime.reset();
         currentTime = 0.0;

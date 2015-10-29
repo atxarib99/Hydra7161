@@ -42,8 +42,10 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    DcMotor lift;
-    DcMotor claws;
+//    DcMotor lift;
+    DcMotor rightClaw;
+    DcMotor leftClaw;
+//    DcMotor manipulator;
     Servo basket;
 
     double motorBLE; //These are encoder values for each motor.
@@ -63,11 +65,7 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         motorFL.setPower(power3 / divider);
         motorFR.setPower(power4 / divider);
     }
-    public double getEncoderAvg() {
-        motorBLE = motorBL.getCurrentPosition();
-        motorBRE = motorBR.getCurrentPosition();
-        motorFLE = motorFL.getCurrentPosition();
-        motorFRE = motorFR.getCurrentPosition();
+    public int getEncoderAvg() {
         return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
     }
     public void stopMotors() {
@@ -77,18 +75,21 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         motorFR.setPower(0);
     }
     public void changeLift(double change) {
-        lift.setPower(change);
+//        lift.setPower(change);
     }
 
     public void stopLift() {
-        lift.setPower(0.0);
+//        lift.setPower(0.0);
     }
 
     public void changeClaw(double change) {
-        claws.setPower(change);
+        rightClaw.setPower(change);
+        leftClaw.setPower(-change);
     }
     public void stopClaw() {
-        claws.setPower(0);
+        rightClaw.setPower(0);
+        leftClaw.setPower(0);
+
     }
 /*    private void decreaseSpeed() {
         boolean rightTrue = false;
@@ -125,6 +126,15 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         }
 
     } */
+//    private void startManipulater() {
+//        manipulater.setPower(1);
+//    }
+//    private void stopManipulater() {
+//        manipulater.setPower(0);
+//    }
+//    private void reverseManipulater() {
+//        manipulater.setPower(-1);
+//    }
     private void setDivider(int divide) {
         divider = divide;
     }
@@ -136,13 +146,14 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         motorBLE = 0;
         motorFRE = 0;
         divider = 1;
-        lift = hardwareMap.dcMotor.get("lift");
+//        lift = hardwareMap.dcMotor.get("lift");
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         basket = hardwareMap.servo.get("basket");
-        claws = hardwareMap.dcMotor.get("claws");
+        rightClaw = hardwareMap.dcMotor.get("rightClaw");
+        leftClaw = hardwareMap.dcMotor.get("leftClaw");
 
     }
 
@@ -196,7 +207,16 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         else {
             stopClaw();
         }
-
+//        if (gamepad2.right_bumper) {
+//            startManipulater();
+//        }
+//        else
+//            stopManipulater();
+//        if (gamepad2.left_bumper) {
+//            reverseManipulater();
+//        }
+//        else
+//            stopManipulater();
         //resets encoders
         if (gamepad1.a) {
             resetEncoders();
