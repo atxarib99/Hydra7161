@@ -84,8 +84,8 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     }
 
     public void changeClaw(double change) {
-        rightClaw.setPower(change);
-        leftClaw.setPower(-change);
+        rightClaw.setPower(-change);
+        leftClaw.setPower(change);
     }
     public void stopClaw() {
         rightClaw.setPower(0);
@@ -196,14 +196,12 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
 
         //manipulates hooks/claws for hang.
         if(gamepad2.right_trigger > .05) {
-            changeClaw(gamepad2.right_trigger);
+            rightClaw.setPower(-gamepad2.right_trigger);
+            leftClaw.setPower(gamepad2.right_trigger);
         }
-        else {
-            stopClaw();
-        }
-
-        if(gamepad2.left_trigger > .05) {
-            changeClaw(-gamepad2.left_trigger);
+        else if(gamepad2.left_trigger > .05) {
+            rightClaw.setPower(gamepad2.left_trigger);
+            leftClaw.setPower(-gamepad2.left_trigger);
         }
         else {
             stopClaw();
