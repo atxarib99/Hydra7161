@@ -79,6 +79,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("Colortest", AdafruitRGBExample.class);
     manager.register("justTheMotors", justTheMotors.class);
     manager.register("OneLiftTest", OneLiftTest.class);
+    manager.register("fullservo", FullServoTEst.class);
 
     /*
      * The following example op modes are designed to work with a K9-style robot.

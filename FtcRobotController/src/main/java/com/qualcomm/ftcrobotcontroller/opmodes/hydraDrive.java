@@ -46,7 +46,7 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     DcMotor rightClaw;
     DcMotor leftClaw;
 //    DcMotor manipulator;
-    Servo basket;
+//    Servo basket;
 
     double motorBLE; //These are encoder values for each motor.
     double motorBRE;
@@ -66,7 +66,8 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         motorFR.setPower(power4 / divider);
     }
     public int getEncoderAvg() {
-        return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
+        return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) +
+                Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
     }
     public void stopMotors() {
         motorBR.setPower(0);
@@ -151,7 +152,7 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
-        basket = hardwareMap.servo.get("basket");
+  //      basket = hardwareMap.servo.get("basket");
         rightClaw = hardwareMap.dcMotor.get("rightClaw");
         leftClaw = hardwareMap.dcMotor.get("leftClaw");
 
@@ -182,16 +183,16 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         else
             stopLift();
 
-        //moves basket
-        if(gamepad2.left_stick_x < -.05)
-            if(basket.getPosition() == Servo.MAX_POSITION)
-                basket.setPosition(Servo.MIN_POSITION);
-            basket.setPosition(basket.getPosition() + 1);
-
-        if(gamepad2.left_stick_x > .05)
-            if(basket.getPosition() <= Servo.MIN_POSITION)
-                basket.setPosition(Servo.MAX_POSITION);
-            basket.setPosition(basket.getPosition() - 1);
+//        //moves basket
+//        if(gamepad2.left_stick_x < -.05)
+//            if(basket.getPosition() == Servo.MAX_POSITION)
+//                basket.setPosition(Servo.MIN_POSITION);
+//            basket.setPosition(basket.getPosition() + 1);
+//
+//        if(gamepad2.left_stick_x > .05)
+//            if(basket.getPosition() <= Servo.MIN_POSITION)
+//                basket.setPosition(Servo.MAX_POSITION);
+//            basket.setPosition(basket.getPosition() - 1);
 
         //manipulates hooks/claws for hang.
         if(gamepad2.right_trigger > .05) {
