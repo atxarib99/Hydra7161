@@ -4,21 +4,19 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
-import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 
 
 /**
  * Created by Owner on 8/31/2015.
  */
-public class IMUtest extends OpMode {
+public class IMUGyroOnlyTest extends OpMode {
 
-    AdafruitIMUAccel boschBNO055;
-    DeviceInterfaceModule cdim;
+    AdafruitIMU boschBNO055;
 
     //The following arrays contain both the Euler angles reported by the IMU (indices = 0) AND the
     // Tait-Bryan angles calculated from the 4 components of the quaternion vector (indices = 1)
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
-    volatile double[] xVals = new double[2], yVals = new double[2], zVals = new double[2];
+
     long systemTime;//Relevant values of System.nanoTime
 
     /************************************************************************************************
@@ -28,18 +26,17 @@ public class IMUtest extends OpMode {
     @Override
     public void init() {
         systemTime = System.nanoTime();
-        cdim = hardwareMap.deviceInterfaceModule.get("dim");
         try {
-           boschBNO055 = new AdafruitIMUAccel(hardwareMap, "hydro"
+            boschBNO055 = new AdafruitIMU(hardwareMap, "hydro"
 
                     //The following was required when the definition of the "I2cDevice" class was incomplete.
                     //, "cdim", 5
 
-                    , (byte)(AdafruitIMUAccel.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
+                    , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
                     //addressing
-                    , (byte) AdafruitIMUAccel.OPERATION_MODE_IMU);
+                    , (byte) AdafruitIMU.OPERATION_MODE_IMU);
         } catch (RobotCoreException e){
-            Log.i("FtcRobotController", "Exception: " + e.getMessage() + "THIS IS THE ERROR");
+            Log.i("FtcRobotController", "Exception: " + e.getMessage());
         }
         Log.i("FtcRobotController", "IMU Init method finished in: "
                 + (-(systemTime - (systemTime = System.nanoTime()))) + " ns.");
@@ -89,7 +86,6 @@ public class IMUtest extends OpMode {
 
         //Read the encoder values that the "worker" threads will use in their computations
         boschBNO055.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-        boschBNO055.getIMUAccelData(xVals, yVals, zVals);
 		/*
 		 * Send whatever telemetry data you want back to driver station.
 		 */
@@ -101,9 +97,6 @@ public class IMUtest extends OpMode {
         telemetry.addData("Max I2C read interval: ",
                 String.format("%4.4f ms. Average interval: %4.4f ms.", boschBNO055.maxReadInterval
                         , boschBNO055.avgReadInterval));
-        telemetry.addData("Accel X: ", xVals[0] + "--------------" + xVals[1]);
-        telemetry.addData("Accel Y: ", yVals[0] + "--------------" + yVals[1]);
-        telemetry.addData("Accel Z: ", zVals[0] + "--------------" + zVals[1]);
     }
 
     /*

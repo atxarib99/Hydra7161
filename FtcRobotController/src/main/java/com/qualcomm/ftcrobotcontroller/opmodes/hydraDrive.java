@@ -200,8 +200,8 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
             leftClaw.setPower(gamepad2.right_trigger);
         }
         else if(gamepad2.left_trigger > .05) {
-            rightClaw.setPower(gamepad2.left_trigger);
-            leftClaw.setPower(-gamepad2.left_trigger);
+            rightClaw.setPower(gamepad2.left_trigger * .75);
+            leftClaw.setPower(-gamepad2.left_trigger * .75);
         }
         else {
             stopClaw();
