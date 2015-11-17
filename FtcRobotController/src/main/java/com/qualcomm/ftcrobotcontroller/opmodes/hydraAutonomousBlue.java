@@ -25,8 +25,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import android.media.MediaPlayer;
 import android.util.Log;
 
+import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
+import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
@@ -48,14 +51,25 @@ import com.qualcomm.robotcore.robocol.Telemetry;
  */
 public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
     //creates motors
-    DcMotor motorBL;
+    DcMotor motorBL; //motors for movement
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
+    //    DcMotor lift;
+    DcMotor rightClaw; //motors to control claws
+    DcMotor leftClaw;
+    //    DcMotor manipulator;
+//    Servo basket;
+    Servo rightBar; //servos to control side bars
+    Servo leftBar;
+    Servo climberBar; //servo to control climber dumping
+    MediaPlayer song;
+    DeviceInterfaceModule cdim;
+    ColorSensor color;
     AdafruitIMU gyro;
+    static final int LED_CHANNEL = 5;
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     private static final String LOG_TAG = hydraAutonomousBlue.class.getSimpleName();
-    DeviceInterfaceModule dim;
 //    ColorSensor color;
     //  OpticalDistanceSensor distance
     ElapsedTime elapsedTime;
@@ -64,6 +78,39 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         motorBL.setPower(power2);
         motorFL.setPower(power3);
         motorFR.setPower(power4);
+    }
+    public void first() {
+        motorBL = hardwareMap.dcMotor.get("motorBL");
+        motorBR = hardwareMap.dcMotor.get("motorBR");
+        motorFR = hardwareMap.dcMotor.get("motorFR");
+        motorFL = hardwareMap.dcMotor.get("motorFL");
+        rightClaw = hardwareMap.dcMotor.get("rightClaw");
+        leftClaw = hardwareMap.dcMotor.get("leftClaw");
+        rightBar = hardwareMap.servo.get("rightBar");
+        leftBar = hardwareMap.servo.get("leftBar");
+        climberBar = hardwareMap.servo.get("climberBar");
+        color = hardwareMap.colorSensor.get("color");
+        climberBar.setPosition(Servo.MAX_POSITION);
+        rightBar.setPosition(Servo.MIN_POSITION);
+        leftBar.setPosition(Servo.MAX_POSITION);
+        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.song);
+        song.setLooping(true);
+        song.start();
+        cdim = hardwareMap.deviceInterfaceModule.get("dim");
+        try {
+            gyro = new AdafruitIMU(hardwareMap, "hydro"
+
+                    //The following was required when the definition of the "I2cDevice" class was incomplete.
+                    //, "cdim", 5
+
+                    , (byte) (AdafruitIMUAccel.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
+                    //addressing
+                    , (byte) AdafruitIMUAccel.OPERATION_MODE_IMU);
+        } catch (RobotCoreException e) {
+            Log.e(LOG_TAG, "ROBOT CORE EXCEPTION", e);
+        }
+
+
     }
     public int getEncoderAvg() {
         return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
@@ -94,26 +141,38 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
     }
     @Override
     public void runOpMode() {
-        elapsedTime = new ElapsedTime();
-        dim = hardwareMap.deviceInterfaceModule.get("dim");
+        first();
+        cdim.setDigitalChannelMode(LED_CHANNEL, DigitalChannelController.Mode.OUTPUT);
+        cdim.setDigitalChannelState(LED_CHANNEL, false);
         try {
-            gyro = new AdafruitIMU(hardwareMap, "gyro", (byte) (AdafruitIMU.BNO055_ADDRESS_A), (byte) AdafruitIMU.OPERATION_MODE_IMU);
-        } catch (RobotCoreException e) {
-            Log.e("SEVERE ERROR: ", "ROBOT CORE EXCEPTION", e);
+            waitOneFullHardwareCycle();
+        } catch (InterruptedException e) {
+            Log.i(LOG_TAG, e.toString());
         }
-        gyro.startIMU();
-        motorBL = hardwareMap.dcMotor.get("motorBL");
-        motorBR = hardwareMap.dcMotor.get("motorBR");
-        motorFL = hardwareMap.dcMotor.get("motorFL");
-        elapsedTime.startTime();
-        motorFR = hardwareMap.dcMotor.get("motorFR");
-//        color = hardwareMap.colorSensor.get("color");
+        try {
+            waitForStart();
+        } catch (InterruptedException e) {
+            Log.i(LOG_TAG, e.toString());
+        }
         int distance1 = 5550;
-       // int distance2 = 7075; Dont need this if we are using gyros but im leaving this for future reference
+       // int distance2 = 7075; Don't need this if we are using gyros but im leaving this for future reference
         int distance3 = 12750;
+        int currentEncoder = 0;
+        int nullEncoder = 0;
         double currentAngle = yawAngle[0];
-        while (motorBL.getCurrentPosition() < distance1) {
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        while (currentEncoder < distance1) {
             startMotors(-1, 1, 1, -1);
+            if(currentAngle > 5) {
+                startMotors(1, 1, 1, 1);
+                nullEncoder = getEncoderAvg() - nullEncoder;
+            }
+            if(currentAngle < -5) {
+                startMotors(-1, -1, -1, -1);
+                nullEncoder = getEncoderAvg() - currentEncoder;
+            }
+            else
+                currentAngle = getEncoderAvg() - nullEncoder;
             getEncoderValues();
         }
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
@@ -126,18 +185,55 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
             getEncoderValues();
         }
         resetEncoders();
-        while (motorBL.getCurrentPosition() < distance3) {
+        while (currentAngle > -90.0) {
+            startMotors(1, 1, 1, 1);
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
+            telemetry.addData("yaw", currentAngle);
+            getEncoderValues();
+        }
+        resetEncoders();
+        while (currentAngle < -90.0) {
+            startMotors(-1, -1, -1, -1);
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
+            telemetry.addData("yaw", currentAngle);
+            getEncoderValues();
+        }
+        stopMotors();
+        resetEncoders();
+        nullEncoder = 0;
+        while (currentEncoder < distance3) {
             startMotors(-1, 1, 1, -1);
+            if(currentAngle > -85) {
+                startMotors(1, 1, 1, 1);
+                nullEncoder = getEncoderAvg() - currentEncoder;
+            }
+            if(currentAngle < -95) {
+                startMotors(-1, -1, -1, -1);
+                nullEncoder = getEncoderAvg() - currentEncoder;
+            }
+            else
+                currentAngle = getEncoderAvg() - nullEncoder;
             getEncoderValues();
         }
         stopMotors();
         elapsedTime.reset();
-        double currentTime = 0.0;
-        while (currentTime < 5.0) {
-            stopMotors();
-            getEncoderValues();
-            currentTime = elapsedTime.time();
+
+        //TODO: IMPLEMENT COLOR SENSING HERE!!!!!
+        climberBar.setPosition(1);
+        try {
+            wait(1500);
+        } catch(InterruptedException e) {
+            Log.i(LOG_TAG, e.toString());
         }
+        climberBar.setPosition(0);
+        try {
+            wait(1500);
+        } catch(InterruptedException e) {
+            Log.i(LOG_TAG, e.toString());
+        }
+        climberBar.setPosition(1);
         while (motorBL.getCurrentPosition() > 9000) { //9034
             startMotors(1, -1, -1, 1);
             getEncoderValues();
@@ -150,7 +246,7 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
             getEncoderValues();
         }
         elapsedTime.reset();
-        currentTime = 0.0;
+        double currentTime = 0.0;
         while (currentTime < 5.0) {
             startMotors(-1, 1 ,1, -1);
             getEncoderValues();
@@ -162,5 +258,6 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         motorFL.close();
         motorBR.close();
         motorFR.close();
+        song.stop();
     }
 }
