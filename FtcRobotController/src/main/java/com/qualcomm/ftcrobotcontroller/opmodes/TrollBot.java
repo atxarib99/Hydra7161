@@ -7,6 +7,7 @@ import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,8 @@ public class TrollBot extends OpMode {
     DcMotor motorFR;
     MediaPlayer song;
     ArrayList<String> encoderValues;
+    Servo right;
+    Servo left;
     private static final String LOG_TAG = TrollBot.class.getSimpleName();
     private int getEncoderAvg() {
         return (motorBL.getCurrentPosition() + motorBR.getCurrentPosition() + motorFL.getCurrentPosition() + motorFR.getCurrentPosition()) / 4;
@@ -33,15 +36,20 @@ public class TrollBot extends OpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         encoderValues = new ArrayList<String>();
-        MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.song);
+        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.song);
         song.setLooping(true);
+        song.start();
+        right = hardwareMap.servo.get("right");
+        right.setPosition(0);
+        left = hardwareMap.servo.get("left");
+        left.setPosition(0);
     }
     public void loop() {
         if(Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) {
             motorBL.setPower(-gamepad1.left_stick_y);
-            motorFL.setPower(.8 * -gamepad1.left_stick_y);
+            motorFL.setPower(-gamepad1.left_stick_y);
             motorBR.setPower(gamepad1.right_stick_y);
-            motorFR.setPower(.8 * gamepad1.right_stick_y);
+            motorFR.setPower(gamepad1.right_stick_y);
         }
         else {
             motorBL.setPower(0);

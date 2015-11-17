@@ -81,7 +81,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("scrimmageAutoBlue", ScrimmageAuto.class);
     manager.register("GYROANDACCEL", IMUtest.class);
     manager.register("trollBot", TrollBot.class);
-
+    manager.register("colorTest", AdafruitRGBExample.class);
     manager.register("justGyro", IMUGyroOnlyTest.class);
 
     /*

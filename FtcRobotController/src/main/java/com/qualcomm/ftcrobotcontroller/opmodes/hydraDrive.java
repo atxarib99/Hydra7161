@@ -1,30 +1,10 @@
-/* Copyright (c) 2014, 2015 Qualcomm Technologies Inc
-All rights reserved.
-Redistribution and use in source and binary forms, with or without modification,
-are permitted (subject to the limitations in the disclaimer below) provided that
-the following conditions are met:
-Redistributions of source code must retain the above copyright notice, this list
-of conditions and the following disclaimer.
-Redistributions in binary form must reproduce the above copyright notice, this
-list of conditions and the following disclaimer in the documentation and/or
-other materials provided with the distribution.
-Neither the name of Qualcomm Technologies Inc nor the names of its contributors
-may be used to endorse or promote products derived from this software without
-specific prior written permission.
-NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
-LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
-THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
-FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import android.media.MediaPlayer;
+
+import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
+import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
@@ -38,20 +18,20 @@ import com.qualcomm.robotcore.robocol.Telemetry;
  */
 public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface, ClawInterface {
     //creates motors
-    DcMotor motorBL;
+    DcMotor motorBL; //motors for movement
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
 //    DcMotor lift;
-    DcMotor rightClaw;
+    DcMotor rightClaw; //motors to control claws
     DcMotor leftClaw;
 //    DcMotor manipulator;
 //    Servo basket;
+    Servo rightBar; //servos to control side bars
+    Servo leftBar;
+    Servo climberBar; //servo to control climber dumping
+    MediaPlayer song;
 
-    double motorBLE; //These are encoder values for each motor.
-    double motorBRE;
-    double motorFLE;
-    double motorFRE;
     int divider;
     public void resetEncoders() {
         motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
@@ -91,6 +71,20 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         rightClaw.setPower(0);
         leftClaw.setPower(0);
 
+    }
+    public void extendBars() {
+        rightBar.setPosition(Servo.MAX_POSITION);
+        leftBar.setPosition(Servo.MIN_POSITION);
+    }
+    public void contractBars() {
+        rightBar.setPosition(Servo.MIN_POSITION);
+        leftBar.setPosition(Servo.MAX_POSITION);
+    }
+    public void dumpClimbers() {
+        climberBar.setPosition(Servo.MIN_POSITION);
+    }
+    public void contractClimbers() {
+        climberBar.setPosition(Servo.MAX_POSITION);
     }
 /*    private void decreaseSpeed() {
         boolean rightTrue = false;
@@ -142,10 +136,6 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     //defines set motors at the start
     @Override
     public void init() {
-        motorBRE = 0;
-        motorFLE = 0;
-        motorBLE = 0;
-        motorFRE = 0;
         divider = 1;
 //        lift = hardwareMap.dcMotor.get("lift");
         motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -155,6 +145,15 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
   //      basket = hardwareMap.servo.get("basket");
         rightClaw = hardwareMap.dcMotor.get("rightClaw");
         leftClaw = hardwareMap.dcMotor.get("leftClaw");
+        rightBar = hardwareMap.servo.get("rightBar");
+        leftBar = hardwareMap.servo.get("leftBar");
+        climberBar = hardwareMap.servo.get("climberBar");
+        climberBar.setPosition(Servo.MAX_POSITION);
+        rightBar.setPosition(Servo.MIN_POSITION);
+        leftBar.setPosition(Servo.MAX_POSITION);
+        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.song);
+        song.setLooping(true);
+        song.start();
 
     }
 
@@ -228,6 +227,18 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         if (gamepad1.b) {
             setDivider(4);
         }
+        //extends side bars to release climbers
+        if(gamepad2.right_bumper)
+            extendBars();
+        //contracts side bars to pull back bars
+        if(gamepad2.left_bumper)
+            contractBars();
+        //rotates bar to dump
+        if(gamepad2.a)
+            dumpClimbers();
+        //pulls climber bar back
+        if(gamepad2.b)
+            contractClimbers();
         //resets speed to normal
         if(gamepad1.y) {
             setDivider(1);
