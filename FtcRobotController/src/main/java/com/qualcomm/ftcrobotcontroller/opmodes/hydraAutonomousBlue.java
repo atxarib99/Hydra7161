@@ -93,7 +93,7 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         climberBar.setPosition(Servo.MAX_POSITION);
         rightBar.setPosition(Servo.MIN_POSITION);
         leftBar.setPosition(Servo.MAX_POSITION);
-        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.song);
+        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.tiger);
         song.setLooping(true);
         song.start();
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
@@ -154,9 +154,9 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         } catch (InterruptedException e) {
             Log.i(LOG_TAG, e.toString());
         }
-        int distance1 = 5550;
-       // int distance2 = 7075; Don't need this if we are using gyros but im leaving this for future reference
-        int distance3 = 12750;
+        int distance1 = 5000; // TODO: 11/19/2015 CORRECT VALUES
+        int distance2 = 7075; // TODO: 11/19/2015 CORRECT VALUES
+        int distance3 = 12750; // TODO: 11/19/2015 CORRECT VALUES
         int currentEncoder = 0;
         int nullEncoder = 0;
         double currentAngle = yawAngle[0];
@@ -203,7 +203,7 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         stopMotors();
         resetEncoders();
         nullEncoder = 0;
-        while (currentEncoder < distance3) {
+        while (currentEncoder < distance2) {
             startMotors(-1, 1, 1, -1);
             if(currentAngle > -85) {
                 startMotors(1, 1, 1, 1);
@@ -219,22 +219,53 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         }
         stopMotors();
         elapsedTime.reset();
+        double red = 0.0;
+        double blue= 0.0;
+        while (elapsedTime.time() < 1.0) {
+            red = color.red();
+            blue = color.blue();
+            startMotors(-.2, .2, .2, -.2);
+        }
+        if(blue > red + 50) {
+            climberBar.setPosition(1); // TODO: 11/19/2015 MAKE SURE THAT THIS IS CORRECT POSITION
+        }
+        else {
+            elapsedTime.reset();
+            while(elapsedTime.time() < 1.0) { // TODO: 11/19/2015 ADD MOVE SLIGHTLY FORWARD WITH ENCODERS
+                startMotors(.5, -.5, -.5, .5);
+            }
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
+            while(currentAngle < 1) {
+                startMotors(-.5, -.5, -.5, -.5);
+            }
+            resetEncoders();
+            elapsedTime.reset();
+            while(elapsedTime.time() < 1.0) { // TODO: 11/19/2015 ADD MOVE SLIGHTLY FORWARD WITH ENCODERS
+                startMotors(-.5, .5, .5, -.5);
+            }
+            // TODO: 11/19/2015 ADD MOVE SLIGHTLY FORWARD WITH ENCODERS
+            while(currentAngle > -90) {
+                startMotors(.5, .5, .5, .5);
+            }
+            if(blue > red + 50) {
+                climberBar.setPosition(1); // TODO: 11/19/2015 MAKE SURE THAT THIS IS CORRECT POSITION
+            }
 
-        //TODO: IMPLEMENT COLOR SENSING HERE!!!!!
-        climberBar.setPosition(1);
+        }
         try {
             wait(1500);
         } catch(InterruptedException e) {
             Log.i(LOG_TAG, e.toString());
         }
-        climberBar.setPosition(0);
+        climberBar.setPosition(0); // TODO: 11/19/2015 MAKE SURE THIS IS CORRECT POSITION
         try {
             wait(1500);
         } catch(InterruptedException e) {
             Log.i(LOG_TAG, e.toString());
         }
-        climberBar.setPosition(1);
-        while (motorBL.getCurrentPosition() > 9000) { //9034
+        climberBar.setPosition(1); // TODO: 11/19/2015 MAKE SURE THIS IS CORRECT POSITION
+        while (motorBL.getCurrentPosition() > distance3) {
             startMotors(1, -1, -1, 1);
             getEncoderValues();
         }
@@ -246,13 +277,6 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
             getEncoderValues();
         }
         elapsedTime.reset();
-        double currentTime = 0.0;
-        while (currentTime < 5.0) {
-            startMotors(-1, 1 ,1, -1);
-            getEncoderValues();
-            getTime();
-            currentTime = elapsedTime.time();
-        }
         stopMotors();
         motorBL.close();
         motorFL.close();

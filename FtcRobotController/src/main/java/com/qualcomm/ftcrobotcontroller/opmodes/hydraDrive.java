@@ -80,6 +80,10 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         rightBar.setPosition(Servo.MIN_POSITION);
         leftBar.setPosition(Servo.MAX_POSITION);
     }
+    public void stopBars() {
+        rightBar.setPosition(.5);
+        leftBar.setPosition(.5);
+    }
     public void dumpClimbers() {
         climberBar.setPosition(Servo.MIN_POSITION);
     }
@@ -151,7 +155,7 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         climberBar.setPosition(Servo.MAX_POSITION);
         rightBar.setPosition(Servo.MIN_POSITION);
         leftBar.setPosition(Servo.MAX_POSITION);
-        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.song);
+        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.fsong);
         song.setLooping(true);
         song.start();
 
@@ -231,8 +235,9 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         if(gamepad2.right_bumper)
             extendBars();
         //contracts side bars to pull back bars
-        if(gamepad2.left_bumper)
+        else if(gamepad2.left_bumper)
             contractBars();
+        else stopBars();
         //rotates bar to dump
         if(gamepad2.a)
             dumpClimbers();
