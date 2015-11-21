@@ -43,13 +43,15 @@ public class hydraDrive extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor lift;
-    servo basket;
+    Servo basket;
 
     double motorBLE; //These are encoder values for each motor.
     double motorBRE;
     double motorFLE;
     double motorFRE;
     int divider;
+    boolean frontMotors;
+
     public void resetEncoders() {
         motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
         motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
@@ -59,8 +61,8 @@ public class hydraDrive extends OpMode {
     private void startMotors(double power1, double power2, double power3, double power4) {
         motorBR.setPower(power1 / divider);
         motorBL.setPower(power2 / divider);
-        motorFL.setPower((.8 * power3) / divider);
-        motorFR.setPower((.8 * power4) / divider);
+        motorFL.setPower((.5 * power3) / divider);
+        motorFR.setPower((.5 * power4) / divider);
     }
     private double getEncoderAvg() {
         motorBLE = motorBL.getCurrentPosition();
@@ -75,16 +77,21 @@ public class hydraDrive extends OpMode {
         motorFL.setPower(0);
         motorFR.setPower(0);
     }
+
     private void changeLift(double change) {
         lift.setPower(change);
     }
     private void stopLift() {
         lift.setPower(0.0);
     }
+
 /*     private void decreaseSpeed() {
         boolean rightTrue = false;
         boolean leftTrue = false;
-        if(motorBR.getPower() > .2) { rightTrue = true; }
+        if(motorBR.getPower() > .2) { leftTrue = true; }
+        while(rightTrue && leftTrue) {
+            motorBR.setPower(motorBR.getPower() / 4);
+            motorFL.setPower(motorF> .2) { rightTrue = true; }
         if(motorBL.getPower() > .2) { leftTrue = true; }
         while(rightTrue && leftTrue) {
             motorBR.setPower(motorBR.getPower() / 4);
@@ -133,6 +140,7 @@ public class hydraDrive extends OpMode {
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         basket = hardwareMap.servo.get("basket");
+        frontMotors = false;
     }
 
     //calculates movement updates encoders and looks for buttons pressed
@@ -146,12 +154,24 @@ public class hydraDrive extends OpMode {
         telemetry.addData("motorFL", motorFL.getCurrentPosition());
 
         //controls motion motors
-        if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
-            startMotors(gamepad1.right_stick_y, -gamepad1.left_stick_y, -gamepad1.left_stick_y, gamepad1.right_stick_y);
+        if (frontMotors = true && (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
+            startMotors(gamepad1.right_stick_y, -gamepad1.left_stick_y, -gamepad1.left_stick_y, gamepad1.left_stick_y);
+        }
+
+        else if (frontMotors = false && (Math.abs(gamepad2.left_stick_y) > .05 || Math.abs(gamepad2.right_stick_y) > .05) {
+            startMotors(gamepad1.right_stick_y, -gamepad1.left_stick_y, (0), (0));
         }
 
         else {
             stopMotors();
+        }
+
+        if (gamepad2.a) {
+            frontMotors = true;
+        }
+
+        if (gamepad2.b) {
+            frontMotors = false;
         }
 
         //raises lift
