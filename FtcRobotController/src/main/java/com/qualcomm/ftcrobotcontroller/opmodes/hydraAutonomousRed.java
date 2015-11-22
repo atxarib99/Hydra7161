@@ -25,13 +25,22 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import android.media.MediaPlayer;
+import android.util.Log;
+
+import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
+import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.exception.RobotCoreException;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.GyroSensor;
 //import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.I2cController;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -40,101 +49,236 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 public class hydraAutonomousRed extends LinearOpMode {
   //creates motors
-  DcMotor motorBL;
+  DcMotor motorBL; //motors for movement
   DcMotor motorBR;
   DcMotor motorFL;
   DcMotor motorFR;
+  //    DcMotor lift;
+  DcMotor rightClaw; //motors to control claws
+  DcMotor leftClaw;
+  //    DcMotor manipulator;
+//    Servo basket;
+  Servo rightBar; //servos to control side bars
+  Servo leftBar;
+  Servo climberBar; //servo to control climber dumping
+  MediaPlayer song;
+  DeviceInterfaceModule cdim;
+  ColorSensor color;
+  AdafruitIMU gyro;
+  static final int LED_CHANNEL = 5;
+  volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
+  private static final String LOG_TAG = hydraAutonomousBlue.class.getSimpleName();
   //    ColorSensor color;
   //  OpticalDistanceSensor distance
   ElapsedTime elapsedTime;
-  DeviceInterfaceModule dim;
-    GyroSensor gyro;
-
-
-  static final int GYROSCOPE_SPOT = 1; //TODO: put actual value for gyro.
-    public void startMotors(double power1, double power2, double power3, double power4) {
-        motorBR.setPower(power1);
-        motorBL.setPower(power2);
-        motorFL.setPower(power3);
-        motorFR.setPower(power4);
-    }
-    public void stopMotors() {
-        motorBR.setPower(0);
-        motorBL.setPower(0);
-        motorFL.setPower(0);
-        motorFR.setPower(0);
-    }
-    public void getEncoderValues() {
-        telemetry.addData("motorBL", motorBL.getCurrentPosition());
-
-        telemetry.addData("motorFR", motorFR.getCurrentPosition());
-
-        telemetry.addData("motorBR", motorBR.getCurrentPosition());
-
-        telemetry.addData("motorFL", motorFL.getCurrentPosition());
-    }
-    public void getTime() {
-        telemetry.addData("time", elapsedTime.time());
-    }
-  @Override
-  public void runOpMode() {
-    elapsedTime = new ElapsedTime();
-    dim = hardwareMap.deviceInterfaceModule.get("dim");
-    dim.setDigitalChannelMode(GYROSCOPE_SPOT, DigitalChannelController.Mode.OUTPUT);
-      gyro = hardwareMap.gyroSensor.get("gyro");
-      dim.setDigitalChannelState(GYROSCOPE_SPOT, true);
+  public void startMotors(double power1, double power2, double power3, double power4) {
+    motorBR.setPower(power1);
+    motorBL.setPower(power2);
+    motorFL.setPower(power3);
+    motorFR.setPower(power4);
+  }
+  public void first() {
     motorBL = hardwareMap.dcMotor.get("motorBL");
     motorBR = hardwareMap.dcMotor.get("motorBR");
-    motorFL = hardwareMap.dcMotor.get("motorFL");
-    elapsedTime.startTime();
     motorFR = hardwareMap.dcMotor.get("motorFR");
-//        color = hardwareMap.colorSensor.get("color");
-    int distance1 = 5550;
-    int distance3 = 9700;
-    double currentAngle = 0.0;
-    while (motorBL.getCurrentPosition() < distance1) {
-      startMotors(-1, 1, 1, -1);
-        getEncoderValues();
-    }
-    while (currentAngle < 90.0) {
-      startMotors(-1, -1, -1, -1);
-        getEncoderValues();
-      currentAngle = gyro.getRotation();
-    }
-    while (motorBL.getCurrentPosition() < distance3) {
-      startMotors(-1, 1, 1, -1);
-        getEncoderValues();
-    }
-    getTime();
-    elapsedTime.reset();
-    double currentTime = 0.0;
-    while (currentTime < 5.0) {
-        getEncoderValues();
-        getTime();
-      currentTime = elapsedTime.time();
-    }
-    while (motorBL.getCurrentPosition() > 9000) { //9034
-      startMotors(1, -1, -1, 1);
-        getEncoderValues();
-    }
-    while (currentAngle > 45.0) {
-      startMotors(-1, -1, -1, -1);
-        getEncoderValues();
-      currentAngle = gyro.getRotation();
+    motorFL = hardwareMap.dcMotor.get("motorFL");
+    rightClaw = hardwareMap.dcMotor.get("rightClaw");
+    leftClaw = hardwareMap.dcMotor.get("leftClaw");
+    rightBar = hardwareMap.servo.get("rightBar");
+    leftBar = hardwareMap.servo.get("leftBar");
+    climberBar = hardwareMap.servo.get("climberBar");
+    color = hardwareMap.colorSensor.get("color");
+    climberBar.setPosition(Servo.MAX_POSITION);
+    rightBar.setPosition(Servo.MIN_POSITION);
+    leftBar.setPosition(Servo.MAX_POSITION);
+    song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.tiger);
+    song.setLooping(true);
+    song.start();
+    cdim = hardwareMap.deviceInterfaceModule.get("dim");
+    try {
+      gyro = new AdafruitIMU(hardwareMap, "hydro"
+
+              //The following was required when the definition of the "I2cDevice" class was incomplete.
+              //, "cdim", 5
+
+              , (byte) (AdafruitIMUAccel.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
+              //addressing
+              , (byte) AdafruitIMUAccel.OPERATION_MODE_IMU);
+    } catch (RobotCoreException e) {
+      Log.e(LOG_TAG, "ROBOT CORE EXCEPTION", e);
     }
 
-    elapsedTime.reset();
-    currentTime = 0.0;
-    while (currentTime < 5.0) {
-      startMotors(-1, 1, 1, -1);
-        getEncoderValues();
-        getTime();
-      currentTime = elapsedTime.time();
+
+  }
+  public int getEncoderAvg() {
+    return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
+  }
+  public void stopMotors() {
+    motorBR.setPower(0);
+    motorBL.setPower(0);
+    motorFL.setPower(0);
+    motorFR.setPower(0);
+  }
+  public void resetEncoders() {
+    motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+    motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+    motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+    motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+  }
+  public void getEncoderValues() {
+    telemetry.addData("motorBL", motorBL.getCurrentPosition());
+
+    telemetry.addData("motorFR", motorFR.getCurrentPosition());
+
+    telemetry.addData("motorBR", motorBR.getCurrentPosition());
+
+    telemetry.addData("motorFL", motorFL.getCurrentPosition());
+  }
+  public void getTime() {
+    telemetry.addData("time", elapsedTime.time());
+  }
+  @Override
+  public void runOpMode() {
+    first();
+    cdim.setDigitalChannelMode(LED_CHANNEL, DigitalChannelController.Mode.OUTPUT);
+    cdim.setDigitalChannelState(LED_CHANNEL, false);
+    try {
+      waitOneFullHardwareCycle();
+    } catch (InterruptedException e) {
+      Log.i(LOG_TAG, e.toString());
     }
-      stopMotors();
+    try {
+      waitForStart();
+    } catch (InterruptedException e) {
+      Log.i(LOG_TAG, e.toString());
+    }
+    int distance1 = 5000; // TODO: 11/19/2015 CORRECT VALUES
+    int distance2 = 7075; // TODO: 11/19/2015 CORRECT VALUES
+    int distance3 = 12750; // TODO: 11/19/2015 CORRECT VALUES
+    int currentEncoder = 0;
+    int nullEncoder = 0;
+    double currentAngle = yawAngle[0];
+    gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+    while (currentEncoder < distance1) {
+      startMotors(-1, 1, 1, -1);
+      if(currentAngle > 5) {
+        startMotors(1, 1, 1, 1);
+        nullEncoder = getEncoderAvg() - nullEncoder;
+      }
+      if(currentAngle < -5) {
+        startMotors(-1, -1, -1, -1);
+        nullEncoder = getEncoderAvg() - currentEncoder;
+      }
+      else
+        currentAngle = getEncoderAvg() - nullEncoder;
+      getEncoderValues();
+    }
+    gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+    currentAngle = yawAngle[0];
+    while (currentAngle < 90.0) {
+      startMotors(1, 1, 1, 1);
+      gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+      currentAngle = yawAngle[0];
+      telemetry.addData("yaw", currentAngle);
+      getEncoderValues();
+    }
+    resetEncoders();
+    while (currentAngle > -90.0) {
+      startMotors(1, 1, 1, 1);
+      gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+      currentAngle = yawAngle[0];
+      telemetry.addData("yaw", currentAngle);
+      getEncoderValues();
+    }
+    resetEncoders();
+    while (currentAngle < 90.0) {
+      startMotors(-1, -1, -1, -1);
+      gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+      currentAngle = yawAngle[0];
+      telemetry.addData("yaw", currentAngle);
+      getEncoderValues();
+    }
+    stopMotors();
+    resetEncoders();
+    nullEncoder = 0;
+    while (currentEncoder < distance2) {
+      startMotors(-1, 1, 1, -1);
+      if(currentAngle < 85) {
+        startMotors(1, 1, 1, 1);
+        nullEncoder = getEncoderAvg() - currentEncoder;
+      }
+      if(currentAngle > 95) {
+        startMotors(-1, -1, -1, -1);
+        nullEncoder = getEncoderAvg() - currentEncoder;
+      }
+      else
+        currentAngle = getEncoderAvg() - nullEncoder;
+      getEncoderValues();
+    }
+    stopMotors();
+    elapsedTime.reset();
+    double red = 0.0;
+    double blue= 0.0;
+    while (elapsedTime.time() < 1.0) {
+      red = color.red();
+      blue = color.blue();
+      startMotors(-.2, .2, .2, -.2);
+    }
+    if(blue > red + 50) {
+      climberBar.setPosition(1); // TODO: 11/19/2015 MAKE SURE THAT THIS IS CORRECT POSITION
+    }
+    else {
+      elapsedTime.reset();
+      while(elapsedTime.time() < 1.0) { // TODO: 11/19/2015 ADD MOVE SLIGHTLY BACKWARDS WITH ENCODERS
+        startMotors(.5, -.5, -.5, .5);
+      }
+      gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+      currentAngle = yawAngle[0];
+      while(currentAngle > 0) {
+        startMotors(.5, .5, .5, .5);
+      }
+      resetEncoders();
+      elapsedTime.reset();
+      while(elapsedTime.time() < 1.0) { // TODO: 11/19/2015 ADD MOVE SLIGHTLY FORWARD WITH ENCODERS
+        startMotors(-.5, .5, .5, -.5);
+      }
+      while(currentAngle < 90) {
+        startMotors(-.5, -.5, -.5, -.5);
+      }
+      if(blue > red + 50) {
+        climberBar.setPosition(1); // TODO: 11/19/2015 MAKE SURE THAT THIS IS CORRECT POSITION
+      }
+
+    }
+    try {
+      wait(1500);
+    } catch(InterruptedException e) {
+      Log.i(LOG_TAG, e.toString());
+    }
+    climberBar.setPosition(0); // TODO: 11/19/2015 MAKE SURE THIS IS CORRECT POSITION
+    try {
+      wait(1500);
+    } catch(InterruptedException e) {
+      Log.i(LOG_TAG, e.toString());
+    }
+    climberBar.setPosition(1); // TODO: 11/19/2015 MAKE SURE THIS IS CORRECT POSITION
+    while (motorBL.getCurrentPosition() < distance3) {
+      startMotors(1, -1, -1, 1);
+      getEncoderValues();
+    }
+    while (currentAngle < 135.0) {
+      startMotors(-1, -1, -1, -1);
+      gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+      currentAngle = yawAngle[0];
+      telemetry.addData("yaw", currentAngle);
+      getEncoderValues();
+    }
+    elapsedTime.reset();
+    stopMotors();
     motorBL.close();
     motorFL.close();
     motorBR.close();
     motorFR.close();
+    song.stop();
   }
 }

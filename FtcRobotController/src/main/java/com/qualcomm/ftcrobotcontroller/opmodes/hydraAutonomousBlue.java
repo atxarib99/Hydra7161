@@ -91,8 +91,8 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         climberBar = hardwareMap.servo.get("climberBar");
         color = hardwareMap.colorSensor.get("color");
         climberBar.setPosition(Servo.MAX_POSITION);
-        rightBar.setPosition(Servo.MIN_POSITION);
-        leftBar.setPosition(Servo.MAX_POSITION);
+        rightBar.setPosition(0);
+        leftBar.setPosition(1);
         song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.tiger);
         song.setLooping(true);
         song.start();
@@ -186,7 +186,7 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         }
         resetEncoders();
         while (currentAngle > -90.0) {
-            startMotors(1, 1, 1, 1);
+            startMotors(.5, .5, .5, .5);
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             currentAngle = yawAngle[0];
             telemetry.addData("yaw", currentAngle);
@@ -194,7 +194,7 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
         }
         resetEncoders();
         while (currentAngle < -90.0) {
-            startMotors(-1, -1, -1, -1);
+            startMotors(-.5, -.5, -.5, -.5);
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             currentAngle = yawAngle[0];
             telemetry.addData("yaw", currentAngle);
@@ -244,7 +244,6 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase{
             while(elapsedTime.time() < 1.0) { // TODO: 11/19/2015 ADD MOVE SLIGHTLY FORWARD WITH ENCODERS
                 startMotors(-.5, .5, .5, -.5);
             }
-            // TODO: 11/19/2015 ADD MOVE SLIGHTLY FORWARD WITH ENCODERS
             while(currentAngle > -90) {
                 startMotors(.5, .5, .5, .5);
             }
