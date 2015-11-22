@@ -18,7 +18,7 @@ public class IMUtest extends OpMode {
     //The following arrays contain both the Euler angles reported by the IMU (indices = 0) AND the
     // Tait-Bryan angles calculated from the 4 components of the quaternion vector (indices = 1)
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
-    volatile double[] xVals = new double[2], yVals = new double[2], zVals = new double[2];
+    volatile double[] accs = new double[3];
     long systemTime;//Relevant values of System.nanoTime
 
     /************************************************************************************************
@@ -89,7 +89,7 @@ public class IMUtest extends OpMode {
 
         //Read the encoder values that the "worker" threads will use in their computations
         boschBNO055.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-        boschBNO055.getIMUAccelData(xVals, yVals, zVals);
+        boschBNO055.getIMUAccelData(accs);
 		/*
 		 * Send whatever telemetry data you want back to driver station.
 		 */
@@ -101,9 +101,9 @@ public class IMUtest extends OpMode {
         telemetry.addData("Max I2C read interval: ",
                 String.format("%4.4f ms. Average interval: %4.4f ms.", boschBNO055.maxReadInterval
                         , boschBNO055.avgReadInterval));
-        telemetry.addData("Accel X: ", xVals[0] + "--------------" + xVals[1]);
-        telemetry.addData("Accel Y: ", yVals[0] + "--------------" + yVals[1]);
-        telemetry.addData("Accel Z: ", zVals[0] + "--------------" + zVals[1]);
+        telemetry.addData("Accel X: ", accs[0]);
+        telemetry.addData("Accel Y: ", accs[1]);
+        telemetry.addData("Accel Z: ", accs[2]);
     }
 
     /*

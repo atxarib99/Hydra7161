@@ -506,29 +506,17 @@ public class AdafruitIMUAccel implements HardwareDevice, I2cController.I2cPortRe
     * Tait-Bryan equations listed in:
     * https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
     */
-    public void getIMUAccelData(double[] xVals, double[] yVals, double[] zVals) {
-        if (totalI2Creads > 2) {
-        try {
-            i2cReadCacheLock.lock();
-                linearMotion[0] =
-                        (double) ((short)
-                                ((i2cReadCache[BNO055_ACCEL_DATA_X_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
-                                | (i2cReadCache[BNO055_ACCEL_DATA_X_LSB_ADDR - readCacheOffset] & 0XFF));
-                linearMotion[1] =
-                        (double) ((short)
-                                ((i2cReadCache[BNO055_ACCEL_DATA_Y_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
-                                | (i2cReadCache[BNO055_ACCEL_DATA_Y_LSB_ADDR - readCacheOffset] & 0XFF));
-                linearMotion[2] =
-                        (double) ((short)
-                                ((i2cReadCache[BNO055_ACCEL_DATA_Z_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
-                                | (i2cReadCache[BNO055_ACCEL_DATA_Z_LSB_ADDR - readCacheOffset] & 0XFF));
-                xVals[0] = linearMotion[0];
-                yVals[0] = linearMotion[1];
-                zVals[0] = linearMotion[2];
-            } finally {
-                i2cReadCacheLock.unlock();
-            }
-        }
+    public void getIMUAccelData(double[] accs) {
+
+            accs[0] = (double) ((short)
+                    ((i2cReadCache[BNO055_LINEAR_ACCEL_DATA_X_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
+                    | (i2cReadCache[BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR - readCacheOffset] & 0XFF)) / 100.0;
+            accs[1] = (double) ((short)
+                    ((i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Y_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
+                    | (i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Y_LSB_ADDR - readCacheOffset] & 0XFF)) / 100.0;
+            accs[2] = (double) ((short)
+                    ((i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Z_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
+                    | (i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Z_LSB_ADDR - readCacheOffset] & 0XFF)) / 100.0;
     }
     public void getIMUGyroAngles(double[] roll, double[] pitch, double[] yaw) {
         short tempR = 0, tempP = 0, tempY = 0;
