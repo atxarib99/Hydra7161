@@ -31,6 +31,7 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     Servo leftBar;
     Servo climberBar; //servo to control climber dumping
     MediaPlayer song;
+    boolean frontMotors;
 
     int divider;
     public void resetEncoders() {
@@ -73,16 +74,12 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
 
     }
     public void extendBars() {
-        rightBar.setPosition(Servo.MAX_POSITION);
-        leftBar.setPosition(Servo.MIN_POSITION);
+        rightBar.setPosition(1);
+        leftBar.setPosition(0);
     }
     public void contractBars() {
-        rightBar.setPosition(Servo.MIN_POSITION);
-        leftBar.setPosition(Servo.MAX_POSITION);
-    }
-    public void stopBars() {
-        rightBar.setPosition(.5);
-        leftBar.setPosition(.5);
+        rightBar.setPosition(0);
+        leftBar.setPosition(1);
     }
     public void dumpClimbers() {
         climberBar.setPosition(Servo.MIN_POSITION);
@@ -153,11 +150,12 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         leftBar = hardwareMap.servo.get("leftBar");
         climberBar = hardwareMap.servo.get("climberBar");
         climberBar.setPosition(Servo.MAX_POSITION);
-        rightBar.setPosition(Servo.MIN_POSITION);
-        leftBar.setPosition(Servo.MAX_POSITION);
+        rightBar.setPosition(0);
+        leftBar.setPosition(1);
         song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.fsong);
         song.setLooping(true);
         song.start();
+        frontMotors = false;
 
     }
 
@@ -172,10 +170,12 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         telemetry.addData("motorFL", motorFL.getCurrentPosition());
 
         //controls motion motors
-        if (Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) {
+        if ((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && frontMotors) {
             startMotors(gamepad1.right_stick_y, -gamepad1.left_stick_y, -gamepad1.left_stick_y, gamepad1.right_stick_y);
         }
-
+        else if((Math.abs(gamepad1.left_stick_y) > .05 || Math.abs(gamepad1.right_stick_y) > .05) && !frontMotors) {
+            startMotors(gamepad1.right_stick_y, gamepad1.left_stick_y, 0, 0);
+        }
         else {
             stopMotors();
         }
@@ -221,7 +221,7 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
 //            stopManipulater();
         //resets encoders
         if (gamepad1.a) {
-            resetEncoders();
+            frontMotors = false;
         }
         //sets speed to 1/2
         if (gamepad1.x) {
@@ -229,15 +229,14 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         }
         //sets speed to 1/4
         if (gamepad1.b) {
-            setDivider(4);
+            frontMotors = true;
         }
         //extends side bars to release climbers
         if(gamepad2.right_bumper)
             extendBars();
         //contracts side bars to pull back bars
-        else if(gamepad2.left_bumper)
+        if(gamepad2.left_bumper)
             contractBars();
-        else stopBars();
         //rotates bar to dump
         if(gamepad2.a)
             dumpClimbers();
