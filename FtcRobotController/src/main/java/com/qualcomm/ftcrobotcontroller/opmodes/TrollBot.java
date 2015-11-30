@@ -19,10 +19,9 @@ public class TrollBot extends OpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
-    MediaPlayer song;
     ArrayList<String> encoderValues;
-//    Servo right;
-//    Servo left;
+    Servo rightBar;
+    Servo leftBar;
     private static final String LOG_TAG = TrollBot.class.getSimpleName();
     private int getEncoderAvg() {
         return (motorBL.getCurrentPosition() + motorBR.getCurrentPosition() + motorFL.getCurrentPosition() + motorFR.getCurrentPosition()) / 4;
@@ -30,41 +29,35 @@ public class TrollBot extends OpMode {
     public ArrayList<String> getEncoderValues() {
         return encoderValues;
     }
-//    public void extendBars() {
-//        right.setPosition(Servo.MAX_POSITION);
-//        left.setPosition(Servo.MIN_POSITION);
-//    }
-//    public void contractBars() {
-//        right.setPosition(Servo.MIN_POSITION);
-//        left.setPosition(Servo.MAX_POSITION);
-//    }
-//    public void stopBars() {
-//        right.setPosition(.5);
-//        left.setPosition(.5);
-//    }
+    public void extendBars() {
+        rightBar.setPosition(Servo.MAX_POSITION);
+        leftBar.setPosition(Servo.MIN_POSITION);
+    }
+    public void contractBars() {
+        rightBar.setPosition(Servo.MIN_POSITION);
+        leftBar.setPosition(Servo.MAX_POSITION);
+    }
     public void init() {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         encoderValues = new ArrayList<String>();
-        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.fsong);
-        song.setLooping(true);
-        song.start();
-//        right = hardwareMap.servo.get("right");
-//        left = hardwareMap.servo.get("left");
+        rightBar = hardwareMap.servo.get("rightBar");
+        leftBar = hardwareMap.servo.get("leftBar");
     }
     public void loop() {
         if (Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) {
-            motorBL.setPower(-gamepad1.left_stick_y);
-            motorFL.setPower(-gamepad1.left_stick_y);
-            motorBR.setPower(gamepad1.right_stick_y);
-            motorFR.setPower(gamepad1.right_stick_y);
+            motorBL.setPower(gamepad1.left_stick_y);
+            motorFL.setPower(gamepad1.left_stick_y);
+            motorBR.setPower(-gamepad1.right_stick_y);
+            motorFR.setPower(-gamepad1.right_stick_y);
         } else {
             motorBL.setPower(0);
             motorBR.setPower(0);
             motorFR.setPower(0);
             motorFL.setPower(0);
+            
         }
 
         telemetry.addData("motorBL", motorBL.getCurrentPosition());
@@ -192,12 +185,11 @@ public class TrollBot extends OpMode {
 
         //       }
         //extends side bars to release climbers
-//        if(gamepad2.right_bumper)
-//            extendBars();
-//            //contracts side bars to pull back bars
-//        else if(gamepad2.left_bumper)
-//            contractBars();
-//        else stopBars();
+        if(gamepad2.right_bumper)
+            extendBars();
+            //contracts side bars to pull back bars
+        if(gamepad2.left_bumper)
+            contractBars();
     }
     public void stop() {
         motorBL.setPower(0);

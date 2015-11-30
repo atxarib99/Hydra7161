@@ -22,14 +22,19 @@ public class ServoTestClass extends OpMode {
         telemetry.addData("rightBar", rightBar.getPosition());
         telemetry.addData("leftBar", leftBar.getPosition());
         try {
-            wait(2000);
-        } catch(InterruptedException e) {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
 
         }
         rightBar.setPosition(0);
         rightBar.setPosition(0);
         telemetry.addData("rightBar", rightBar.getPosition());
         telemetry.addData("leftBar", leftBar.getPosition());
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+
+        }
 
     }
     public void stop() {

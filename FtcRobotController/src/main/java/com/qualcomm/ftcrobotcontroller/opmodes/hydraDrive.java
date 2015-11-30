@@ -30,7 +30,6 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     Servo rightBar; //servos to control side bars
     Servo leftBar;
     Servo climberBar; //servo to control climber dumping
-    MediaPlayer song;
     boolean frontMotors;
 
     int divider;
@@ -152,9 +151,6 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
         climberBar.setPosition(Servo.MAX_POSITION);
         rightBar.setPosition(0);
         leftBar.setPosition(1);
-        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.fsong);
-        song.setLooping(true);
-        song.start();
         frontMotors = false;
 
     }
