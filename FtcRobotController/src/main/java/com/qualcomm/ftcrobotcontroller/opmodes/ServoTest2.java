@@ -12,13 +12,15 @@ public class ServoTest2 extends OpMode {
     public void init() {
         rightBar = hardwareMap.servo.get("rightBar");
         leftBar = hardwareMap.servo.get("leftBar");
-        rightBar.setPosition(0);
-        leftBar.setPosition(0);
-
     }
     public void loop() {
         telemetry.addData("rightBar", rightBar.getPosition());
         telemetry.addData("leftBar", leftBar.getPosition());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+
+        }
     }
     public void stop() {
         rightBar.setPosition(1);
