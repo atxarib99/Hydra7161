@@ -15,9 +15,12 @@ public class QualifierTeleOp extends OpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
+    DcMotor liftR;
+    DcMotor liftL;
     Servo rightBar;
     Boolean frontWheels;
     Servo leftBar;
+    Servo climberBar;
     private static final String LOG_TAG = QualifierTeleOp.class.getSimpleName();
     private int getEncoderAvg() {
         return (motorBL.getCurrentPosition() + motorBR.getCurrentPosition() + motorFL.getCurrentPosition() + motorFR.getCurrentPosition()) / 4;
@@ -30,13 +33,25 @@ public class QualifierTeleOp extends OpMode {
         rightBar.setPosition(0);
         leftBar.setPosition(.9);
     }
-
+    public void changeLifts(double one, double two) {
+        liftL.setPower(one);
+        liftR.setPower(two);
+    }
+    public void changeBar(boolean extend) {
+        if(extend)
+            climberBar.setPosition(.5);
+        else
+            climberBar.setPosition(0);
+    }
     public void init() {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
         motorFL = hardwareMap.dcMotor.get("motorFL");
         motorFR = hardwareMap.dcMotor.get("motorFR");
         rightBar = hardwareMap.servo.get("rightBar");
+        liftL = hardwareMap.dcMotor.get("liftL");
+        liftR = hardwareMap.dcMotor.get("liftR");
+        climberBar = hardwareMap.servo.get("climberBar");
         frontWheels = false;
         leftBar = hardwareMap.servo.get("leftBar");
 
@@ -89,6 +104,16 @@ public class QualifierTeleOp extends OpMode {
             //contracts side bars to pull back bars
         if(gamepad1.left_bumper)
             contractBars();
+        if(gamepad2.right_trigger > .05) {
+            changeLifts(gamepad2.right_trigger, -gamepad2.right_trigger);
+        }
+        if(gamepad2.left_trigger > .05) {
+            changeLifts(-gamepad2.right_trigger, gamepad2.right_trigger);
+        }
+        if(gamepad2.b)
+            changeBar(true);
+        if(gamepad1.a)
+            changeBar(false);
     }
     public void stop() {
         motorBL.setPower(0);
