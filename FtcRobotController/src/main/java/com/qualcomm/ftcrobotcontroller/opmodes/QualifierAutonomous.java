@@ -20,6 +20,7 @@ public class QualifierAutonomous extends LinearOpMode {
     AdafruitIMU gyro;
     Servo rightBar;
     Servo leftBar;
+    boolean frontWheels;
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     public void startMotors(double power1, double power2, double power3, double power4) {
         motorBR.setPower(power1);
@@ -66,6 +67,7 @@ public class QualifierAutonomous extends LinearOpMode {
         motorFR = hardwareMap.dcMotor.get("motorFR");
         rightBar = hardwareMap.servo.get("rightBar");
         leftBar = hardwareMap.servo.get("leftBar");
+        frontWheels = false;
         try {
             gyro = new AdafruitIMU(hardwareMap, "hydro"
                     //The following was required when the definition of the "I2cDevice" class was incomplete.
@@ -77,21 +79,23 @@ public class QualifierAutonomous extends LinearOpMode {
         } catch (RobotCoreException e) {
 
         }
+        resetEncoders();
         gyro.startIMU();
         int currentEncoder = 0;
         int nullEncoder = 0;
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double currentAngle = yawAngle[0];
-        while(currentEncoder < 4500) {
-            startMotors(-1, 1, 1, -1);
+        while(currentEncoder < 8500) {
+            startMotors(1, -1, 0, 0);
             currentEncoder = getBackWheelAvg() - nullEncoder;
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
             if(currentAngle > 2) {
-                startMotors(.2, .2, .2, .2);
+                startMotors(.2, .2, 0, 0);
                 nullEncoder += getEncoderAvg() - currentEncoder;
             }
             if (currentAngle < -2) {
-                startMotors(-.2, -.2, -.2, -.2);
+                startMotors(-.2, -.2, 0, 0);
                 nullEncoder += getEncoderAvg() - currentEncoder;
             }
         }
@@ -100,15 +104,24 @@ public class QualifierAutonomous extends LinearOpMode {
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         currentAngle = yawAngle[0];
         while (currentAngle < 90) {
-            startMotors(-1, -1, -1, -1);
+            startMotors(-1, -1, 0, 0);
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
         }
         stopMotors();
         resetEncoders();
         ElapsedTime time = new ElapsedTime();
         time.startTime();
         while(time.time() < 2.5) {
-            startMotors(-1, 1, 1, -1);
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            if(pitchAngle[0] > 25) {
+                frontWheels = true;
+            }
+            if(frontWheels) {
+                startMotors(1, -1, -1, 1);
+            }
+            else
+                startMotors(1, -1, 0, 0);
         }
         stopMotors();
 
