@@ -22,9 +22,6 @@ public class QualifierTeleOp extends OpMode {
     private int getEncoderAvg() {
         return (motorBL.getCurrentPosition() + motorBR.getCurrentPosition() + motorFL.getCurrentPosition() + motorFR.getCurrentPosition()) / 4;
     }
-    public ArrayList<String> getEncoderValues() {
-        return encoderValues;
-    }
     public void extendBars() {
         rightBar.setPosition(.95);
         leftBar.setPosition(0);
@@ -46,13 +43,13 @@ public class QualifierTeleOp extends OpMode {
     }
     public void loop() {
         if ((Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) && frontWheels == true) {
-            motorBL.setPower(gamepad1.left_stick_y);
-            motorFL.setPower(gamepad1.left_stick_y);
-            motorBR.setPower(-gamepad1.right_stick_y);
-            motorFR.setPower(-gamepad1.right_stick_y);
+            motorBL.setPower(gamepad1.right_stick_y);
+            motorFL.setPower(gamepad1.right_stick_y);
+            motorBR.setPower(-gamepad1.left_stick_y);
+            motorFR.setPower(-gamepad1.left_stick_y);
         } else if((Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) && frontWheels == false) {
-            motorBL.setPower(gamepad1.left_stick_y);
-            motorBR.setPower(-gamepad1.right_stick_y);
+            motorBL.setPower(gamepad1.right_stick_y);
+            motorBR.setPower(-gamepad1.left_stick_y);
             motorFR.setPower(0);
             motorFL.setPower(0);
         }
