@@ -1,6 +1,5 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
@@ -114,7 +113,7 @@ public class QualifierAutonomous extends LinearOpMode {
         time.startTime();
         while(time.time() < 2.5) {
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-            if(pitchAngle[0] > 25) {
+            if(pitchAngle[0] > 25 && !frontWheels) {
                 frontWheels = true;
             }
             if(frontWheels) {
