@@ -95,23 +95,40 @@ public class QualifierTeleOp extends OpMode {
         if (gamepad1.x) {
             frontWheels = true;
         }
+
         if(gamepad1.y) {
             frontWheels = false;
         }
+
         //extends side bars to release climbers
         if(gamepad1.right_bumper)
             extendBars();
             //contracts side bars to pull back bars
-        if(gamepad1.left_bumper)
+
+        if(gamepad1.left_bumper) {
             contractBars();
-        if(gamepad2.right_trigger > .05) {
-            changeLifts(gamepad2.right_trigger, -gamepad2.right_trigger);
         }
-        if(gamepad2.left_trigger > .05) {
-            changeLifts(-gamepad2.right_trigger, gamepad2.right_trigger);
+
+        if(gamepad2.b) {
+            liftR.setPower(1);
+        } else if(gamepad2.right_bumper) {
+            liftR.setPower(-1);
         }
-        if(gamepad2.b)
+        else {
+            liftR.setPower(0);
+        }
+
+        if(gamepad2.x) {
+            liftL.setPower(-gamepad2.left_trigger);
+        } else if(gamepad2.left_bumper) {
+            liftL.setPower(1);
+        }
+        else
+            liftL.setPower(0);
+
+        if(gamepad2.y)
             changeBar(true);
+
         if(gamepad1.a)
             changeBar(false);
     }

@@ -16,6 +16,10 @@ public class QualifierAutonomous extends LinearOpMode {
     DcMotor motorBR;
     DcMotor motorFL;
     DcMotor motorFR;
+    int BLencoder;
+    int BRencoder;
+    int BRnullEncoder;
+    int BLnullEncoder;
     AdafruitIMU gyro;
     Servo rightBar;
     Servo leftBar;
@@ -56,7 +60,7 @@ public class QualifierAutonomous extends LinearOpMode {
         telemetry.addData("motorFL", motorFL.getCurrentPosition());
     }
     public int getBackWheelAvg() {
-        return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition())) / 2;
+        return (Math.abs(BLencoder - BLnullEncoder) + Math.abs(BRencoder - BRnullEncoder)) / 2;
     }
     @Override
     public void runOpMode() {
@@ -81,21 +85,30 @@ public class QualifierAutonomous extends LinearOpMode {
         resetEncoders();
         gyro.startIMU();
         int currentEncoder = 0;
-        int nullEncoder = 0;
+        BLnullEncoder = 0;
+        BRnullEncoder = 0;
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double currentAngle = yawAngle[0];
         while(currentEncoder < 8500) {
             startMotors(1, -1, 0, 0);
-            currentEncoder = getBackWheelAvg() - nullEncoder;
+            currentEncoder = getBackWheelAvg();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             currentAngle = yawAngle[0];
             if(currentAngle > 2) {
-                startMotors(.2, .2, 0, 0);
-                nullEncoder += getEncoderAvg() - currentEncoder;
+                resetEncoders();
+                while(currentAngle > 2) {
+                    startMotors(.2, .2, 0, 0);
+                    BLnullEncoder = Math.abs(motorBL.getCurrentPosition());
+                    BRnullEncoder = Math.abs(motorBR.getCurrentPosition());
+                }
             }
             if (currentAngle < -2) {
-                startMotors(-.2, -.2, 0, 0);
-                nullEncoder += getEncoderAvg() - currentEncoder;
+                resetEncoders();
+                while(currentAngle < -2) {
+                    startMotors(-.2, -.2, 0, 0);
+                    BLnullEncoder = Math.abs(motorBL.getCurrentPosition());
+                    BRnullEncoder = Math.abs(motorBR.getCurrentPosition());
+                }
             }
         }
         stopMotors();

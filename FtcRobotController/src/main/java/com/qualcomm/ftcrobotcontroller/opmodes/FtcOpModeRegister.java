@@ -70,18 +70,18 @@ public class FtcOpModeRegister implements OpModeRegister {
      * The NullOp op mode
      */
 //    manager.register("NullOp", NullOp.class);
-    manager.register("hydraDrive", hydraDrive.class);
-    manager.register("AutonomousBlue", hydraAutonomousBlue.class);
-    manager.register("AutonomousRed", hydraAutonomousRed.class);
+//    manager.register("hydraDrive", hydraDrive.class);
+//    manager.register("AutonomousBlue", hydraAutonomousBlue.class);
+//    manager.register("AutonomousRed", hydraAutonomousRed.class);
 //    manager.register("testcolors", ColorTeleOp.class);
 //    manager.register("Colortest", AdafruitRGBExample.class);
-    manager.register("justTheMotors", justTheMotors.class);
-    manager.register("GYROANDACCEL", IMUtest.class);
-    manager.register("trollBot", QualifierTeleOp.class);
-    manager.register("colorTest", AdafruitRGBExample.class);
-    manager.register("justGyro", IMUGyroOnlyTest.class);
-    manager.register("wheels&lift", LiftAndMotors.class);
-    manager.register("ServoTest", ServoTestClass.class);
+//    manager.register("justTheMotors", justTheMotors.class);
+//    manager.register("GYROANDACCEL", IMUtest.class);
+    manager.register("QualifierTeleOp", QualifierTeleOp.class);
+//    manager.register("colorTest", AdafruitRGBExample.class);
+//    manager.register("justGyro", IMUGyroOnlyTest.class);
+//    manager.register("wheels&lift", LiftAndMotors.class);
+//    manager.register("ServoTest", ServoTestClass.class);
     manager.register("QualifierAutonomous", QualifierAutonomous.class);
 
     /*
