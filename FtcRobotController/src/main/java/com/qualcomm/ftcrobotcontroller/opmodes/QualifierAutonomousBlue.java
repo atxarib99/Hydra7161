@@ -18,6 +18,14 @@ public class QualifierAutonomousBlue extends LinearOpMode {
     AdafruitIMU gyro;
     Servo rightBar;
     Servo leftBar;
+    int BLencoder;
+    int BRencoder;
+    int FRencoder;
+    int FLencoder;
+    int BRnullEncoder;
+    int BLnullEncoder;
+    int FRnullEncoder;
+    int FLnullEncoder;
     boolean frontWheels;
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     public void startMotors(double power1, double power2, double power3, double power4) {
@@ -45,7 +53,7 @@ public class QualifierAutonomousBlue extends LinearOpMode {
         motorFL.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         motorFR.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
     }
-    public void getEncoderValues() {
+    public void sendData() {
         telemetry.addData("motorBL", motorBL.getCurrentPosition());
 
         telemetry.addData("motorFR", motorFR.getCurrentPosition());
@@ -53,9 +61,11 @@ public class QualifierAutonomousBlue extends LinearOpMode {
         telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
         telemetry.addData("motorFL", motorFL.getCurrentPosition());
+        telemetry.addData("yaw", yawAngle[0]);
+        telemetry.addData("pitch", pitchAngle[0]);
     }
     public int getBackWheelAvg() {
-        return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition())) / 2;
+        return (Math.abs(BLencoder - BLnullEncoder) + Math.abs(BRencoder - BRnullEncoder)) / 2;
     }
     @Override
     public void runOpMode() {
@@ -80,22 +90,53 @@ public class QualifierAutonomousBlue extends LinearOpMode {
         resetEncoders();
         gyro.startIMU();
         int currentEncoder = 0;
-        int nullEncoder = 0;
+        BLnullEncoder = 0;
+        BRnullEncoder = 0;
+        FRencoder = 0;
+        FLencoder = 0;
+        BRencoder = 0;
+        BLencoder = 0;
+        FLnullEncoder = 0;
+        FRnullEncoder = 0;
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double currentAngle = yawAngle[0];
         while(currentEncoder < 8500) {
-            startMotors(1, -1, 0, 0);
-            currentEncoder = getBackWheelAvg() - nullEncoder;
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             currentAngle = yawAngle[0];
+            sendData();
             if(currentAngle > 2) {
-                startMotors(.2, .2, 0, 0);
-                nullEncoder += getEncoderAvg() - currentEncoder;
+                resetEncoders();
+                while(currentAngle > 2) {
+                    startMotors(.2, .2, 0, 0);
+                    BLnullEncoder = Math.abs(motorBL.getCurrentPosition());
+                    BRnullEncoder = Math.abs(motorBR.getCurrentPosition());
+                    FLnullEncoder = Math.abs(motorFL.getCurrentPosition());
+                    FRnullEncoder = Math.abs(motorFR.getCurrentPosition());
+                }
+                stopMotors();
+                resetEncoders();
             }
             if (currentAngle < -2) {
-                startMotors(-.2, -.2, 0, 0);
-                nullEncoder += getEncoderAvg() - currentEncoder;
+                resetEncoders();
+                while(currentAngle < -2) {
+                    startMotors(-.2, -.2, 0, 0);
+                    BLnullEncoder = Math.abs(motorBL.getCurrentPosition());
+                    BRnullEncoder = Math.abs(motorBR.getCurrentPosition());
+                    FRnullEncoder = Math.abs(motorFR.getCurrentPosition());
+                    FLnullEncoder = Math.abs(motorFL.getCurrentPosition());
+                }
+                stopMotors();
+                resetEncoders();
             }
+            else {
+                startMotors(1, -1, 0, 0);
+                BLencoder += Math.abs(motorBL.getCurrentPosition());
+                BRencoder += Math.abs(motorBR.getCurrentPosition());
+                FRencoder += Math.abs(motorFR.getCurrentPosition());
+                FLencoder += Math.abs(motorFL.getCurrentPosition());
+                currentEncoder += getEncoderAvg();
+            }
+            sendData();
         }
         stopMotors();
         resetEncoders();

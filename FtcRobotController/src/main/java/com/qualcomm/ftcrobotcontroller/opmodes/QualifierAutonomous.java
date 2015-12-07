@@ -18,8 +18,12 @@ public class QualifierAutonomous extends LinearOpMode {
     DcMotor motorFR;
     int BLencoder;
     int BRencoder;
+    int FRencoder;
+    int FLencoder;
     int BRnullEncoder;
     int BLnullEncoder;
+    int FRnullEncoder;
+    int FLnullEncoder;
     AdafruitIMU gyro;
     Servo rightBar;
     Servo leftBar;
@@ -32,7 +36,7 @@ public class QualifierAutonomous extends LinearOpMode {
         motorFR.setPower(power4);
     }
     public int getEncoderAvg() {
-        return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorFR.getCurrentPosition())) / 4;
+        return (FRencoder + FLencoder + BLencoder + BRencoder) / 2;
     }
     public void stopMotors() {
         motorBR.setPower(0);
@@ -50,7 +54,7 @@ public class QualifierAutonomous extends LinearOpMode {
         motorFL.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
         motorFR.setChannelMode(DcMotorController.RunMode.RUN_USING_ENCODERS);
     }
-    public void getEncoderValues() {
+    public void sendData() {
         telemetry.addData("motorBL", motorBL.getCurrentPosition());
 
         telemetry.addData("motorFR", motorFR.getCurrentPosition());
@@ -58,6 +62,8 @@ public class QualifierAutonomous extends LinearOpMode {
         telemetry.addData("motorBR", motorBR.getCurrentPosition());
 
         telemetry.addData("motorFL", motorFL.getCurrentPosition());
+        telemetry.addData("yaw", yawAngle[0]);
+        telemetry.addData("pitch", pitchAngle[0]);
     }
     public int getBackWheelAvg() {
         return (Math.abs(BLencoder - BLnullEncoder) + Math.abs(BRencoder - BRnullEncoder)) / 2;
@@ -87,20 +93,29 @@ public class QualifierAutonomous extends LinearOpMode {
         int currentEncoder = 0;
         BLnullEncoder = 0;
         BRnullEncoder = 0;
+        FRencoder = 0;
+        FLencoder = 0;
+        BRencoder = 0;
+        BLencoder = 0;
+        FLnullEncoder = 0;
+        FRnullEncoder = 0;
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double currentAngle = yawAngle[0];
         while(currentEncoder < 8500) {
-            startMotors(1, -1, 0, 0);
-            currentEncoder = getBackWheelAvg();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             currentAngle = yawAngle[0];
+            sendData();
             if(currentAngle > 2) {
                 resetEncoders();
                 while(currentAngle > 2) {
                     startMotors(.2, .2, 0, 0);
                     BLnullEncoder = Math.abs(motorBL.getCurrentPosition());
                     BRnullEncoder = Math.abs(motorBR.getCurrentPosition());
+                    FLnullEncoder = Math.abs(motorFL.getCurrentPosition());
+                    FRnullEncoder = Math.abs(motorFR.getCurrentPosition());
                 }
+                stopMotors();
+                resetEncoders();
             }
             if (currentAngle < -2) {
                 resetEncoders();
@@ -108,8 +123,21 @@ public class QualifierAutonomous extends LinearOpMode {
                     startMotors(-.2, -.2, 0, 0);
                     BLnullEncoder = Math.abs(motorBL.getCurrentPosition());
                     BRnullEncoder = Math.abs(motorBR.getCurrentPosition());
+                    FRnullEncoder = Math.abs(motorFR.getCurrentPosition());
+                    FLnullEncoder = Math.abs(motorFL.getCurrentPosition());
                 }
+                stopMotors();
+                resetEncoders();
             }
+            else {
+                startMotors(1, -1, 0, 0);
+                BLencoder += Math.abs(motorBL.getCurrentPosition());
+                BRencoder += Math.abs(motorBR.getCurrentPosition());
+                FRencoder += Math.abs(motorFR.getCurrentPosition());
+                FLencoder += Math.abs(motorFL.getCurrentPosition());
+                currentEncoder += getEncoderAvg();
+            }
+            sendData();
         }
         stopMotors();
         resetEncoders();
