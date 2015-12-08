@@ -63,7 +63,6 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase 
     Servo rightBar; //servos to control side bars
     Servo leftBar;
     Servo climberBar; //servo to control climber dumping
-    MediaPlayer song;
     DeviceInterfaceModule cdim;
     ColorSensor color;
     AdafruitIMU gyro;
@@ -93,9 +92,7 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase 
         climberBar.setPosition(Servo.MAX_POSITION);
         rightBar.setPosition(0);
         leftBar.setPosition(1);
-        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.tiger);
-        song.setLooping(true);
-        song.start();
+
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         try {
             gyro = new AdafruitIMU(hardwareMap, "hydro"
@@ -281,6 +278,5 @@ public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase 
         motorFL.close();
         motorBR.close();
         motorFR.close();
-        song.stop();
     }
 }

@@ -91,9 +91,6 @@ public class hydraAutonomousRed extends LinearOpMode {
     climberBar.setPosition(Servo.MAX_POSITION);
     rightBar.setPosition(Servo.MIN_POSITION);
     leftBar.setPosition(Servo.MAX_POSITION);
-    song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.tiger);
-    song.setLooping(true);
-    song.start();
     cdim = hardwareMap.deviceInterfaceModule.get("dim");
     try {
       gyro = new AdafruitIMU(hardwareMap, "hydro"

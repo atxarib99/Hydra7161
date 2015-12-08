@@ -17,7 +17,6 @@ public class LiftAndMotors extends OpMode {
     DcMotor motorFL;
     DcMotor rightMotor;
     DcMotor leftMotor;
-    MediaPlayer song;
     @Override
     public void init() {
         motorBL = hardwareMap.dcMotor.get("motorBL");
@@ -26,9 +25,6 @@ public class LiftAndMotors extends OpMode {
         motorFR = hardwareMap.dcMotor.get("motorFR");
         rightMotor = hardwareMap.dcMotor.get("rightClaw");
         leftMotor = hardwareMap.dcMotor.get("leftClaw");
-        song = MediaPlayer.create(FtcRobotControllerActivity.appActivity, R.raw.fsong);
-        song.setLooping(true);
-        song.start();
     }
     @Override
     public void loop() {
