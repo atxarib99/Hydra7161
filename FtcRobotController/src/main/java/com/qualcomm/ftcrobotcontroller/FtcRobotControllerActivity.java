@@ -79,7 +79,7 @@ public class FtcRobotControllerActivity extends Activity {
   private static final int NUM_GAMEPADS = 2;
 
   public static final String CONFIGURE_FILENAME = "CONFIGURE_FILENAME";
-  public static Activity appActivity;
+
   protected SharedPreferences preferences;
 
   protected UpdateUI.Callback callback;
@@ -141,7 +141,6 @@ public class FtcRobotControllerActivity extends Activity {
 
     utility = new Utility(this);
     context = this;
-    appActivity = this;
     entireScreenLayout = (LinearLayout) findViewById(R.id.entire_screen);
     buttonMenu = (ImageButton) findViewById(R.id.menu_buttons);
     buttonMenu.setOnClickListener(new View.OnClickListener() {
@@ -381,8 +380,5 @@ public class FtcRobotControllerActivity extends Activity {
         toast.show();
       }
     });
-  }
-  public Activity getActivity() {
-    return appActivity;
   }
 }
