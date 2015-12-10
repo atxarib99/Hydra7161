@@ -42,8 +42,8 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     public void startMotors(double power1, double power2, double power3, double power4) {
         motorBR.setPower(power1 / divider);
         motorBL.setPower(power2 / divider);
-        motorFL.setPower(power3 / divider);
-        motorFR.setPower(power4 / divider);
+        motorFL.setPower((.8 * power3) / divider);
+        motorFR.setPower((.8 * power4) / divider);
     }
     public int getEncoderAvg() {
         return (Math.abs(motorBL.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition()) +
@@ -86,7 +86,7 @@ public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface,
     public void contractClimbers() {
         climberBar.setPosition(Servo.MAX_POSITION);
     }
-/*    private void decreaseSpeed() {
+/*     private void decreaseSpeed() {
         boolean rightTrue = false;
         boolean leftTrue = false;
         if(motorBR.getPower() > .2) { rightTrue = true; }
