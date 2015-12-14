@@ -18,7 +18,7 @@ public class QualifierTeleOp extends OpMode {
     DcMotor liftR;
     DcMotor liftL;
     Servo rightBar;
-    Boolean frontWheels;
+    boolean frontWheels;
     Servo leftBar;
     Servo climberBar;
     private static final String LOG_TAG = QualifierTeleOp.class.getSimpleName();

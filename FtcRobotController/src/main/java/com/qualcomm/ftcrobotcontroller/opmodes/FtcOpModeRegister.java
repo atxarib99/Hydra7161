@@ -83,6 +83,7 @@ public class FtcOpModeRegister implements OpModeRegister {
 //    manager.register("wheels&lift", LiftAndMotors.class);
 //    manager.register("ServoTest", ServoTestClass.class);
     manager.register("QualifierAutonomous", QualifierAutonomous.class);
+    manager.register("justTheMotors", justTheMotors.class);
 
     /*
      * The following example op modes are designed to work with a K9-style robot.
