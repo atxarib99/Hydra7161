@@ -4,15 +4,10 @@
 //
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
-public abstract class AutoMode extends com.qualcomm.ftcrobotcontroller.opmodes.MyOpMode {
+public abstract class AutoMode extends MyOpMode {
     private AutoMode.a a = null;
     private Thread b = null;
     private ElapsedTime c = new ElapsedTime();
@@ -59,6 +54,16 @@ public abstract class AutoMode extends com.qualcomm.ftcrobotcontroller.opmodes.M
         this.b.start();
     }
 
+    public final void first() {
+        motorBL = hardwareMap.dcMotor.get("BL");
+        motorBR = hardwareMap.dcMotor.get("BR");
+        motorFR = hardwareMap.dcMotor.get("FR");
+        motorFL = hardwareMap.dcMotor.get("FL");
+        liftL = hardwareMap.dcMotor.get("liftL");
+        liftR = hardwareMap.dcMotor.get("liftR");
+        climberBar = hardwareMap.servo.get("climberBar");
+        climberBar.setPosition(.55);
+    }
     public final void init_loop() {
     }
 

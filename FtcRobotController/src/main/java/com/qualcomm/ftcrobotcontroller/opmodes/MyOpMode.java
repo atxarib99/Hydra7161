@@ -34,7 +34,16 @@ public abstract class MyOpMode {
         this.a = System.nanoTime();
     }
 
-    public abstract void init();
+    public void init() {
+        motorBL = hardwareMap.dcMotor.get("BL");
+        motorBR = hardwareMap.dcMotor.get("BR");
+        motorFR = hardwareMap.dcMotor.get("FR");
+        motorFL = hardwareMap.dcMotor.get("FL");
+        liftL = hardwareMap.dcMotor.get("liftL");
+        liftR = hardwareMap.dcMotor.get("liftR");
+        climberBar = hardwareMap.servo.get("climberBar");
+        climberBar.setPosition(.55);
+    }
 
     public void init_loop() {
     }
@@ -45,6 +54,10 @@ public abstract class MyOpMode {
     public abstract void loop();
 
     public void stop() {
+    }
+
+    public void dumpClimbers() {
+        climberBar.setPosition(0);
     }
 
     public double getRuntime() {
