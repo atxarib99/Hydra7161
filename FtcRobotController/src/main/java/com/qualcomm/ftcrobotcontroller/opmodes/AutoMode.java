@@ -4,6 +4,7 @@
 //
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -53,6 +54,17 @@ public abstract class AutoMode extends MyOpMode {
         this.b = new Thread(this.a);
         this.b.start();
     }
+
+    public void moveForward(int encoder, double time) {
+        ElapsedTime thisTime = new ElapsedTime();
+        thisTime.startTime();
+        while(getEncoderAvg() < encoder || thisTime.time() < time) {
+            startMotors(-1, 1);
+        }
+        stopMotors();
+    }
+
+
 
     public final void first() {
         motorBL = hardwareMap.dcMotor.get("BL");

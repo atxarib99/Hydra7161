@@ -141,6 +141,13 @@ public abstract class MyOpMode {
         liftR.setPower(0);
     }
 
+    public int getEncoderAvg() {
+        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition())) + (Math.abs(motorFL.getCurrentPosition())) + (Math.abs(motorFR.getCurrentPosition()))) / 4;
+    }
+
+    public int getBackWheelAvg() {
+        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2;
+    }
 
     public double getRuntime() {
         double var1 = (double)TimeUnit.SECONDS.toNanos(1L);
