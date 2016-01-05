@@ -77,13 +77,12 @@ public class FtcOpModeRegister implements OpModeRegister {
 //    manager.register("Colortest", AdafruitRGBExample.class);
 //    manager.register("justTheMotors", justTheMotors.class);
 //    manager.register("GYROANDACCEL", IMUtest.class);
-    manager.register("QualifierTeleOp", QualifierTeleOp.class);
+    manager.register("TeleOp", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.TeleOP.class);
 //    manager.register("colorTest", AdafruitRGBExample.class);
 //    manager.register("justGyro", IMUGyroOnlyTest.class);
 //    manager.register("wheels&lift", LiftAndMotors.class);
 //    manager.register("ServoTest", ServoTestClass.class);
-    manager.register("QualifierAutonomous", QualifierAutonomous.class);
-    manager.register("justTheMotors", justTheMotors.class);
+    manager.register("Qualifier", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
 
     /*
      * The following example op modes are designed to work with a K9-style robot.

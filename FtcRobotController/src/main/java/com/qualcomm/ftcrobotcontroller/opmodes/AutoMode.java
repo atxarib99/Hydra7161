@@ -56,13 +56,22 @@ public abstract class AutoMode extends MyOpMode {
 
     public final void first() {
         motorBL = hardwareMap.dcMotor.get("BL");
+        manipulator = hardwareMap.dcMotor.get("mani");
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
-        climberBar = hardwareMap.servo.get("climberBar");
-        climberBar.setPosition(.55);
+        climberSwitch = hardwareMap.servo.get("switch");
+        rightRatchet = hardwareMap.servo.get("ratchetR");
+        leftRatchet = hardwareMap.servo.get("ratchetL");
+        rightPaddle = hardwareMap.servo.get("rPad");
+        leftPaddle = hardwareMap.servo.get("lPad");
+        rightPaddle.setPosition(0);//TODO: UPDATE THESE VALUES LATER
+        leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        climberSwitch.setPosition(.55);
     }
     public final void init_loop() {
     }
