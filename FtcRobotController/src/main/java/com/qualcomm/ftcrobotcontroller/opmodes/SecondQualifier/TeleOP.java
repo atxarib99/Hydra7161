@@ -41,13 +41,13 @@ public class TeleOP extends MyOpMode {
             resetClimbers();
         }
 
-        if(gamepad2.x) {
-            dropRatchets();
-        }
-
-        if(gamepad2.y) {
-            undoRatchets();
-        }
+//        if(gamepad2.x) {
+//            dropRatchets();
+//        }
+//
+//        if(gamepad2.y) {
+//            undoRatchets();
+//        }
 
         if(gamepad2.right_bumper) {
             startManipulator();

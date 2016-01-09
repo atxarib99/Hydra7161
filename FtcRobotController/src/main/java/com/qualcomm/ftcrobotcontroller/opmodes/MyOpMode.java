@@ -6,6 +6,7 @@
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -20,18 +21,18 @@ public abstract class MyOpMode {
     public double time = 0.0D;
     private static final double UNDROPPED = .55;
     private static final double DROPPED = 1;
-    DcMotor motorBL;
-    DcMotor motorBR;
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor manipulator;
-    DcMotor liftL;
-    DcMotor liftR;
-    Servo climberSwitch;
-    Servo rightRatchet;
-    Servo leftRatchet;
-    Servo rightPaddle;
-    Servo leftPaddle;
+    public DcMotor motorBL;
+    public DcMotor motorBR;
+    public DcMotor motorFL;
+    public DcMotor motorFR;
+    public DcMotor manipulator;
+    public DcMotor liftL;
+    public DcMotor liftR;
+    public Servo climberSwitch;
+//    public Servo rightRatchet;
+//    public Servo leftRatchet;
+    public Servo rightPaddle;
+    public Servo leftPaddle;
 
 
     private long a = 0L;
@@ -50,14 +51,14 @@ public abstract class MyOpMode {
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
         climberSwitch = hardwareMap.servo.get("switch");
-        rightRatchet = hardwareMap.servo.get("ratchetR");
-        leftRatchet = hardwareMap.servo.get("ratchetL");
+//        rightRatchet = hardwareMap.servo.get("ratchetR");
+//        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
         leftPaddle = hardwareMap.servo.get("lPad");
         rightPaddle.setPosition(0);//TODO: UPDATE THESE VALUES LATER
         leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+//        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+//        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
         climberSwitch.setPosition(.55);
     }
 
@@ -80,16 +81,16 @@ public abstract class MyOpMode {
         climberSwitch.setPosition(UNDROPPED);
     }
 
-    public void dropRatchets() {
-        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-    }
-
-    public void undoRatchets() {
-        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-
-    }
+//    public void dropRatchets() {
+//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//    }
+//
+//    public void undoRatchets() {
+//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//
+//    }
 
     public void extendPaddles() {
         rightPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
@@ -129,6 +130,17 @@ public abstract class MyOpMode {
     public void raiseLifts(double pow) {
         liftL.setPower(pow);
         liftR.setPower(-pow);
+    }
+
+    public void resetEncoders() {
+        motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorBL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorBR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorFL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
     }
 
     public void lowerLifts(double pow) {

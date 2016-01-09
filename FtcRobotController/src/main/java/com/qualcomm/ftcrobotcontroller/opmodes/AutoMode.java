@@ -4,7 +4,9 @@
 //
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
+import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
@@ -13,6 +15,20 @@ public abstract class AutoMode extends MyOpMode {
     private Thread b = null;
     private ElapsedTime c = new ElapsedTime();
     private volatile boolean d = false;
+    public AdafruitIMU gyro;
+    public int currentEncoder;
+    public int BLencoder;
+    public int BRencoder;
+    public int FRencoder;
+    public int FLencoder;
+    public int BRnullEncoder;
+    public int BLnullEncoder;
+    public int FRnullEncoder;
+    public int FLnullEncoder;
+    public double currentAngle;
+    public TouchSensor rts;
+    public TouchSensor lts;
+    private boolean hit;
 
     public AutoMode() {
 
@@ -55,13 +71,34 @@ public abstract class AutoMode extends MyOpMode {
         this.b.start();
     }
 
-    public void moveForward(int encoder, double time) {
-        ElapsedTime thisTime = new ElapsedTime();
-        thisTime.startTime();
-        while(getEncoderAvg() < encoder || thisTime.time() < time) {
-            startMotors(-1, 1);
+    public void moveForward(double pow) {
+        while(!hit) {
+            startMotors(pow, pow);
+            if(rts.isPressed() || lts.isPressed()) {
+                hit = true;
+            }
         }
         stopMotors();
+    }
+
+    public void myWait(int time) {
+        try {
+            wait(time);
+        } catch (InterruptedException e) {
+            RobotLog.e(e.getMessage());
+        }
+
+    }
+    public void raiseLifts(double pow, int time) {
+        ElapsedTime thisTime = new ElapsedTime();
+        thisTime.startTime();
+        while (thisTime.time() < time) {
+            liftL.setPower(pow);
+            liftR.setPower(-pow);
+        }
+        liftL.setPower(0);
+        liftR.setPower(0);
+        thisTime = new ElapsedTime();
     }
 
 
@@ -75,15 +112,39 @@ public abstract class AutoMode extends MyOpMode {
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
         climberSwitch = hardwareMap.servo.get("switch");
-        rightRatchet = hardwareMap.servo.get("ratchetR");
-        leftRatchet = hardwareMap.servo.get("ratchetL");
+//        rightRatchet = hardwareMap.servo.get("ratchetR");
+//        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
         leftPaddle = hardwareMap.servo.get("lPad");
         rightPaddle.setPosition(0);//TODO: UPDATE THESE VALUES LATER
         leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+//        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+//        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
         climberSwitch.setPosition(.55);
+        BLnullEncoder = 0;
+        BRnullEncoder = 0;
+        FRencoder = 0;
+        FLencoder = 0;
+        BRencoder = 0;
+        BLencoder = 0;
+        FLnullEncoder = 0;
+        FRnullEncoder = 0;
+        currentEncoder = 0;
+        currentAngle = 0;
+        hit = false;
+        rts = hardwareMap.touchSensor.get("rts");
+        lts = hardwareMap.touchSensor.get("lts");
+        try {
+            gyro = new AdafruitIMU(hardwareMap, "hydro"
+                    //The following was required when the definition of the "I2cDevice" class was incomplete.
+                    //, "cdim", 5
+
+                    , (byte) (AdafruitIMUAccel.BNO055_ADDRESS_A * 2) //By convention the FTC SDK always does 8-bit I2C bus
+                    //addressing
+                    , (byte) AdafruitIMUAccel.OPERATION_MODE_IMU);
+        } catch (RobotCoreException e) {
+
+        }
     }
     public final void init_loop() {
     }
@@ -124,6 +185,9 @@ public abstract class AutoMode extends MyOpMode {
             RobotLog.e("*****************************************************************");
             System.exit(-1);
         }
+        stopMotors();
+        stopLifts();
+        stopManipulator();
 
     }
 
