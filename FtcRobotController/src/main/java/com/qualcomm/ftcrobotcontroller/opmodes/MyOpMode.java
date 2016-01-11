@@ -5,6 +5,7 @@
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -13,12 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.robocol.Telemetry;
 import java.util.concurrent.TimeUnit;
 
-public abstract class MyOpMode {
-    public Gamepad gamepad1 = new Gamepad();
-    public Gamepad gamepad2 = new Gamepad();
-    public Telemetry telemetry = new Telemetry();
-    public HardwareMap hardwareMap = new HardwareMap();
-    public double time = 0.0D;
+public abstract class MyOpMode extends OpMode {
     private static final double UNDROPPED = .55;
     private static final double DROPPED = 1;
     public DcMotor motorBL;
@@ -33,15 +29,14 @@ public abstract class MyOpMode {
 //    public Servo leftRatchet;
     public Servo rightPaddle;
     public Servo leftPaddle;
-
-
-    private long a = 0L;
-
-
+    public Servo basket;
+    public Servo basketLeft;
+    public Servo basketRight;
     public MyOpMode() {
-        this.a = System.nanoTime();
+        super();
     }
 
+    @Override
     public void init() {
         motorBL = hardwareMap.dcMotor.get("BL");
         manipulator = hardwareMap.dcMotor.get("mani");
@@ -50,6 +45,9 @@ public abstract class MyOpMode {
         motorFL = hardwareMap.dcMotor.get("FL");
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
+        basket = hardwareMap.servo.get("basketLeft");
+        basketRight = hardwareMap.servo.get("bright");
+        basketLeft = hardwareMap.servo.get("lright");
         climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
@@ -60,17 +58,6 @@ public abstract class MyOpMode {
 //        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
 //        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
         climberSwitch.setPosition(.55);
-    }
-
-    public void init_loop() {
-    }
-
-    public void start() {
-    }
-
-    public abstract void loop();
-
-    public void stop() {
     }
 
     public void dumpClimbers() {
@@ -161,12 +148,4 @@ public abstract class MyOpMode {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2;
     }
 
-    public double getRuntime() {
-        double var1 = (double)TimeUnit.SECONDS.toNanos(1L);
-        return (double)(System.nanoTime() - this.a) / var1;
-    }
-
-    public void resetStartTime() {
-        this.a = System.nanoTime();
-    }
 }

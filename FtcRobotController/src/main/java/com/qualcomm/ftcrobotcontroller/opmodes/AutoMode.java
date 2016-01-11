@@ -4,18 +4,32 @@
 //
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
-public abstract class AutoMode extends MyOpMode {
-    private AutoMode.a a = null;
-    private Thread b = null;
-    private ElapsedTime c = new ElapsedTime();
-    private volatile boolean d = false;
+public abstract class AutoMode extends LinearOpMode {
     public AdafruitIMU gyro;
+    public DcMotor motorBL;
+    public DcMotor motorBR;
+    public DcMotor motorFL;
+    public DcMotor motorFR;
+    public DcMotor manipulator;
+    public DcMotor liftL;
+    public DcMotor liftR;
+    public Servo climberSwitch;
+    //    public Servo rightRatchet;
+//    public Servo leftRatchet;
+    public Servo rightPaddle;
+    public Servo leftPaddle;
+    public Servo basket;
+    public Servo basketLeft;
+    public Servo basketRight;
     public int currentEncoder;
     public int BLencoder;
     public int BRencoder;
@@ -34,42 +48,6 @@ public abstract class AutoMode extends MyOpMode {
 
     }
 
-    public abstract void runOpMode() throws InterruptedException;
-
-    public synchronized void waitForStart() throws InterruptedException {
-        while(!this.d) {
-            synchronized(this) {
-                this.wait();
-            }
-        }
-
-    }
-
-    public void waitOneFullHardwareCycle() throws InterruptedException {
-        this.waitForNextHardwareCycle();
-        Thread.sleep(1L);
-        this.waitForNextHardwareCycle();
-    }
-
-    public void waitForNextHardwareCycle() throws InterruptedException {
-        synchronized(this) {
-            this.wait();
-        }
-    }
-
-    public void sleep(long milliseconds) throws InterruptedException {
-        Thread.sleep(milliseconds);
-    }
-
-    public boolean opModeIsActive() {
-        return this.d;
-    }
-
-    public final void init() {
-        this.a = new AutoMode.a(this);
-        this.b = new Thread(this.a);
-        this.b.start();
-    }
 
     public void moveForward(double pow) {
         while(!hit) {
@@ -101,6 +79,89 @@ public abstract class AutoMode extends MyOpMode {
         thisTime = new ElapsedTime();
     }
 
+    public void dumpClimbers() {
+        climberSwitch.setPosition(1);
+    }
+
+    public void resetClimbers() {
+        climberSwitch.setPosition(.55);
+    }
+
+//    public void dropRatchets() {
+//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//    }
+//
+//    public void undoRatchets() {
+//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//
+//    }
+
+    public void extendPaddles() {
+        rightPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+        leftPaddle.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+    }
+    public void retractPaddles() {
+        rightPaddle.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+    }
+
+    public void startMotors(double ri, double le) {
+        motorBL.setPower(le);
+        motorBR.setPower(-ri);
+        motorFL.setPower(le);
+        motorFR.setPower(-ri);
+    }
+
+    public void stopMotors() {
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFR.setPower(0);
+        motorFL.setPower(0);
+    }
+
+    public void startManipulator() {
+        manipulator.setPower(1);
+    }
+
+    public void stopManipulator() {
+        manipulator.setPower(0);
+    }
+
+    public void reverseManipulator() {
+        manipulator.setPower(-1);
+    }
+
+    public void resetEncoders() {
+        motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        motorBL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorBR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorFL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+    }
+
+    public void lowerLifts(double pow) {
+        liftL.setPower(-pow);
+        liftR.setPower(pow);
+    }
+
+    public void stopLifts() {
+        liftL.setPower(0);
+        liftR.setPower(0);
+    }
+
+    public int getEncoderAvg() {
+        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition())) + (Math.abs(motorFL.getCurrentPosition())) + (Math.abs(motorFR.getCurrentPosition()))) / 4;
+    }
+
+    public int getBackWheelAvg() {
+        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2;
+    }
+
 
 
     public final void first() {
@@ -111,6 +172,9 @@ public abstract class AutoMode extends MyOpMode {
         motorFL = hardwareMap.dcMotor.get("FL");
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
+        basket = hardwareMap.servo.get("basketLeft");
+        basketRight = hardwareMap.servo.get("bright");
+        basketLeft = hardwareMap.servo.get("lright");
         climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
@@ -146,86 +210,5 @@ public abstract class AutoMode extends MyOpMode {
 
         }
     }
-    public final void init_loop() {
-    }
 
-    public final void start() {
-        this.d = true;
-        synchronized(this) {
-            this.notifyAll();
-        }
-    }
-
-    public final void loop() {
-        if(this.a.a()) {
-            throw this.a.b();
-        } else {
-            synchronized(this) {
-                this.notifyAll();
-            }
-        }
-    }
-
-    public final void stop() {
-        this.d = false;
-        if(!this.a.c()) {
-            this.b.interrupt();
-        }
-
-        this.c.reset();
-
-        while(!this.a.c() && this.c.time() < 0.5D) {
-            Thread.yield();
-        }
-
-        if(!this.a.c()) {
-            RobotLog.e("*****************************************************************");
-            RobotLog.e("User Linear Op Mode took too long to exit; emergency killing app.");
-            RobotLog.e("Possible infinite loop in user code?");
-            RobotLog.e("*****************************************************************");
-            System.exit(-1);
-        }
-        stopMotors();
-        stopLifts();
-        stopManipulator();
-
-    }
-
-    private static class a implements Runnable {
-        private RuntimeException a = null;
-        private boolean b = false;
-        private final AutoMode c;
-
-        public a(AutoMode var1) {
-            this.c = var1;
-        }
-
-        public void run() {
-            this.a = null;
-            this.b = false;
-
-            try {
-                this.c.runOpMode();
-            } catch (InterruptedException var6) {
-                RobotLog.d("LinearOpMode received an Interrupted Exception; shutting down this linear op mode");
-            } catch (RuntimeException var7) {
-                this.a = var7;
-            } finally {
-                this.b = true;
-            }
-
-        }
-
-        public boolean a() {
-            return this.a != null;
-        }
-
-        public RuntimeException b() {
-            return this.a;
-        }
-
-        public boolean c() {
-            return this.b;
-        }
-    }
 }
