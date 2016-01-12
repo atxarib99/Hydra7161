@@ -185,6 +185,9 @@ public abstract class AutoMode extends LinearOpMode {
 //        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
 //        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
         climberSwitch.setPosition(.55);
+        basket.setPosition(.5); //TODO: UPDATE THESE VALUES LATER
+        basketLeft.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+        basketRight.setPosition(0); //TODO: UPDATE THESE VALUES LATER
         BLnullEncoder = 0;
         BRnullEncoder = 0;
         FRencoder = 0;

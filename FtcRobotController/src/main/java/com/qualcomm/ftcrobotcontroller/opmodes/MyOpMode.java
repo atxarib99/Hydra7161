@@ -22,7 +22,7 @@ public abstract class MyOpMode extends OpMode {
     public DcMotor motorFL;
     public DcMotor motorFR;
     public DcMotor manipulator;
-    public DcMotor liftL;
+    //public DcMotor liftL;
     public DcMotor liftR;
     public Servo climberSwitch;
 //    public Servo rightRatchet;
@@ -43,7 +43,7 @@ public abstract class MyOpMode extends OpMode {
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
-        liftL = hardwareMap.dcMotor.get("liftL");
+        //liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
         basket = hardwareMap.servo.get("basketLeft");
         basketRight = hardwareMap.servo.get("bright");
@@ -57,6 +57,9 @@ public abstract class MyOpMode extends OpMode {
         leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
 //        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
 //        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        basket.setPosition(.5); //TODO: UPDATE THESE VALUES LATER
+        basketLeft.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+        basketRight.setPosition(0); //TODO: UPDATE THESE VALUES LATER
         climberSwitch.setPosition(.55);
     }
 
@@ -88,6 +91,26 @@ public abstract class MyOpMode extends OpMode {
          leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
      }
 
+    public void dumpRight() {
+        basketRight.setPosition(1);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+
+        }
+        basket.setPosition(1);
+    }
+
+    public void dumpLeft() {
+        basketLeft.setPosition(0);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+
+        }
+        basket.setPosition(0);
+    }
+
     public void startMotors(double ri, double le) {
         motorBL.setPower(le);
         motorBR.setPower(-ri);
@@ -115,7 +138,7 @@ public abstract class MyOpMode extends OpMode {
     }
 
     public void raiseLifts(double pow) {
-        liftL.setPower(pow);
+        //liftL.setPower(pow);
         liftR.setPower(-pow);
     }
 
@@ -131,12 +154,12 @@ public abstract class MyOpMode extends OpMode {
     }
 
     public void lowerLifts(double pow) {
-        liftL.setPower(-pow);
+        //liftL.setPower(-pow);
         liftR.setPower(pow);
     }
 
     public void stopLifts() {
-        liftL.setPower(0);
+        //liftL.setPower(0);
         liftR.setPower(0);
     }
 
