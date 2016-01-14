@@ -24,12 +24,12 @@ public abstract class MyOpMode extends OpMode {
     public DcMotor manipulator;
     //public DcMotor liftL;
     public DcMotor liftR;
-    public Servo climberSwitch;
+//    public Servo climberSwitch;
 //    public Servo rightRatchet;
 //    public Servo leftRatchet;
     public Servo rightPaddle;
     public Servo leftPaddle;
-    public Servo basket;
+//    public Servo basket;
     public Servo basketLeft;
     public Servo basketRight;
     public MyOpMode() {
@@ -45,10 +45,10 @@ public abstract class MyOpMode extends OpMode {
         motorFL = hardwareMap.dcMotor.get("FL");
         //liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
-        basket = hardwareMap.servo.get("basketLeft");
+//        basket = hardwareMap.servo.get("basketLeft");
         basketRight = hardwareMap.servo.get("bright");
         basketLeft = hardwareMap.servo.get("lright");
-        climberSwitch = hardwareMap.servo.get("switch");
+//        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
@@ -57,18 +57,18 @@ public abstract class MyOpMode extends OpMode {
         leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
 //        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
 //        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-        basket.setPosition(.5); //TODO: UPDATE THESE VALUES LATER
+//        basket.setPosition(.5); //TODO: UPDATE THESE VALUES LATER
         basketLeft.setPosition(1); //TODO: UPDATE THESE VALUES LATER
         basketRight.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-        climberSwitch.setPosition(.55);
+//        climberSwitch.setPosition(.55);
     }
 
     public void dumpClimbers() {
-        climberSwitch.setPosition(DROPPED);
-    }
+//        climberSwitch.setPosition(DROPPED);
+   }
 
     public void resetClimbers() {
-        climberSwitch.setPosition(UNDROPPED);
+//        climberSwitch.setPosition(UNDROPPED);
     }
 
 //    public void dropRatchets() {
@@ -93,29 +93,22 @@ public abstract class MyOpMode extends OpMode {
 
     public void dumpRight() {
         basketRight.setPosition(1);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-
-        }
-        basket.setPosition(1);
+        basketLeft.setPosition(1);
+//        basket.setPosition(1);
     }
 
     public void dumpLeft() {
         basketLeft.setPosition(0);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
+        basketRight.setPosition(0);
 
-        }
-        basket.setPosition(0);
+//        basket.setPosition(0);
     }
 
     public void startMotors(double ri, double le) {
-        motorBL.setPower(le);
-        motorBR.setPower(-ri);
-        motorFL.setPower(le);
-        motorFR.setPower(-ri);
+        motorBL.setPower(-le);
+        motorBR.setPower(ri);
+        motorFL.setPower(-le);
+        motorFR.setPower(ri);
     }
 
     public void stopMotors() {

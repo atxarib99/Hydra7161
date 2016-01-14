@@ -7,7 +7,7 @@ import com.qualcomm.ftcrobotcontroller.opmodes.MyOpMode;
  */
 public class TeleOP extends MyOpMode {
 
-    int mani = 0;
+    int mani = 1;
     @Override
     public void loop() {
         if(Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) {
@@ -37,8 +37,18 @@ public class TeleOP extends MyOpMode {
         if(gamepad2.a) {
             dumpClimbers();
         }
+        if(gamepad2.right_stick_button) {
+            mani = 1;
+        }
 
-        if(gamepad2.b) {
+        if(gamepad2.left_stick_button) {
+            mani = 0;
+        }
+        if(gamepad2.right_stick_y > .95 && gamepad2.left_stick_y > .95) {
+            mani = -1;
+        }
+
+        if(gamepad2.y) {
             resetClimbers();
         }
 
@@ -62,25 +72,8 @@ public class TeleOP extends MyOpMode {
             dumpLeft();
         }
 
-        if(gamepad2.y) {
+        if(gamepad2.b) {
             dumpRight();
-        }
-
-        while(gamepad2.left_bumper) {
-            if(gamepad1.a) {
-                mani = 1;
-            }
-            if(gamepad1.b) {
-                mani = 0;
-            }
-            if(gamepad1.y) {
-                mani = -1;
-            }
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-
-            }
         }
 
 

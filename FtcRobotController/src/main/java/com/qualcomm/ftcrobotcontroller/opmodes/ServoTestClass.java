@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by Arib on 11/21/2015.
  */
 public class ServoTestClass extends OpMode {
-    public Servo climberSwitch;
+//    public Servo climberSwitch;
     //    public Servo rightRatchet;
     //    public Servo leftRatchet;
     public Servo rightPaddle;
@@ -19,7 +19,7 @@ public class ServoTestClass extends OpMode {
         basket = hardwareMap.servo.get("basketLeft");
         basketRight = hardwareMap.servo.get("bright");
         basketLeft = hardwareMap.servo.get("lright");
-        climberSwitch = hardwareMap.servo.get("switch");
+//        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
@@ -31,13 +31,13 @@ public class ServoTestClass extends OpMode {
         basket.setPosition(.5); //TODO: UPDATE THESE VALUES LATER
         basketLeft.setPosition(1); //TODO: UPDATE THESE VALUES LATER
         basketRight.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-        climberSwitch.setPosition(.55);
+//        climberSwitch.setPosition(.55);
 
     }
     public void loop() {
         if(gamepad1.x) {
-            climberSwitch.setPosition(1);
-            telemetry.addData("climberSwitch", climberSwitch.getPosition());
+//            climberSwitch.setPosition(1);
+//            telemetry.addData("climberSwitch", climberSwitch.getPosition());
             basketRight.setPosition(1);
             telemetry.addData("basketRight", basketRight.getPosition());
             basket.setPosition(1);
@@ -50,8 +50,8 @@ public class ServoTestClass extends OpMode {
             telemetry.addData("leftPaddle", leftPaddle.getPosition());
         }
         if(gamepad1.b) {
-            climberSwitch.setPosition(0);
-            telemetry.addData("climberSwitch", climberSwitch.getPosition());
+//            climberSwitch.setPosition(0);
+//            telemetry.addData("climberSwitch", climberSwitch.getPosition());
             basketRight.setPosition(0);
             telemetry.addData("basketRight", basketRight.getPosition());
             basket.setPosition(0);
