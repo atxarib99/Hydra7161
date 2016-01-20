@@ -39,10 +39,12 @@ public class TeleOP extends MyOpMode {
         }
         if(gamepad2.right_stick_button) {
             mani = 1;
+            dumpRight();
         }
 
         if(gamepad2.left_stick_button) {
             mani = 0;
+            dumpLeft();
         }
         if(gamepad2.right_stick_y > .95 && gamepad2.left_stick_y > .95) {
             mani = -1;
@@ -60,13 +62,13 @@ public class TeleOP extends MyOpMode {
 //            undoRatchets();
 //        }
 
-        if(mani == 1) {
-            startManipulator();
-        } else if(mani == -1) {
-            reverseManipulator();
-        } else {
-            stopManipulator();
-        }
+//        if(mani == 1) {
+//            startManipulator();
+//        } else if(mani == -1) {
+//            reverseManipulator();
+//        } else {
+//            stopManipulator();
+//        }
 
         if(gamepad2.x) {
             dumpLeft();

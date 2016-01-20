@@ -43,6 +43,19 @@ public abstract class AutoMode extends LinearOpMode {
     public TouchSensor rts;
     public TouchSensor lts;
     private boolean hit;
+    private static final double UNDROPPED = .55;
+    private static final double DROPPED = 1;
+    private static final double RIGHTPADDLE_OUT = .75;
+    private static final double LEFTPADDLE_OUT = .5;
+    private static final double RIGHTPADDLE_IN = 1;
+    private static final double LEFTPADDLE_IN = 0;
+    private static final double LEFTDUMPER_DUMPED = 0;
+    private static final double LEFTDUMPER_UNDUMPED = 1;
+    private static final double RIGHTDUMPER_DUMPED = 1;
+    private static final double RIGHTDUMPER_UNDUMPED = 0;
+    private static final double BASKET_LEFT = 0;
+    private static final double BASKET_RIGHT = 1;
+    private static final double BASKET_IDLE = .5;
 
     public AutoMode() {
 
@@ -170,24 +183,24 @@ public abstract class AutoMode extends LinearOpMode {
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
-        liftL = hardwareMap.dcMotor.get("liftL");
+        //liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
-        basket = hardwareMap.servo.get("basketLeft");
+//        basket = hardwareMap.servo.get("basketLeft");
         basketRight = hardwareMap.servo.get("bright");
-        basketLeft = hardwareMap.servo.get("lright");
-        climberSwitch = hardwareMap.servo.get("switch");
+        basketLeft = hardwareMap.servo.get("bleft");
+//        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
         leftPaddle = hardwareMap.servo.get("lPad");
-        rightPaddle.setPosition(0);//TODO: UPDATE THESE VALUES LATER
-        leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-//        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-        climberSwitch.setPosition(.55);
-        basket.setPosition(.5); //TODO: UPDATE THESE VALUES LATER
-        basketLeft.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        basketRight.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        rightPaddle.setPosition(RIGHTPADDLE_IN);
+        leftPaddle.setPosition(LEFTPADDLE_IN);
+//        leftRatchet.setPosition(0);
+//        rightRatchet.setPosition(0);
+//        basket.setPosition(.5);
+        basketLeft.setPosition(LEFTDUMPER_UNDUMPED);
+        basketRight.setPosition(RIGHTDUMPER_UNDUMPED);
+//        climberSwitch.setPosition(.55);
         BLnullEncoder = 0;
         BRnullEncoder = 0;
         FRencoder = 0;

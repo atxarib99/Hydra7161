@@ -17,19 +17,29 @@ import java.util.concurrent.TimeUnit;
 public abstract class MyOpMode extends OpMode {
     private static final double UNDROPPED = .55;
     private static final double DROPPED = 1;
+    private static final double RIGHTPADDLE_OUT = .75;
+    private static final double LEFTPADDLE_OUT = .5;
+    private static final double RIGHTPADDLE_IN = 1;
+    private static final double LEFTPADDLE_IN = 0;
+    private static final double LEFTDUMPER_DUMPED = 0;
+    private static final double LEFTDUMPER_UNDUMPED = 1;
+    private static final double RIGHTDUMPER_DUMPED = 1;
+    private static final double RIGHTDUMPER_UNDUMPED = 0;
+    private static final double BASKET_DUMPED = .8;
+    private static final double BASKET_IDLE = .5;
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
     public DcMotor motorFR;
-    public DcMotor manipulator;
-    //public DcMotor liftL;
+//    public DcMotor manipulator;
+    public DcMotor liftL;
     public DcMotor liftR;
 //    public Servo climberSwitch;
 //    public Servo rightRatchet;
 //    public Servo leftRatchet;
     public Servo rightPaddle;
     public Servo leftPaddle;
-//    public Servo basket;
+    public Servo basket;
     public Servo basketLeft;
     public Servo basketRight;
     public MyOpMode() {
@@ -39,27 +49,27 @@ public abstract class MyOpMode extends OpMode {
     @Override
     public void init() {
         motorBL = hardwareMap.dcMotor.get("BL");
-        manipulator = hardwareMap.dcMotor.get("mani");
+//        manipulator = hardwareMap.dcMotor.get("mani");
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
-        //liftL = hardwareMap.dcMotor.get("liftL");
+        liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
 //        basket = hardwareMap.servo.get("basketLeft");
         basketRight = hardwareMap.servo.get("bright");
-        basketLeft = hardwareMap.servo.get("lright");
+        basketLeft = hardwareMap.servo.get("bleft");
 //        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
         leftPaddle = hardwareMap.servo.get("lPad");
-        rightPaddle.setPosition(0);//TODO: UPDATE THESE VALUES LATER
-        leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//        leftRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-//        rightRatchet.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-//        basket.setPosition(.5); //TODO: UPDATE THESE VALUES LATER
-        basketLeft.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        basketRight.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        rightPaddle.setPosition(RIGHTPADDLE_IN);
+        leftPaddle.setPosition(LEFTPADDLE_IN);
+//        leftRatchet.setPosition(0);
+//        rightRatchet.setPosition(0);
+        basket.setPosition(.5);
+        basketLeft.setPosition(LEFTDUMPER_UNDUMPED);
+        basketRight.setPosition(RIGHTDUMPER_UNDUMPED);
 //        climberSwitch.setPosition(.55);
     }
 
@@ -72,36 +82,36 @@ public abstract class MyOpMode extends OpMode {
     }
 
 //    public void dropRatchets() {
-//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//        leftRatchet.setPosition(1);
+//        rightRatchet.setPosition(1);
 //    }
 //
 //    public void undoRatchets() {
-//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+//        leftRatchet.setPosition(1);
+//        rightRatchet.setPosition(1);
 //
 //    }
 
     public void extendPaddles() {
-        rightPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        leftPaddle.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        rightPaddle.setPosition(RIGHTPADDLE_OUT);
+        leftPaddle.setPosition(LEFTPADDLE_OUT);
     }
      public void retractPaddles() {
-         rightPaddle.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-         leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+         rightPaddle.setPosition(RIGHTPADDLE_IN);
+         leftPaddle.setPosition(LEFTPADDLE_IN);
      }
 
-    public void dumpRight() {
-        basketRight.setPosition(1);
-        basketLeft.setPosition(1);
-//        basket.setPosition(1);
+    public void dumpRight(){
+        basketRight.setPosition(RIGHTDUMPER_DUMPED);
+        basketLeft.setPosition(LEFTDUMPER_UNDUMPED);
+
+
     }
 
     public void dumpLeft() {
-        basketLeft.setPosition(0);
-        basketRight.setPosition(0);
+        basketLeft.setPosition(LEFTDUMPER_DUMPED);
+        basketRight.setPosition(RIGHTDUMPER_UNDUMPED);
 
-//        basket.setPosition(0);
     }
 
     public void startMotors(double ri, double le) {
@@ -118,20 +128,20 @@ public abstract class MyOpMode extends OpMode {
         motorFL.setPower(0);
     }
 
-    public void startManipulator() {
-        manipulator.setPower(1);
-    }
-
-    public void stopManipulator() {
-        manipulator.setPower(0);
-    }
-
-    public void reverseManipulator() {
-        manipulator.setPower(-1);
-    }
+//    public void startManipulator() {
+//        manipulator.setPower(1);
+//    }
+//
+//    public void stopManipulator() {
+//        manipulator.setPower(0);
+//    }
+//
+//    public void reverseManipulator() {
+//        manipulator.setPower(-1);
+//    }
 
     public void raiseLifts(double pow) {
-        //liftL.setPower(pow);
+        liftL.setPower(pow);
         liftR.setPower(-pow);
     }
 
@@ -147,12 +157,12 @@ public abstract class MyOpMode extends OpMode {
     }
 
     public void lowerLifts(double pow) {
-        //liftL.setPower(-pow);
+        liftL.setPower(-pow);
         liftR.setPower(pow);
     }
 
     public void stopLifts() {
-        //liftL.setPower(0);
+        liftL.setPower(0);
         liftR.setPower(0);
     }
 
