@@ -8,9 +8,11 @@ package com.qualcomm.ftcrobotcontroller.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.robocol.Telemetry;
 import java.util.concurrent.TimeUnit;
 
@@ -40,8 +42,9 @@ public abstract class MyOpMode extends OpMode {
     public Servo rightPaddle;
     public Servo leftPaddle;
     public Servo basket;
-    public Servo basketLeft;
-    public Servo basketRight;
+    public TouchSensor rts;
+    public TouchSensor lts;
+    public DeviceInterfaceModule cdim;
     public MyOpMode() {
         super();
     }
@@ -50,14 +53,14 @@ public abstract class MyOpMode extends OpMode {
     public void init() {
         motorBL = hardwareMap.dcMotor.get("BL");
 //        manipulator = hardwareMap.dcMotor.get("mani");
+        cdim = hardwareMap.deviceInterfaceModule.get("dim");
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
-//        basket = hardwareMap.servo.get("basketLeft");
-        basketRight = hardwareMap.servo.get("bright");
-        basketLeft = hardwareMap.servo.get("bleft");
+        basket = hardwareMap.servo.get("basket");
+
 //        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
@@ -67,9 +70,9 @@ public abstract class MyOpMode extends OpMode {
         leftPaddle.setPosition(LEFTPADDLE_IN);
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
-        basket.setPosition(.5);
-        basketLeft.setPosition(LEFTDUMPER_UNDUMPED);
-        basketRight.setPosition(RIGHTDUMPER_UNDUMPED);
+        basket.setPosition(BASKET_IDLE);
+        rts = hardwareMap.touchSensor.get("rts");
+        lts = hardwareMap.touchSensor.get("lts");
 //        climberSwitch.setPosition(.55);
     }
 
@@ -101,17 +104,12 @@ public abstract class MyOpMode extends OpMode {
          leftPaddle.setPosition(LEFTPADDLE_IN);
      }
 
-    public void dumpRight(){
-        basketRight.setPosition(RIGHTDUMPER_DUMPED);
-        basketLeft.setPosition(LEFTDUMPER_UNDUMPED);
-
-
+    public void dump() {
+        basket.setPosition(BASKET_DUMPED);
     }
 
-    public void dumpLeft() {
-        basketLeft.setPosition(LEFTDUMPER_DUMPED);
-        basketRight.setPosition(RIGHTDUMPER_UNDUMPED);
-
+    public void unDump() {
+        basket.setPosition(BASKET_IDLE);
     }
 
     public void startMotors(double ri, double le) {

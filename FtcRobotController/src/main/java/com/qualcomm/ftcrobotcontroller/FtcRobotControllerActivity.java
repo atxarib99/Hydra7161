@@ -87,6 +87,7 @@ public class FtcRobotControllerActivity extends Activity {
   private Utility utility;
   protected ImageButton buttonMenu;
 
+
   protected TextView textDeviceName;
   protected TextView textWifiDirectStatus;
   protected TextView textRobotStatus;
@@ -95,6 +96,7 @@ public class FtcRobotControllerActivity extends Activity {
   protected TextView textErrorMessage;
   protected ImmersiveMode immersion;
 
+  protected static Context myContext;
   protected UpdateUI updateUI;
   protected Dimmer dimmer;
   protected LinearLayout entireScreenLayout;
@@ -133,6 +135,10 @@ public class FtcRobotControllerActivity extends Activity {
     }
   }
 
+  public static Context getContext() {
+    return myContext;
+  }
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -141,6 +147,7 @@ public class FtcRobotControllerActivity extends Activity {
 
     utility = new Utility(this);
     context = this;
+    myContext = this;
     entireScreenLayout = (LinearLayout) findViewById(R.id.entire_screen);
     buttonMenu = (ImageButton) findViewById(R.id.menu_buttons);
     buttonMenu.setOnClickListener(new View.OnClickListener() {

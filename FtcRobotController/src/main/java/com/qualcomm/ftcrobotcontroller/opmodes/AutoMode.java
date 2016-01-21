@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -28,8 +29,6 @@ public abstract class AutoMode extends LinearOpMode {
     public Servo rightPaddle;
     public Servo leftPaddle;
     public Servo basket;
-    public Servo basketLeft;
-    public Servo basketRight;
     public int currentEncoder;
     public int BLencoder;
     public int BRencoder;
@@ -39,6 +38,7 @@ public abstract class AutoMode extends LinearOpMode {
     public int BLnullEncoder;
     public int FRnullEncoder;
     public int FLnullEncoder;
+    public DeviceInterfaceModule cdim;
     public double currentAngle;
     public TouchSensor rts;
     public TouchSensor lts;
@@ -74,7 +74,7 @@ public abstract class AutoMode extends LinearOpMode {
 
     public void myWait(int time) {
         try {
-            wait(time);
+            Thread.sleep(time);
         } catch (InterruptedException e) {
             RobotLog.e(e.getMessage());
         }
@@ -89,7 +89,6 @@ public abstract class AutoMode extends LinearOpMode {
         }
         liftL.setPower(0);
         liftR.setPower(0);
-        thisTime = new ElapsedTime();
     }
 
     public void dumpClimbers() {
@@ -121,10 +120,10 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
     public void startMotors(double ri, double le) {
-        motorBL.setPower(le);
-        motorBR.setPower(-ri);
-        motorFL.setPower(le);
-        motorFR.setPower(-ri);
+        motorBL.setPower(-le);
+        motorBR.setPower(ri);
+        motorFL.setPower(-le);
+        motorFR.setPower(ri);
     }
 
     public void stopMotors() {
@@ -185,9 +184,8 @@ public abstract class AutoMode extends LinearOpMode {
         motorFL = hardwareMap.dcMotor.get("FL");
         //liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
-//        basket = hardwareMap.servo.get("basketLeft");
-        basketRight = hardwareMap.servo.get("bright");
-        basketLeft = hardwareMap.servo.get("bleft");
+        cdim = hardwareMap.deviceInterfaceModule.get("dim");
+        basket = hardwareMap.servo.get("basketLeft");
 //        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
@@ -197,9 +195,7 @@ public abstract class AutoMode extends LinearOpMode {
         leftPaddle.setPosition(LEFTPADDLE_IN);
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
-//        basket.setPosition(.5);
-        basketLeft.setPosition(LEFTDUMPER_UNDUMPED);
-        basketRight.setPosition(RIGHTDUMPER_UNDUMPED);
+        basket.setPosition(.5);
 //        climberSwitch.setPosition(.55);
         BLnullEncoder = 0;
         BRnullEncoder = 0;
@@ -214,17 +210,6 @@ public abstract class AutoMode extends LinearOpMode {
         hit = false;
         rts = hardwareMap.touchSensor.get("rts");
         lts = hardwareMap.touchSensor.get("lts");
-        try {
-            gyro = new AdafruitIMU(hardwareMap, "hydro"
-                    //The following was required when the definition of the "I2cDevice" class was incomplete.
-                    //, "cdim", 5
-
-                    , (byte) (AdafruitIMUAccel.BNO055_ADDRESS_A * 2) //By convention the FTC SDK always does 8-bit I2C bus
-                    //addressing
-                    , (byte) AdafruitIMUAccel.OPERATION_MODE_IMU);
-        } catch (RobotCoreException e) {
-
-        }
     }
 
 }

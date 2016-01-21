@@ -19,9 +19,10 @@ public class Autonomous extends AutoMode {
             stop();
         }
         first();
-        gyro.startIMU();
         moveForward(.5);
 
+        raiseLifts(.5, 1);
+        myWait(500);
         dumpClimbers();
         myWait(500);
 
