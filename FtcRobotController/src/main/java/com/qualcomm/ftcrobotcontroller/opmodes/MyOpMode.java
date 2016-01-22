@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -36,15 +37,15 @@ public abstract class MyOpMode extends OpMode {
 //    public DcMotor manipulator;
     public DcMotor liftL;
     public DcMotor liftR;
-//    public Servo climberSwitch;
+    public Servo climberSwitch;
 //    public Servo rightRatchet;
 //    public Servo leftRatchet;
     public Servo rightPaddle;
     public Servo leftPaddle;
     public Servo basket;
-    public TouchSensor rts;
-    public TouchSensor lts;
     public DeviceInterfaceModule cdim;
+    public DigitalChannel rts;
+    public DigitalChannel lts;
     public MyOpMode() {
         super();
     }
@@ -54,6 +55,8 @@ public abstract class MyOpMode extends OpMode {
         motorBL = hardwareMap.dcMotor.get("BL");
 //        manipulator = hardwareMap.dcMotor.get("mani");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
+        rts = hardwareMap.digitalChannel.get("rts");
+        lts = hardwareMap.digitalChannel.get("lts");
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
@@ -61,7 +64,7 @@ public abstract class MyOpMode extends OpMode {
         liftR = hardwareMap.dcMotor.get("liftR");
         basket = hardwareMap.servo.get("basket");
 
-//        climberSwitch = hardwareMap.servo.get("switch");
+        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
@@ -71,17 +74,15 @@ public abstract class MyOpMode extends OpMode {
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
         basket.setPosition(BASKET_IDLE);
-        rts = hardwareMap.touchSensor.get("rts");
-        lts = hardwareMap.touchSensor.get("lts");
 //        climberSwitch.setPosition(.55);
     }
 
     public void dumpClimbers() {
-//        climberSwitch.setPosition(DROPPED);
+        climberSwitch.setPosition(DROPPED);
    }
 
     public void resetClimbers() {
-//        climberSwitch.setPosition(UNDROPPED);
+        climberSwitch.setPosition(UNDROPPED);
     }
 
 //    public void dropRatchets() {

@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -29,19 +30,9 @@ public abstract class AutoMode extends LinearOpMode {
     public Servo rightPaddle;
     public Servo leftPaddle;
     public Servo basket;
-    public int currentEncoder;
-    public int BLencoder;
-    public int BRencoder;
-    public int FRencoder;
-    public int FLencoder;
-    public int BRnullEncoder;
-    public int BLnullEncoder;
-    public int FRnullEncoder;
-    public int FLnullEncoder;
     public DeviceInterfaceModule cdim;
-    public double currentAngle;
-    public TouchSensor rts;
-    public TouchSensor lts;
+    public DigitalChannel rts;
+    public DigitalChannel lts;
     private boolean hit;
     private static final double UNDROPPED = .55;
     private static final double DROPPED = 1;
@@ -65,7 +56,7 @@ public abstract class AutoMode extends LinearOpMode {
     public void moveForward(double pow) {
         while(!hit) {
             startMotors(pow, pow);
-            if(rts.isPressed() || lts.isPressed()) {
+            if(rts.getState() || lts.getState()) {
                 hit = true;
             }
         }
@@ -197,19 +188,9 @@ public abstract class AutoMode extends LinearOpMode {
 //        rightRatchet.setPosition(0);
         basket.setPosition(.5);
 //        climberSwitch.setPosition(.55);
-        BLnullEncoder = 0;
-        BRnullEncoder = 0;
-        FRencoder = 0;
-        FLencoder = 0;
-        BRencoder = 0;
-        BLencoder = 0;
-        FLnullEncoder = 0;
-        FRnullEncoder = 0;
-        currentEncoder = 0;
-        currentAngle = 0;
         hit = false;
-        rts = hardwareMap.touchSensor.get("rts");
-        lts = hardwareMap.touchSensor.get("lts");
+        rts = hardwareMap.digitalChannel.get("rts");
+        lts = hardwareMap.digitalChannel.get("lts");
     }
 
 }
