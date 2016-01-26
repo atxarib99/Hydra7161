@@ -20,21 +20,17 @@ import java.util.concurrent.TimeUnit;
 public abstract class MyOpMode extends OpMode {
     private static final double UNDROPPED = .55;
     private static final double DROPPED = 1;
-    private static final double RIGHTPADDLE_OUT = .75;
-    private static final double LEFTPADDLE_OUT = .5;
+    private static final double RIGHTPADDLE_OUT = 0;
+    private static final double LEFTPADDLE_OUT = 1;
     private static final double RIGHTPADDLE_IN = 1;
     private static final double LEFTPADDLE_IN = 0;
-    private static final double LEFTDUMPER_DUMPED = 0;
-    private static final double LEFTDUMPER_UNDUMPED = 1;
-    private static final double RIGHTDUMPER_DUMPED = 1;
-    private static final double RIGHTDUMPER_UNDUMPED = 0;
-    private static final double BASKET_DUMPED = .8;
-    private static final double BASKET_IDLE = .5;
+    private static final double BASKET_DUMPED = 1;
+    private static final double BASKET_IDLE = .4;
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
     public DcMotor motorFR;
-//    public DcMotor manipulator;
+    public DcMotor manipulator;
     public DcMotor liftL;
     public DcMotor liftR;
     public Servo climberSwitch;
@@ -53,7 +49,7 @@ public abstract class MyOpMode extends OpMode {
     @Override
     public void init() {
         motorBL = hardwareMap.dcMotor.get("BL");
-//        manipulator = hardwareMap.dcMotor.get("mani");
+        manipulator = hardwareMap.dcMotor.get("mani");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         rts = hardwareMap.digitalChannel.get("rts");
         lts = hardwareMap.digitalChannel.get("lts");
@@ -127,21 +123,33 @@ public abstract class MyOpMode extends OpMode {
         motorFL.setPower(0);
     }
 
-//    public void startManipulator() {
-//        manipulator.setPower(1);
-//    }
-//
-//    public void stopManipulator() {
-//        manipulator.setPower(0);
-//    }
-//
-//    public void reverseManipulator() {
-//        manipulator.setPower(-1);
-//    }
+    public void startManipulator() {
+        manipulator.setPower(1);
+    }
+
+    public void stopManipulator() {
+        manipulator.setPower(0);
+    }
+
+    public void reverseManipulator() {
+        manipulator.setPower(-1);
+    }
 
     public void raiseLifts(double pow) {
         liftL.setPower(pow);
         liftR.setPower(-pow);
+    }
+    public void raiseRightLift(double pow) {
+        liftR.setPower(-pow);
+    }
+    public void raiseLeftLift(double pow) {
+        liftL.setPower(pow);
+    }
+    public void stopLeftLift() {
+        liftL.setPower(0);
+    }
+    public void stopRightLift() {
+        liftR.setPower(0);
     }
 
     public void resetEncoders() {
@@ -158,6 +166,12 @@ public abstract class MyOpMode extends OpMode {
     public void lowerLifts(double pow) {
         liftL.setPower(-pow);
         liftR.setPower(pow);
+    }
+    public void lowerLeftLift() {
+        liftL.setPower(-.5);
+    }
+    public void lowerRightLift() {
+        liftR.setPower(.5);
     }
 
     public void stopLifts() {

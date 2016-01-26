@@ -7,33 +7,35 @@ import com.qualcomm.ftcrobotcontroller.opmodes.AutoMode;
  */
 public class Autonomous extends AutoMode {
     @Override
-    public void runOpMode() {
-        try {
-            waitOneFullHardwareCycle();
-        } catch(InterruptedException e) {
-            stop();
-        }
-        try {
-            waitForStart();
-        } catch (InterruptedException e) {
-            stop();
-        }
+    public void runOpMode() throws InterruptedException {
+        waitOneFullHardwareCycle();
+
+        waitForStart();
+
         first();
+
+        waitOneFullHardwareCycle();
+
         moveForward(.5);
 
         raiseLifts(.5, 1);
-        myWait(500);
-        dumpClimbers();
-        myWait(500);
-
-        resetClimbers();
-        myWait(500);
 
         dumpClimbers();
-        myWait(500);
+
+        sleep(1000);
 
         resetClimbers();
-        myWait(500);
+
+        sleep(1000);
+
+        dumpClimbers();
+
+        sleep(1000);
+
+        resetClimbers();
+
+        sleep(1000);
+        //STRYKE
 
     }
 }

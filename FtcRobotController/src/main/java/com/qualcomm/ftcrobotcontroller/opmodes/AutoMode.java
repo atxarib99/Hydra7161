@@ -53,41 +53,43 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
 
-    public void moveForward(double pow) {
+    public void moveForward(double pow) throws InterruptedException {
         while(!hit) {
+            waitOneFullHardwareCycle();
             startMotors(pow, pow);
+            waitOneFullHardwareCycle();
             if(rts.getState() || lts.getState()) {
                 hit = true;
             }
         }
+        waitOneFullHardwareCycle();
         stopMotors();
+        waitOneFullHardwareCycle();
     }
 
-    public void myWait(int time) {
-        try {
-            Thread.sleep(time);
-        } catch (InterruptedException e) {
-            RobotLog.e(e.getMessage());
-        }
-
-    }
-    public void raiseLifts(double pow, int time) {
+    public void raiseLifts(double pow, int time) throws InterruptedException {
         ElapsedTime thisTime = new ElapsedTime();
         thisTime.startTime();
+        waitOneFullHardwareCycle();
         while (thisTime.time() < time) {
             liftL.setPower(pow);
             liftR.setPower(-pow);
+            waitOneFullHardwareCycle();
         }
+        waitOneFullHardwareCycle();
         liftL.setPower(0);
         liftR.setPower(0);
+        waitOneFullHardwareCycle();
     }
 
-    public void dumpClimbers() {
-        climberSwitch.setPosition(1);
+    public void dumpClimbers() throws InterruptedException {
+        waitOneFullHardwareCycle();
+        climberSwitch.setPosition(DROPPED);
     }
 
-    public void resetClimbers() {
-        climberSwitch.setPosition(.55);
+    public void resetClimbers() throws InterruptedException {
+        waitOneFullHardwareCycle();
+        climberSwitch.setPosition(UNDROPPED);
     }
 
 //    public void dropRatchets() {
@@ -110,18 +112,20 @@ public abstract class AutoMode extends LinearOpMode {
         leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
     }
 
-    public void startMotors(double ri, double le) {
+    public void startMotors(double ri, double le) throws InterruptedException {
         motorBL.setPower(-le);
         motorBR.setPower(ri);
         motorFL.setPower(-le);
         motorFR.setPower(ri);
     }
 
-    public void stopMotors() {
+    public void stopMotors() throws InterruptedException {
+        waitOneFullHardwareCycle();
         motorBL.setPower(0);
         motorBR.setPower(0);
         motorFR.setPower(0);
         motorFL.setPower(0);
+        waitOneFullHardwareCycle();
     }
 
     public void startManipulator() {

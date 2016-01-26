@@ -25,7 +25,7 @@ public class touchSensorTest extends OpMode {
         song.start();
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         rts = hardwareMap.digitalChannel.get("rts");
-        lts = hardwareMap.digitalChannel.get("rts");
+        lts = hardwareMap.digitalChannel.get("lts");
 
     }
 

@@ -15,15 +15,24 @@ public class TeleOP extends MyOpMode {
         } else {
             stopMotors();
         }
-
         if(gamepad2.right_trigger > .05) {
-            raiseLifts(gamepad2.right_trigger);
+            raiseRightLift(gamepad2.right_trigger);
         }
-        else if(gamepad2.left_trigger > .05) {
-            lowerLifts(gamepad2.left_trigger);
+        else if(gamepad2.right_bumper) {
+            lowerRightLift();
         }
         else {
-            stopLifts();
+            stopRightLift();
+        }
+
+        if(gamepad2.left_trigger > .05) {
+            raiseLeftLift(gamepad2.left_trigger);
+        }
+        else if(gamepad2.left_bumper) {
+            lowerLeftLift();
+        }
+        else {
+            stopLeftLift();
         }
 
         if(gamepad1.right_bumper) {
@@ -60,13 +69,13 @@ public class TeleOP extends MyOpMode {
 //            undoRatchets();
 //        }
 
-//        if(mani == 1) {
-//            startManipulator();
-//        } else if(mani == -1) {
-//            reverseManipulator();
-//        } else {
-//            stopManipulator();
-//        }
+        if(mani == 1) {
+            startManipulator();
+        } else if(mani == -1) {
+            reverseManipulator();
+        } else {
+            stopManipulator();
+        }
         if(gamepad2.b) {
             dump();
         }
