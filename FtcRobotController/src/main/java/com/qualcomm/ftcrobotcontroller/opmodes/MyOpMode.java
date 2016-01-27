@@ -26,6 +26,7 @@ public abstract class MyOpMode extends OpMode {
     private static final double LEFTPADDLE_IN = 0;
     private static final double BASKET_DUMPED = 1;
     private static final double BASKET_IDLE = .4;
+    private static final double BASKET_LIFTING = 0;
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
@@ -70,7 +71,7 @@ public abstract class MyOpMode extends OpMode {
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
         basket.setPosition(BASKET_IDLE);
-//        climberSwitch.setPosition(.55);
+        climberSwitch.setPosition(.55);
     }
 
     public void dumpClimbers() {
@@ -140,9 +141,11 @@ public abstract class MyOpMode extends OpMode {
         liftR.setPower(-pow);
     }
     public void raiseRightLift(double pow) {
+        basket.setPosition(BASKET_LIFTING);
         liftR.setPower(-pow);
     }
     public void raiseLeftLift(double pow) {
+        basket.setPosition(BASKET_LIFTING);
         liftL.setPower(pow);
     }
     public void stopLeftLift() {

@@ -18,24 +18,6 @@ public class Autonomous extends AutoMode {
 
         moveForward(.5);
 
-        raiseLifts(.5, 1);
-
-        dumpClimbers();
-
-        sleep(1000);
-
-        resetClimbers();
-
-        sleep(1000);
-
-        dumpClimbers();
-
-        sleep(1000);
-
-        resetClimbers();
-
-        sleep(1000);
-        //STRYKE
-
+        waitOneFullHardwareCycle();
     }
 }

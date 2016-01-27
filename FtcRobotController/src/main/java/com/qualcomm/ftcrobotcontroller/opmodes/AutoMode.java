@@ -168,8 +168,7 @@ public abstract class AutoMode extends LinearOpMode {
     public int getBackWheelAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2;
     }
-
-
+    
 
     public final void first() {
         motorBL = hardwareMap.dcMotor.get("BL");
@@ -181,7 +180,7 @@ public abstract class AutoMode extends LinearOpMode {
         liftR = hardwareMap.dcMotor.get("liftR");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         basket = hardwareMap.servo.get("basketLeft");
-//        climberSwitch = hardwareMap.servo.get("switch");
+        climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
@@ -191,10 +190,11 @@ public abstract class AutoMode extends LinearOpMode {
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
         basket.setPosition(.5);
-//        climberSwitch.setPosition(.55);
+        climberSwitch.setPosition(.55);
         hit = false;
         rts = hardwareMap.digitalChannel.get("rts");
         lts = hardwareMap.digitalChannel.get("lts");
     }
+
 
 }
