@@ -18,14 +18,14 @@ import com.qualcomm.robotcore.robocol.Telemetry;
 import java.util.concurrent.TimeUnit;
 
 public abstract class MyOpMode extends OpMode {
-    private static final double UNDROPPED = .55;
+    private static final double UNDROPPED = 0;
     private static final double DROPPED = 1;
     private static final double RIGHTPADDLE_OUT = 0;
     private static final double LEFTPADDLE_OUT = 1;
     private static final double RIGHTPADDLE_IN = 1;
     private static final double LEFTPADDLE_IN = 0;
-    private static final double BASKET_DUMPED = 1;
-    private static final double BASKET_IDLE = .4;
+    private static final double BASKET_DUMPED = .75;
+    private static final double BASKET_IDLE = 0;
     private static final double BASKET_LIFTING = 0;
     public DcMotor motorBL;
     public DcMotor motorBR;
@@ -70,8 +70,8 @@ public abstract class MyOpMode extends OpMode {
         leftPaddle.setPosition(LEFTPADDLE_IN);
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
-        basket.setPosition(BASKET_IDLE);
-        climberSwitch.setPosition(.55);
+        basket.setPosition(BASKET_LIFTING);
+        climberSwitch.setPosition(UNDROPPED);
     }
 
     public void dumpClimbers() {
@@ -107,7 +107,7 @@ public abstract class MyOpMode extends OpMode {
     }
 
     public void unDump() {
-        basket.setPosition(BASKET_IDLE);
+        basket.setPosition(BASKET_LIFTING);
     }
 
     public void startMotors(double ri, double le) {

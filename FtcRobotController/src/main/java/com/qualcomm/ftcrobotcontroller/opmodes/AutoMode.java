@@ -34,7 +34,7 @@ public abstract class AutoMode extends LinearOpMode {
     public DigitalChannel rts;
     public DigitalChannel lts;
     private boolean hit;
-    private static final double UNDROPPED = .55;
+    private static final double UNDROPPED = .65;
     private static final double DROPPED = 1;
     private static final double RIGHTPADDLE_OUT = .75;
     private static final double LEFTPADDLE_OUT = .5;
@@ -46,7 +46,7 @@ public abstract class AutoMode extends LinearOpMode {
     private static final double RIGHTDUMPER_UNDUMPED = 0;
     private static final double BASKET_LEFT = 0;
     private static final double BASKET_RIGHT = 1;
-    private static final double BASKET_IDLE = .5;
+    private static final double BASKET_IDLE = .35;
 
     public AutoMode() {
 
@@ -168,7 +168,7 @@ public abstract class AutoMode extends LinearOpMode {
     public int getBackWheelAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2;
     }
-    
+
 
     public final void first() {
         motorBL = hardwareMap.dcMotor.get("BL");

@@ -15,6 +15,15 @@ public class TeleOP extends MyOpMode {
         } else {
             stopMotors();
         }
+
+        if(gamepad2.left_trigger > .05) {
+            raiseLeftLift(gamepad2.left_trigger);
+        } else if(gamepad2.left_bumper) {
+            lowerLeftLift();
+        } else {
+            stopLeftLift();
+        }
+
         if(gamepad2.right_trigger > .05) {
             raiseRightLift(gamepad2.right_trigger);
         }
@@ -25,15 +34,7 @@ public class TeleOP extends MyOpMode {
             stopRightLift();
         }
 
-        if(gamepad2.left_trigger > .05) {
-            raiseLeftLift(gamepad2.left_trigger);
-        }
-        else if(gamepad2.left_bumper) {
-            lowerLeftLift();
-        }
-        else {
-            stopLeftLift();
-        }
+
 
         if(gamepad1.right_bumper) {
             extendPaddles();
