@@ -35,7 +35,6 @@ public class TeleOP extends MyOpMode {
         }
 
 
-
         if(gamepad1.right_bumper) {
             extendPaddles();
         }
@@ -83,6 +82,10 @@ public class TeleOP extends MyOpMode {
         if(gamepad2.x) {
             unDump();
         }
+
+        telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
+        telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
+        telemetry.addData("avg", getBackWheelAvg());
 
 
     }

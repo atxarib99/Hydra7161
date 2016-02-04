@@ -34,7 +34,7 @@ public abstract class AutoMode extends LinearOpMode {
     public DigitalChannel rts;
     public DigitalChannel lts;
     private boolean hit;
-    private static final double UNDROPPED = .65;
+    private static final double UNDROPPED = 0;
     private static final double DROPPED = 1;
     private static final double RIGHTPADDLE_OUT = .75;
     private static final double LEFTPADDLE_OUT = .5;
@@ -54,9 +54,11 @@ public abstract class AutoMode extends LinearOpMode {
 
 
     public void moveForward(double pow) throws InterruptedException {
-        while(!hit) {
+        ElapsedTime thisTime = new ElapsedTime();
+        thisTime.startTime();
+        while(!hit && (thisTime.time() < 5)) {
             waitOneFullHardwareCycle();
-            startMotors(pow, pow);
+            startMotors(pow, pow - .15);
             waitOneFullHardwareCycle();
             if(rts.getState() || lts.getState()) {
                 hit = true;
@@ -113,10 +115,10 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
     public void startMotors(double ri, double le) throws InterruptedException {
-        motorBL.setPower(-le);
-        motorBR.setPower(ri);
-        motorFL.setPower(-le);
-        motorFR.setPower(ri);
+        motorBL.setPower(le);
+        motorBR.setPower(-ri);
+        motorFL.setPower(le);
+        motorFR.setPower(-ri);
     }
 
     public void stopMotors() throws InterruptedException {
@@ -176,10 +178,10 @@ public abstract class AutoMode extends LinearOpMode {
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
-        //liftL = hardwareMap.dcMotor.get("liftL");
+        liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
-        basket = hardwareMap.servo.get("basketLeft");
+        basket = hardwareMap.servo.get("basket");
         climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
 //        leftRatchet = hardwareMap.servo.get("ratchetL");
@@ -189,8 +191,8 @@ public abstract class AutoMode extends LinearOpMode {
         leftPaddle.setPosition(LEFTPADDLE_IN);
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
-        basket.setPosition(.5);
-        climberSwitch.setPosition(.55);
+        basket.setPosition(BASKET_IDLE);
+        climberSwitch.setPosition(UNDROPPED);
         hit = false;
         rts = hardwareMap.digitalChannel.get("rts");
         lts = hardwareMap.digitalChannel.get("lts");

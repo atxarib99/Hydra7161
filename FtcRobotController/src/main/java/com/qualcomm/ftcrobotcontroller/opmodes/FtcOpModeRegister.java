@@ -82,7 +82,7 @@ public class FtcOpModeRegister implements OpModeRegister {
 //    manager.register("justGyro", IMUGyroOnlyTest.class);
 //    manager.register("wheels&lift", LiftAndMotors.class);
 //    manager.register("ServoTest", ServoTestClass.class);
-    manager.register("Qualifier", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
+    manager.register("Autonomous", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
     manager.register("TouchSensorTest", touchSensorTest.class);
 
     /*

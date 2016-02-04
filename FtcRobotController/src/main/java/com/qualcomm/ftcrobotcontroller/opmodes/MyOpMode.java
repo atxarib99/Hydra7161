@@ -24,7 +24,7 @@ public abstract class MyOpMode extends OpMode {
     private static final double LEFTPADDLE_OUT = 1;
     private static final double RIGHTPADDLE_IN = 1;
     private static final double LEFTPADDLE_IN = 0;
-    private static final double BASKET_DUMPED = .75;
+    private static final double BASKET_DUMPED = .9;
     private static final double BASKET_IDLE = 0;
     private static final double BASKET_LIFTING = 0;
     public DcMotor motorBL;
