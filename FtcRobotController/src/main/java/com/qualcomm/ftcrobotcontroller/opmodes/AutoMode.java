@@ -4,6 +4,8 @@
 //
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
+import android.test.InstrumentationTestRunner;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -143,15 +145,20 @@ public abstract class AutoMode extends LinearOpMode {
         manipulator.setPower(-1);
     }
 
-    public void resetEncoders() {
-        motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+    public void resetEncoders() throws InterruptedException {
+        while(motorBL.getCurrentPosition() > 25 || motorBR.getCurrentPosition() > 25) {
+            motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            waitOneFullHardwareCycle();
+        }
+        waitOneFullHardwareCycle();
         motorBL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorBR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorFL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        waitOneFullHardwareCycle();
     }
 
     public void lowerLifts(double pow) {
