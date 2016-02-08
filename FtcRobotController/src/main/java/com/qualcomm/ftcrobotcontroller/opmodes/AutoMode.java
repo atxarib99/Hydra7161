@@ -146,7 +146,7 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
     public void resetEncoders() throws InterruptedException {
-        while(motorBL.getCurrentPosition() > 25 || motorBR.getCurrentPosition() > 25) {
+        while(Math.abs(motorBL.getCurrentPosition()) > 25 || Math.abs(motorBR.getCurrentPosition()) > 25) {
             motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
             motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
             motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
