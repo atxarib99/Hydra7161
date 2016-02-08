@@ -16,7 +16,11 @@ public class Autonomous extends AutoMode {
 
         waitOneFullHardwareCycle();
 
-        moveForward(.5);
+        moveForward(.5, 8500);
+
+        waitOneFullHardwareCycle();
+
+        dumpClimbers();
 
         waitOneFullHardwareCycle();
     }

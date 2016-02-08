@@ -53,12 +53,13 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
 
-    public void moveForward(double pow) throws InterruptedException {
-        ElapsedTime thisTime = new ElapsedTime();
-        thisTime.startTime();
-        while(!hit && (thisTime.time() < 5)) {
+    public void moveForward(double pow, int encoderVal) throws InterruptedException {
+        while(!hit && (encoderVal > getBackWheelAvg())) {
             waitOneFullHardwareCycle();
-            startMotors(pow, pow - .15);
+            startMotors(pow, pow);
+            telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
+            telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
+            telemetry.addData("avg", getBackWheelAvg());
             waitOneFullHardwareCycle();
             if(rts.getState() || lts.getState()) {
                 hit = true;
