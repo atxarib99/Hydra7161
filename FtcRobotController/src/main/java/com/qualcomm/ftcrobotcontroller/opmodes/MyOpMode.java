@@ -93,7 +93,7 @@ public abstract class MyOpMode extends OpMode {
             telemetry.addData("gyro", "fail");
         }
 
-        telemetry.addData("gyro", "success!");
+        telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
 
 
     }
