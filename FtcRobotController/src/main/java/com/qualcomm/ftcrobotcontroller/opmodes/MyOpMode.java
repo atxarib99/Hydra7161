@@ -5,7 +5,10 @@
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
@@ -25,8 +28,10 @@ public abstract class MyOpMode extends OpMode {
     private static final double RIGHTPADDLE_IN = 1;
     private static final double LEFTPADDLE_IN = 0;
     private static final double BASKET_DUMPED = .9;
-    private static final double BASKET_IDLE = 0;
-    private static final double BASKET_LIFTING = 0;
+    private static final double BASKET_IDLE = .5;
+    private static final double BASKET_LEFT = 1;
+    private static final double BASKET_RIGHT = 0;
+    public AdafruitIMU gyro;
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
@@ -70,8 +75,27 @@ public abstract class MyOpMode extends OpMode {
         leftPaddle.setPosition(LEFTPADDLE_IN);
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
-        basket.setPosition(BASKET_LIFTING);
+        basket.setPosition(BASKET_IDLE);
         climberSwitch.setPosition(UNDROPPED);
+        telemetry.addData("gyro", "initializing...");
+
+        try {
+            gyro = new AdafruitIMU(hardwareMap, "hydro"
+
+                    //The following was required when the definition of the "I2cDevice" class was incomplete.
+                    //, "cdim", 5
+
+                    , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
+                    //addressing
+                    , (byte) AdafruitIMU.OPERATION_MODE_IMU);
+        } catch (RobotCoreException e){
+            Log.i("FtcRobotController", "Exception: " + e.getMessage());
+            telemetry.addData("gyro", "fail");
+        }
+
+        telemetry.addData("gyro", "success!");
+
+
     }
 
     public void dumpClimbers() {
@@ -97,6 +121,23 @@ public abstract class MyOpMode extends OpMode {
         rightPaddle.setPosition(RIGHTPADDLE_OUT);
         leftPaddle.setPosition(LEFTPADDLE_OUT);
     }
+
+    public void extendRightPaddle() {
+        rightPaddle.setPosition(RIGHTPADDLE_OUT);
+    }
+
+    public void retractRightPaddle() {
+        rightPaddle.setPosition(RIGHTPADDLE_IN);
+    }
+
+    public void extendLeftPaddle() {
+        leftPaddle.setPosition(LEFTPADDLE_OUT);
+    }
+
+    public void retractLeftPaddle() {
+        leftPaddle.setPosition(LEFTPADDLE_IN);
+    }
+
      public void retractPaddles() {
          rightPaddle.setPosition(RIGHTPADDLE_IN);
          leftPaddle.setPosition(LEFTPADDLE_IN);
@@ -106,8 +147,17 @@ public abstract class MyOpMode extends OpMode {
         basket.setPosition(BASKET_DUMPED);
     }
 
-    public void unDump() {
-        basket.setPosition(BASKET_LIFTING);
+
+    public void dumpRight() {
+        basket.setPosition(BASKET_RIGHT);
+    }
+
+    public void dumpleft() {
+        basket.setPosition(BASKET_LEFT);
+    }
+
+    public void dumpIdle() {
+        basket.setPosition(BASKET_IDLE);
     }
 
     public void startMotors(double ri, double le) {
@@ -141,11 +191,9 @@ public abstract class MyOpMode extends OpMode {
         liftR.setPower(-pow);
     }
     public void raiseRightLift(double pow) {
-        basket.setPosition(BASKET_LIFTING);
         liftR.setPower(-pow);
     }
     public void raiseLeftLift(double pow) {
-        basket.setPosition(BASKET_LIFTING);
         liftL.setPower(pow);
     }
     public void stopLeftLift() {

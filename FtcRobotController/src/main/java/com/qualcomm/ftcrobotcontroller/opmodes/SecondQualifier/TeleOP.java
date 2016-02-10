@@ -7,7 +7,8 @@ import com.qualcomm.ftcrobotcontroller.opmodes.MyOpMode;
  */
 public class TeleOP extends MyOpMode {
 
-    int mani = 1;
+    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
+    int mani = 0;
     @Override
     public void loop() {
         if(Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) {
@@ -33,14 +34,30 @@ public class TeleOP extends MyOpMode {
         else {
             stopRightLift();
         }
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
 
+        telemetry.addData("Headings(yaw): ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
+        telemetry.addData("Pitches: ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
+        telemetry.addData("Max I2C read interval: ",
+                String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
+                        , gyro.avgReadInterval));
 
         if(gamepad1.right_bumper) {
-            extendPaddles();
+            extendRightPaddle();
+        }
+
+        if(gamepad1.right_trigger > .05) {
+            retractRightPaddle();
         }
 
         if(gamepad1.left_bumper) {
-            retractPaddles();
+            extendLeftPaddle();
+        }
+
+        if(gamepad1.left_trigger > .05) {
+            retractLeftPaddle();
         }
 
         if(gamepad2.a) {
@@ -76,11 +93,15 @@ public class TeleOP extends MyOpMode {
         } else {
             stopManipulator();
         }
-        if(gamepad2.b) {
-            dump();
+
+        if(gamepad2.b && gamepad2.x) {
+            dumpIdle();
         }
-        if(gamepad2.x) {
-            unDump();
+        else if(gamepad2.b) {
+            dumpRight();
+        }
+        else if(gamepad2.x) { //172.17.1.8
+            dumpleft();
         }
 
         telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));

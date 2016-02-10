@@ -56,6 +56,7 @@ public abstract class AutoMode extends LinearOpMode {
 
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
+        telemetry.addData("Auto", "Moving Forwards");
         while(!hit && (encoderVal > getBackWheelAvg())) {
             waitOneFullHardwareCycle();
             startMotors(pow, pow);
@@ -172,11 +173,14 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
     public int getEncoderAvg() {
-        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition())) + (Math.abs(motorFL.getCurrentPosition())) + (Math.abs(motorFR.getCurrentPosition()))) / 4;
+        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))
+                + (Math.abs(motorFL.getCurrentPosition())) + (Math.abs(motorFR.getCurrentPosition())))
+                / 4;
     }
 
     public int getBackWheelAvg() {
-        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2;
+        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition())))
+                / 2;
     }
 
 
@@ -204,6 +208,7 @@ public abstract class AutoMode extends LinearOpMode {
         hit = false;
         rts = hardwareMap.digitalChannel.get("rts");
         lts = hardwareMap.digitalChannel.get("lts");
+        telemetry.addData("Auto", "Initialized Successfully!");
     }
 
 
