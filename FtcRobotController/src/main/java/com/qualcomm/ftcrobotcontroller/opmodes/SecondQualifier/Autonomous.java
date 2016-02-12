@@ -1,5 +1,9 @@
 package com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier;
 
+import android.media.MediaPlayer;
+
+import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
+import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.ftcrobotcontroller.opmodes.AutoMode;
 
 /**
@@ -8,11 +12,12 @@ import com.qualcomm.ftcrobotcontroller.opmodes.AutoMode;
 public class Autonomous extends AutoMode {
     @Override
     public void runOpMode() throws InterruptedException {
+
+        first();
+
         waitOneFullHardwareCycle();
 
         waitForStart();
-
-        first();
 
         waitOneFullHardwareCycle();
 

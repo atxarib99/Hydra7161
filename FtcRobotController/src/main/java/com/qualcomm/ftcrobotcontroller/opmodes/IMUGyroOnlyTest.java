@@ -4,6 +4,11 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannel;
+import com.qualcomm.robotcore.hardware.Servo;
 
 
 /**
@@ -12,6 +17,33 @@ import com.qualcomm.robotcore.exception.RobotCoreException;
 public class IMUGyroOnlyTest extends OpMode {
 
     AdafruitIMU boschBNO055;
+    private static final double UNDROPPED = 0;
+    private static final double DROPPED = 1;
+    private static final double RIGHTPADDLE_OUT = 0;
+    private static final double LEFTPADDLE_OUT = 1;
+    private static final double RIGHTPADDLE_IN = 1;
+    private static final double LEFTPADDLE_IN = 0;
+    private static final double BASKET_DUMPED = .9;
+    private static final double BASKET_IDLE = .5;
+    private static final double BASKET_LEFT = 1;
+    private static final double BASKET_RIGHT = 0;
+    public AdafruitIMU gyro;
+    public DcMotor motorBL;
+    public DcMotor motorBR;
+    public DcMotor motorFL;
+    public DcMotor motorFR;
+    public DcMotor manipulator;
+    public DcMotor liftL;
+    public DcMotor liftR;
+    public Servo climberSwitch;
+    //    public Servo rightRatchet;
+//    public Servo leftRatchet;
+    public Servo rightPaddle;
+    public Servo leftPaddle;
+    public Servo basket;
+    public DeviceInterfaceModule cdim;
+    public DigitalChannel rts;
+    public DigitalChannel lts;
 
     //The following arrays contain both the Euler angles reported by the IMU (indices = 0) AND the
     // Tait-Bryan angles calculated from the 4 components of the quaternion vector (indices = 1)
@@ -25,6 +57,29 @@ public class IMUGyroOnlyTest extends OpMode {
      */
     @Override
     public void init() {
+        motorBL = hardwareMap.dcMotor.get("BL");
+        manipulator = hardwareMap.dcMotor.get("mani");
+        cdim = hardwareMap.deviceInterfaceModule.get("dim");
+        rts = hardwareMap.digitalChannel.get("rts");
+        lts = hardwareMap.digitalChannel.get("lts");
+        motorBR = hardwareMap.dcMotor.get("BR");
+        motorFR = hardwareMap.dcMotor.get("FR");
+        motorFL = hardwareMap.dcMotor.get("FL");
+        liftL = hardwareMap.dcMotor.get("liftL");
+        liftR = hardwareMap.dcMotor.get("liftR");
+        basket = hardwareMap.servo.get("basket");
+
+        climberSwitch = hardwareMap.servo.get("switch");
+//        rightRatchet = hardwareMap.servo.get("ratchetR");
+//        leftRatchet = hardwareMap.servo.get("ratchetL");
+        rightPaddle = hardwareMap.servo.get("rPad");
+        leftPaddle = hardwareMap.servo.get("lPad");
+        rightPaddle.setPosition(RIGHTPADDLE_IN);
+        leftPaddle.setPosition(LEFTPADDLE_IN);
+//        leftRatchet.setPosition(0);
+//        rightRatchet.setPosition(0);
+        basket.setPosition(BASKET_IDLE);
+        climberSwitch.setPosition(UNDROPPED);
         systemTime = System.nanoTime();
         try {
             boschBNO055 = new AdafruitIMU(hardwareMap, "hydro"
@@ -97,6 +152,32 @@ public class IMUGyroOnlyTest extends OpMode {
         telemetry.addData("Max I2C read interval: ",
                 String.format("%4.4f ms. Average interval: %4.4f ms.", boschBNO055.maxReadInterval
                         , boschBNO055.avgReadInterval));
+        if(Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) {
+            motorBL.setPower(gamepad1.left_stick_y);
+            motorBR.setPower(-gamepad1.right_stick_y);
+            motorFR.setPower(-gamepad1.right_stick_y);
+            motorFL.setPower(gamepad1.left_stick_y);
+        } else {
+            motorBL.setPower(0);
+            motorBR.setPower(0);
+            motorFR.setPower(0);
+            motorFL.setPower(0);
+        }
+
+        if(gamepad1.a) {
+            motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorBL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorBR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorFL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        }
+
+        telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
+        telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
+        telemetry.addData("avg", (((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2));
     }
 
     /*

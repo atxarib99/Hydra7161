@@ -77,23 +77,23 @@ public abstract class MyOpMode extends OpMode {
 //        rightRatchet.setPosition(0);
         basket.setPosition(BASKET_IDLE);
         climberSwitch.setPosition(UNDROPPED);
-        telemetry.addData("gyro", "initializing...");
-
-        try {
-            gyro = new AdafruitIMU(hardwareMap, "hydro"
-
-                    //The following was required when the definition of the "I2cDevice" class was incomplete.
-                    //, "cdim", 5
-
-                    , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
-                    //addressing
-                    , (byte) AdafruitIMU.OPERATION_MODE_IMU);
-        } catch (RobotCoreException e){
-            Log.i("FtcRobotController", "Exception: " + e.getMessage());
-            telemetry.addData("gyro", "fail");
-        }
-
-        telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
+//        telemetry.addData("gyro", "initializing...");
+//
+//        try {
+//            gyro = new AdafruitIMU(hardwareMap, "hydro"
+//
+//                    //The following was required when the definition of the "I2cDevice" class was incomplete.
+//                    //, "cdim", 5
+//
+//                    , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
+//                    //addressing
+//                    , (byte) AdafruitIMU.OPERATION_MODE_IMU);
+//        } catch (RobotCoreException e){
+//            Log.i("FtcRobotController", "Exception: " + e.getMessage());
+//            telemetry.addData("gyro", "fail");
+//        }
+//
+//        telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
 
 
     }
