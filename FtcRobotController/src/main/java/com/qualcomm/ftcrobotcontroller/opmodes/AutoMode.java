@@ -40,6 +40,7 @@ public abstract class AutoMode extends LinearOpMode {
     public DeviceInterfaceModule cdim;
     public DigitalChannel rts;
     public DigitalChannel lts;
+    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     private boolean hit;
     private static final double UNDROPPED = 0;
     private static final double DROPPED = 1;
@@ -53,7 +54,7 @@ public abstract class AutoMode extends LinearOpMode {
     private static final double RIGHTDUMPER_UNDUMPED = 0;
     private static final double BASKET_LEFT = 0;
     private static final double BASKET_RIGHT = 1;
-    private static final double BASKET_IDLE = .35;
+    private static final double BASKET_IDLE = .5;
 
     public AutoMode() {
 
@@ -139,6 +140,40 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
 
+    public void rotate() throws InterruptedException {
+        waitOneFullHardwareCycle();
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        double angle = yawAngle[0];
+        while(angle > -15) {
+            waitOneFullHardwareCycle();
+            startMotors(.2, .2);
+            waitOneFullHardwareCycle();
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            waitOneFullHardwareCycle();
+            angle = yawAngle[0];
+        }
+        stopMotors();
+        while(angle < -20) {
+            waitOneFullHardwareCycle();
+            startMotors(-.2, -.2);
+            waitOneFullHardwareCycle();
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            waitOneFullHardwareCycle();
+            angle = yawAngle[0];
+        }
+        stopMotors();
+        while(angle > -10) {
+            waitOneFullHardwareCycle();
+            startMotors(.2, .2);
+            waitOneFullHardwareCycle();
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            waitOneFullHardwareCycle();
+            angle = yawAngle[0];
+        }
+        stopMotors();
+
+    }
+
     public void startManipulator() {
         manipulator.setPower(1);
     }
@@ -208,6 +243,7 @@ public abstract class AutoMode extends LinearOpMode {
         leftPaddle.setPosition(LEFTPADDLE_IN);
 //        leftRatchet.setPosition(0);
 //        rightRatchet.setPosition(0);
+        climberSwitch.setPosition(UNDROPPED);
         basket.setPosition(BASKET_IDLE);
         hit = false;
         rts = hardwareMap.digitalChannel.get("rts");
@@ -216,21 +252,21 @@ public abstract class AutoMode extends LinearOpMode {
         song.setLooping(true);
         song.seekTo(5000);
         song.start();
-//        try {
-//            gyro = new AdafruitIMU(hardwareMap, "hydro"
-//
-//                    //The following was required when the definition of the "I2cDevice" class was incomplete.
-//                    //, "cdim", 5
-//
-//                    , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
-//                    //addressing
-//                    , (byte) AdafruitIMU.OPERATION_MODE_IMU);
-//        } catch (RobotCoreException e){
-//            Log.i("FtcRobotController", "Exception: " + e.getMessage());
-//            telemetry.addData("gyro", "fail");
-//        }
-//
-//        telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
+        try {
+            gyro = new AdafruitIMU(hardwareMap, "hydro"
+
+                    //The following was required when the definition of the "I2cDevice" class was incomplete.
+                    //, "cdim", 5
+
+                    , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
+                    //addressing
+                    , (byte) AdafruitIMU.OPERATION_MODE_IMU);
+        } catch (RobotCoreException e){
+            Log.i("FtcRobotController", "Exception: " + e.getMessage());
+            telemetry.addData("gyro", "fail");
+        }
+
+        telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
         telemetry.addData("Auto", "Initialized Successfully!");
     }
 

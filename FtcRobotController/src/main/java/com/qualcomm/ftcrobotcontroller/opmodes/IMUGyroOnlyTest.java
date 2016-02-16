@@ -14,9 +14,12 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**
  * Created by Owner on 8/31/2015.
  */
-public class IMUGyroOnlyTest extends OpMode {
+public class IMUGyroOnlyTest extends MyOpMode {
 
-    AdafruitIMU boschBNO055;
+
+    //The following arrays contain both the Euler angles reported by the IMU (indices = 0) AND the
+    // Tait-Bryan angles calculated from the 4 components of the quaternion vector (indices = 1)
+    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     private static final double UNDROPPED = 0;
     private static final double DROPPED = 1;
     private static final double RIGHTPADDLE_OUT = 0;
@@ -27,27 +30,6 @@ public class IMUGyroOnlyTest extends OpMode {
     private static final double BASKET_IDLE = .5;
     private static final double BASKET_LEFT = 1;
     private static final double BASKET_RIGHT = 0;
-    public AdafruitIMU gyro;
-    public DcMotor motorBL;
-    public DcMotor motorBR;
-    public DcMotor motorFL;
-    public DcMotor motorFR;
-    public DcMotor manipulator;
-    public DcMotor liftL;
-    public DcMotor liftR;
-    public Servo climberSwitch;
-    //    public Servo rightRatchet;
-//    public Servo leftRatchet;
-    public Servo rightPaddle;
-    public Servo leftPaddle;
-    public Servo basket;
-    public DeviceInterfaceModule cdim;
-    public DigitalChannel rts;
-    public DigitalChannel lts;
-
-    //The following arrays contain both the Euler angles reported by the IMU (indices = 0) AND the
-    // Tait-Bryan angles calculated from the 4 components of the quaternion vector (indices = 1)
-    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
 
     long systemTime;//Relevant values of System.nanoTime
 
@@ -57,6 +39,7 @@ public class IMUGyroOnlyTest extends OpMode {
      */
     @Override
     public void init() {
+
         motorBL = hardwareMap.dcMotor.get("BL");
         manipulator = hardwareMap.dcMotor.get("mani");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
@@ -80,9 +63,10 @@ public class IMUGyroOnlyTest extends OpMode {
 //        rightRatchet.setPosition(0);
         basket.setPosition(BASKET_IDLE);
         climberSwitch.setPosition(UNDROPPED);
-        systemTime = System.nanoTime();
+        telemetry.addData("gyro", "initializing...");
+
         try {
-            boschBNO055 = new AdafruitIMU(hardwareMap, "hydro"
+            gyro = new AdafruitIMU(hardwareMap, "hydro"
 
                     //The following was required when the definition of the "I2cDevice" class was incomplete.
                     //, "cdim", 5
@@ -92,15 +76,9 @@ public class IMUGyroOnlyTest extends OpMode {
                     , (byte) AdafruitIMU.OPERATION_MODE_IMU);
         } catch (RobotCoreException e){
             Log.i("FtcRobotController", "Exception: " + e.getMessage());
+            telemetry.addData("gyro", "fail");
         }
-        Log.i("FtcRobotController", "IMU Init method finished in: "
-                + (-(systemTime - (systemTime = System.nanoTime()))) + " ns.");
-        //ADDRESS_B is the "standard" I2C bus address for the Bosch BNO055 (IMU data sheet, p. 90).
-        //BUT DAVID PIERCE, MENTOR OF TEAM 8886, HAS EXAMINED THE SCHEMATIC FOR THE ADAFRUIT BOARD ON
-        //WHICH THE IMU CHIP IS MOUNTED. SINCE THE SCHEMATIC SHOWS THAT THE COM3 PIN IS PULLED LOW,
-        //ADDRESS_A IS THE IMU'S OPERATIVE I2C BUS ADDRESS
-        //IMU is an appropriate operational mode for FTC competitions. (See the IMU datasheet, Table
-        // 3-3, p.20 and Table 3-5, p.21.)
+        telemetry.addData("init", "pass");
     }
 
     /************************************************************************************************
@@ -117,7 +95,7 @@ public class IMUGyroOnlyTest extends OpMode {
       	* runs.
     		*/
         systemTime = System.nanoTime();
-        boschBNO055.startIMU();//Set up the IMU as needed for a continual stream of I2C reads.
+        gyro.startIMU();//Set up the IMU as needed for a continual stream of I2C reads.
         Log.i("FtcRobotController", "IMU Start method finished in: "
                 + (-(systemTime - (systemTime = System.nanoTime()))) + " ns.");
     }
@@ -140,7 +118,7 @@ public class IMUGyroOnlyTest extends OpMode {
         // write the values computed by the "worker" threads to the motors (if any)
 
         //Read the encoder values that the "worker" threads will use in their computations
-        boschBNO055.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
 		/*
 		 * Send whatever telemetry data you want back to driver station.
 		 */
@@ -150,8 +128,8 @@ public class IMUGyroOnlyTest extends OpMode {
         telemetry.addData("Pitches: ",
                 String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
         telemetry.addData("Max I2C read interval: ",
-                String.format("%4.4f ms. Average interval: %4.4f ms.", boschBNO055.maxReadInterval
-                        , boschBNO055.avgReadInterval));
+                String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
+                        , gyro.avgReadInterval));
         if(Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) {
             motorBL.setPower(gamepad1.left_stick_y);
             motorBR.setPower(-gamepad1.right_stick_y);
