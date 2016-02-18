@@ -63,14 +63,14 @@ public class TeleOP extends MyOpMode {
         if(gamepad2.a) {
             dumpClimbers();
         }
-        if(gamepad2.right_stick_button) {
+        if(gamepad1.a) {
             mani = 1;
         }
 
-        if(gamepad2.left_stick_button) {
+        if(gamepad1.b) {
             mani = 0;
         }
-        if(gamepad2.right_stick_y > .95 && gamepad2.left_stick_y > .95) {
+        if(gamepad1.x) {
             mani = -1;
         }
 

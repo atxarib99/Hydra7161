@@ -25,11 +25,15 @@ public class Autonomous2 extends AutoMode {
 
         waitOneFullHardwareCycle();
 
-        rotate();
+        if(allIsOk()) {
+            rotate();
+        }
 
         waitOneFullHardwareCycle();
 
-        dumpClimbers();
+        if(allIsOk()) {
+            dumpClimbers();
+        }
 
         waitOneFullHardwareCycle();
     }

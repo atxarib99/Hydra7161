@@ -5,6 +5,7 @@
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -31,6 +32,7 @@ public abstract class MyOpMode extends OpMode {
     private static final double BASKET_IDLE = .5;
     private static final double BASKET_LEFT = 1;
     private static final double BASKET_RIGHT = 0;
+    public boolean running;
     public AdafruitIMU gyro;
     public DcMotor motorBL;
     public DcMotor motorBR;
@@ -65,6 +67,7 @@ public abstract class MyOpMode extends OpMode {
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
         basket = hardwareMap.servo.get("basket");
+        running = false;
 
         climberSwitch = hardwareMap.servo.get("switch");
 //        rightRatchet = hardwareMap.servo.get("ratchetR");
@@ -148,11 +151,25 @@ public abstract class MyOpMode extends OpMode {
 
 
     public void dumpRight() {
-        basket.setPosition(BASKET_RIGHT);
+        if(running) {
+            basket.setPosition(BASKET_IDLE);
+            running = false;
+        }
+        else {
+            basket.setPosition(BASKET_RIGHT);
+            running = true;
+        }
     }
 
     public void dumpleft() {
-        basket.setPosition(BASKET_LEFT);
+        if(running) {
+            basket.setPosition(BASKET_IDLE);
+            running = false;
+        }
+        else {
+            basket.setPosition(BASKET_LEFT);
+            running = true;
+        }
     }
 
     public void dumpIdle() {

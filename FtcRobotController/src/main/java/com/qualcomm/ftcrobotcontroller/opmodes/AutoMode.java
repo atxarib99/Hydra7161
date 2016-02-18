@@ -63,7 +63,7 @@ public abstract class AutoMode extends LinearOpMode {
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
         telemetry.addData("Auto", "Moving Forwards");
-        while(!hit && (encoderVal > getBackWheelAvg())) {
+        while(!hit && (encoderVal > getBackWheelAvg()) && isOk()) {
             waitOneFullHardwareCycle();
             startMotors(pow, pow);
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
@@ -221,6 +221,29 @@ public abstract class AutoMode extends LinearOpMode {
     public int getBackWheelAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition())))
                 / 2;
+    }
+
+    public boolean isOk() throws InterruptedException {
+        waitOneFullHardwareCycle();
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        waitOneFullHardwareCycle();
+        double angle = pitchAngle[0];
+        if(angle > .5) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean allIsOk() throws InterruptedException {
+        waitOneFullHardwareCycle();
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        waitOneFullHardwareCycle();
+        double rotate = yawAngle[0];
+        double pitch = pitchAngle[0];
+        if((rotate < 17 && rotate > 13) && pitch < 1) {
+            return true;
+        }
+        return false;
     }
 
 

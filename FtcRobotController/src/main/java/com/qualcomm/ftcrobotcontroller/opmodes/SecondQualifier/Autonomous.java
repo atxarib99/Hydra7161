@@ -25,7 +25,9 @@ public class Autonomous extends AutoMode {
 
         waitOneFullHardwareCycle();
 
-        dumpClimbers();
+        if(isOk()) {
+            dumpClimbers();
+        }
 
         waitOneFullHardwareCycle();
     }
