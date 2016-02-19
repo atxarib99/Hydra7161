@@ -235,12 +235,12 @@ public abstract class MyOpMode extends OpMode {
         liftR.setPower(pow);
     }
     public void lowerLeftLift() {
-        liftL.setPower(-.5);
+        liftL.setPower(-.75);
     }
     public void lowerRightLift() {
-        liftR.setPower(.5);
+        liftR.setPower(.75);
     }
-
+//lolz
     public void stopLifts() {
         liftL.setPower(0);
         liftR.setPower(0);

@@ -271,7 +271,7 @@ public abstract class AutoMode extends LinearOpMode {
         hit = false;
         rts = hardwareMap.digitalChannel.get("rts");
         lts = hardwareMap.digitalChannel.get("lts");
-        song = MediaPlayer.create(FtcRobotControllerActivity.getContext(), R.raw.fsong);
+        song = MediaPlayer.create(FtcRobotControllerActivity.getContext(), R.raw.move);
         song.setLooping(true);
         song.seekTo(5000);
         song.start();
