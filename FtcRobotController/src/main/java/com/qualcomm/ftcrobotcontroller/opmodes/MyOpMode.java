@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
@@ -19,6 +20,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.robocol.Telemetry;
+
+import java.net.Inet4Address;
 import java.util.concurrent.TimeUnit;
 
 public abstract class MyOpMode extends OpMode {
@@ -32,8 +35,10 @@ public abstract class MyOpMode extends OpMode {
     private static final double BASKET_IDLE = .5;
     private static final double BASKET_LEFT = 1;
     private static final double BASKET_RIGHT = 0;
+    private static final String LOG_TAG = MyOpMode.class.getSimpleName();
     public boolean running;
     public AdafruitIMU gyro;
+    public ColorSensor color;
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
@@ -67,6 +72,7 @@ public abstract class MyOpMode extends OpMode {
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
         basket = hardwareMap.servo.get("basket");
+        color = hardwareMap.colorSensor.get("color");
         running = false;
 
         climberSwitch = hardwareMap.servo.get("switch");
@@ -75,11 +81,6 @@ public abstract class MyOpMode extends OpMode {
         rightPaddle = hardwareMap.servo.get("rPad");
         leftPaddle = hardwareMap.servo.get("lPad");
         rightPaddle.setPosition(RIGHTPADDLE_IN);
-        leftPaddle.setPosition(LEFTPADDLE_IN);
-//        leftRatchet.setPosition(0);
-//        rightRatchet.setPosition(0);
-        basket.setPosition(BASKET_IDLE);
-        climberSwitch.setPosition(UNDROPPED);
         telemetry.addData("gyro", "initializing...");
 
         try {
@@ -91,13 +92,30 @@ public abstract class MyOpMode extends OpMode {
                     , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
                     //addressing
                     , (byte) AdafruitIMU.OPERATION_MODE_IMU);
+            try {
+                Thread.sleep(5000);
+            } catch(InterruptedException e) {
+                Log.i(LOG_TAG, e.getMessage());
+            }
+
+            gyro.startIMU();
         } catch (RobotCoreException e){
-            Log.i("FtcRobotController", "Exception: " + e.getMessage());
+            Log.i(LOG_TAG, e.getMessage());
             telemetry.addData("gyro", "fail");
         }
         telemetry.addData("init", "pass");
 
 
+    }
+
+    @Override
+    public void start() {
+        gyro.startIMU();
+        leftPaddle.setPosition(LEFTPADDLE_IN);
+//        leftRatchet.setPosition(0);
+//        rightRatchet.setPosition(0);
+        basket.setPosition(BASKET_IDLE);
+        climberSwitch.setPosition(UNDROPPED);
     }
 
     public void dumpClimbers() {

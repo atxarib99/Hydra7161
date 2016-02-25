@@ -12,6 +12,7 @@ import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
@@ -38,6 +39,7 @@ public abstract class AutoMode extends LinearOpMode {
     public MediaPlayer song;
     public Servo basket;
     public DeviceInterfaceModule cdim;
+    public ColorSensor color;
     public DigitalChannel rts;
     public DigitalChannel lts;
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
@@ -63,13 +65,28 @@ public abstract class AutoMode extends LinearOpMode {
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
         telemetry.addData("Auto", "Moving Forwards");
-        while(!hit && (encoderVal > getBackWheelAvg()) && isOk()) {
+        resetGyro();
+        double angle;
+        while(!hit && (encoderVal > getBackWheelAvg())) {
             waitOneFullHardwareCycle();
-            startMotors(pow, pow);
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
             telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
             telemetry.addData("avg", getBackWheelAvg());
             waitOneFullHardwareCycle();
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            angle = yawAngle[0];
+            if(angle > 2) {
+                startMotors(pow, (pow / 2));
+                waitOneFullHardwareCycle();
+            }
+            else if(angle < -2) {
+                startMotors((pow / 2), pow);
+                waitOneFullHardwareCycle();
+            }
+            else {
+                startMotors(pow, pow);
+                waitOneFullHardwareCycle();
+            }
             if(rts.getState() || lts.getState()) {
                 hit = true;
             }
@@ -102,6 +119,11 @@ public abstract class AutoMode extends LinearOpMode {
     public void resetClimbers() throws InterruptedException {
         waitOneFullHardwareCycle();
         climberSwitch.setPosition(UNDROPPED);
+    }
+
+    public void resetGyro() throws InterruptedException {
+        gyro.startIMU();
+        waitOneFullHardwareCycle();
     }
 
 //    public void dropRatchets() {
@@ -142,6 +164,7 @@ public abstract class AutoMode extends LinearOpMode {
 
     public void rotate() throws InterruptedException {
         waitOneFullHardwareCycle();
+        resetGyro();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double angle = yawAngle[0];
         while(angle > -15) {
@@ -271,6 +294,7 @@ public abstract class AutoMode extends LinearOpMode {
         hit = false;
         rts = hardwareMap.digitalChannel.get("rts");
         lts = hardwareMap.digitalChannel.get("lts");
+        color = hardwareMap.colorSensor.get("color");
         song = MediaPlayer.create(FtcRobotControllerActivity.getContext(), R.raw.move);
         song.setLooping(true);
         song.seekTo(5000);
@@ -288,6 +312,7 @@ public abstract class AutoMode extends LinearOpMode {
             Log.i("FtcRobotController", "Exception: " + e.getMessage());
             telemetry.addData("gyro", "fail");
         }
+
 
         telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
         telemetry.addData("Auto", "Initialized Successfully!");
