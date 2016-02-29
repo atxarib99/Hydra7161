@@ -39,7 +39,7 @@ public abstract class AutoMode extends LinearOpMode {
     public MediaPlayer song;
     public Servo basket;
     public DeviceInterfaceModule cdim;
-    public ColorSensor color;
+    public ColorSensor sensorRGB;
     public DigitalChannel rts;
     public DigitalChannel lts;
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
@@ -294,7 +294,7 @@ public abstract class AutoMode extends LinearOpMode {
         hit = false;
         rts = hardwareMap.digitalChannel.get("rts");
         lts = hardwareMap.digitalChannel.get("lts");
-        color = hardwareMap.colorSensor.get("color");
+        sensorRGB = hardwareMap.colorSensor.get("color");
         song = MediaPlayer.create(FtcRobotControllerActivity.getContext(), R.raw.move);
         song.setLooping(true);
         song.seekTo(5000);

@@ -67,10 +67,10 @@ import com.qualcomm.robotcore.hardware.DigitalChannelController;
  * You can use the X button on either gamepad to turn the LED on and off.
  *
  */
-public class AdafruitRGBExample extends LinearOpMode {
+public class AdafruitRGBExample extends AutoMode {
 
-  ColorSensor sensorRGB;
-  DeviceInterfaceModule cdim;
+//  ColorSensor sensorRGB;
+//  DeviceInterfaceModule cdim;
 
   // we assume that the LED pin of the RGB sensor is connected to
   // digital port 5 (zero indexed).
@@ -81,6 +81,11 @@ public class AdafruitRGBExample extends LinearOpMode {
 
     // write some device information (connection info, name and type)
     // to the log file.
+    first();
+
+    //wait one cycle
+    waitOneFullHardwareCycle();
+
     hardwareMap.logDevices();
 
     // get a reference to our DeviceInterfaceModule object.
@@ -92,7 +97,7 @@ public class AdafruitRGBExample extends LinearOpMode {
     cdim.setDigitalChannelMode(LED_CHANNEL, DigitalChannelController.Mode.OUTPUT);
 
     // get a reference to our ColorSensor object.
-    sensorRGB = hardwareMap.colorSensor.get("lady");
+    sensorRGB = hardwareMap.colorSensor.get("color");
 
     // bEnabled represents the state of the LED.
     boolean bEnabled = true;
