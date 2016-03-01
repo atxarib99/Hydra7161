@@ -42,7 +42,7 @@ public abstract class AutoMode extends LinearOpMode {
     public ColorSensor sensorRGB;
     public DigitalChannel rts;
     public DigitalChannel lts;
-    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
+    static volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     private boolean hit;
     private static final double UNDROPPED = 0;
     private static final double DROPPED = 1;
@@ -67,24 +67,29 @@ public abstract class AutoMode extends LinearOpMode {
         telemetry.addData("Auto", "Moving Forwards");
         resetGyro();
         double angle;
+        sendData();
         while(!hit && (encoderVal > getBackWheelAvg())) {
             waitOneFullHardwareCycle();
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
             telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
             telemetry.addData("avg", getBackWheelAvg());
+            sendData();
             waitOneFullHardwareCycle();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             angle = yawAngle[0];
             if(angle > 2) {
                 startMotors(pow, (pow / 2));
+                sendData();
                 waitOneFullHardwareCycle();
             }
             else if(angle < -2) {
                 startMotors((pow / 2), pow);
                 waitOneFullHardwareCycle();
+                sendData();
             }
             else {
                 startMotors(pow, pow);
+                sendData();
                 waitOneFullHardwareCycle();
             }
             if(rts.getState() || lts.getState()) {
@@ -93,6 +98,7 @@ public abstract class AutoMode extends LinearOpMode {
         }
         waitOneFullHardwareCycle();
         stopMotors();
+        sendData();
         waitOneFullHardwareCycle();
     }
 
@@ -165,9 +171,11 @@ public abstract class AutoMode extends LinearOpMode {
     public void rotate() throws InterruptedException {
         waitOneFullHardwareCycle();
         resetGyro();
+        sendData();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double angle = yawAngle[0];
         while(angle > -15) {
+            sendData();
             waitOneFullHardwareCycle();
             startMotors(.2, .2);
             waitOneFullHardwareCycle();
@@ -179,6 +187,7 @@ public abstract class AutoMode extends LinearOpMode {
         while(angle < -20) {
             waitOneFullHardwareCycle();
             startMotors(-.2, -.2);
+            sendData();
             waitOneFullHardwareCycle();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             waitOneFullHardwareCycle();
@@ -188,12 +197,14 @@ public abstract class AutoMode extends LinearOpMode {
         while(angle > -10) {
             waitOneFullHardwareCycle();
             startMotors(.2, .2);
+            sendData();
             waitOneFullHardwareCycle();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             waitOneFullHardwareCycle();
             angle = yawAngle[0];
         }
         stopMotors();
+        sendData();
 
     }
 
@@ -269,6 +280,22 @@ public abstract class AutoMode extends LinearOpMode {
         return false;
     }
 
+    public void sendData() {
+        telemetry.addData("Headings(yaw): ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
+        telemetry.addData("Pitches: ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
+        telemetry.addData("Max I2C read interval: ",
+                String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
+                        , gyro.avgReadInterval));
+        telemetry.addData("Clear", sensorRGB.alpha());
+        telemetry.addData("Red  ", sensorRGB.red());
+        telemetry.addData("Green", sensorRGB.green());
+        telemetry.addData("Blue ", sensorRGB.blue());
+
+
+    }
+
 
     public final void first() {
         motorBL = hardwareMap.dcMotor.get("BL");
@@ -312,6 +339,8 @@ public abstract class AutoMode extends LinearOpMode {
             Log.i("FtcRobotController", "Exception: " + e.getMessage());
             telemetry.addData("gyro", "fail");
         }
+
+        hardwareMap.logDevices();
 
 
         telemetry.addData("gyro", gyro == null? "BAD":"GOOD");

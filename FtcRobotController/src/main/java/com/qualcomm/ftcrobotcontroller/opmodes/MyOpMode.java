@@ -36,9 +36,10 @@ public abstract class MyOpMode extends OpMode {
     private static final double BASKET_LEFT = 1;
     private static final double BASKET_RIGHT = 0;
     private static final String LOG_TAG = MyOpMode.class.getSimpleName();
+    static volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     public boolean running;
     public AdafruitIMU gyro;
-    public ColorSensor color;
+    public ColorSensor sensorRGB;
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
@@ -72,7 +73,7 @@ public abstract class MyOpMode extends OpMode {
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
         basket = hardwareMap.servo.get("basket");
-        color = hardwareMap.colorSensor.get("color");
+        sensorRGB = hardwareMap.colorSensor.get("color");
         running = false;
 
         climberSwitch = hardwareMap.servo.get("switch");
@@ -223,6 +224,21 @@ public abstract class MyOpMode extends OpMode {
     public void raiseLifts(double pow) {
         liftL.setPower(pow);
         liftR.setPower(-pow);
+    }
+    public void sendData() {
+        telemetry.addData("Headings(yaw): ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
+        telemetry.addData("Pitches: ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
+        telemetry.addData("Max I2C read interval: ",
+                String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
+                        , gyro.avgReadInterval));
+        telemetry.addData("Clear", sensorRGB.alpha());
+        telemetry.addData("Red  ", sensorRGB.red());
+        telemetry.addData("Green", sensorRGB.green());
+        telemetry.addData("Blue ", sensorRGB.blue());
+
+
     }
     public void raiseRightLift(double pow) {
         liftR.setPower(-pow);

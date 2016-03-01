@@ -35,22 +35,11 @@ public class TeleOP extends MyOpMode {
             stopRightLift();
         }
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-
-        telemetry.addData("Headings(yaw): ",
-                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
-        telemetry.addData("Pitches: ",
-                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
-        telemetry.addData("Max I2C read interval: ",
-                String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
-                        , gyro.avgReadInterval));
         telemetry.addData("encoderAvg", getBackWheelAvg());
         telemetry.addData("encoderBL", motorBL.getCurrentPosition());
         telemetry.addData("encoderBR", motorBR.getCurrentPosition());
 
-        telemetry.addData("Clear", color.alpha());
-        telemetry.addData("Red  ", color.red());
-        telemetry.addData("Green", color.green());
-        telemetry.addData("Blue ", color.blue());
+        sendData();
 
         if(gamepad1.right_bumper) {
             extendRightPaddle();
@@ -80,6 +69,9 @@ public class TeleOP extends MyOpMode {
         }
         if(gamepad1.x) {
             mani = -1;
+        }
+        if(gamepad1.y) {
+            resetEncoders();
         }
 
         if(gamepad2.y) {

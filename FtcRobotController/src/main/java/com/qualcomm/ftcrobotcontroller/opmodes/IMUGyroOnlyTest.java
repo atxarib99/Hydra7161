@@ -123,13 +123,7 @@ public class IMUGyroOnlyTest extends MyOpMode {
 		 * Send whatever telemetry data you want back to driver station.
 		 */
         //telemetry.addData("Text", "*** Robot Data***");
-        telemetry.addData("Headings(yaw): ",
-                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
-        telemetry.addData("Pitches: ",
-                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
-        telemetry.addData("Max I2C read interval: ",
-                String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
-                        , gyro.avgReadInterval));
+
         if(Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y) > .05) {
             motorBL.setPower(gamepad1.left_stick_y);
             motorBR.setPower(-gamepad1.right_stick_y);

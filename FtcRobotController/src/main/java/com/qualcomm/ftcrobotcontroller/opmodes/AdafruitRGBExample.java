@@ -124,12 +124,22 @@ public class AdafruitRGBExample extends AutoMode {
     // bPrevState and bCurrState represent the previous and current state of the button.
     boolean bPrevState = false;
     boolean bCurrState = false;
+    resetGyro();
 
     // while the op mode is active, loop and read the RGB data.
     // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
     while (opModeIsActive()) {
       // check the status of the x button on either gamepad.
       bCurrState = gamepad1.x || gamepad2.x;
+      gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+      telemetry.addData("Headings(yaw): ",
+              String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
+      telemetry.addData("Pitches: ",
+              String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
+      telemetry.addData("Max I2C read interval: ",
+              String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
+                      , gyro.avgReadInterval));
+
 
       // check for button state transitions.
       if (bCurrState == true && bCurrState != bPrevState)  {
