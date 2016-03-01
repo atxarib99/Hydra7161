@@ -233,6 +233,15 @@ public abstract class AutoMode extends LinearOpMode {
 
     }
 
+    //P loop for Pid
+    public void pRotateLeft(double pow, double angle) throws InterruptedException {
+        resetGyro();
+        double power = pow;
+        double angleTo = angle;
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        double currentAngle = yawAngle[0];
+        while (currentAngle < )
+    }
     //start the manipulator
     public void startManipulator() {
         manipulator.setPower(1);

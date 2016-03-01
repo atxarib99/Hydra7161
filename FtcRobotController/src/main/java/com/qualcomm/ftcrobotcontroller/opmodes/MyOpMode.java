@@ -261,6 +261,13 @@ public abstract class MyOpMode extends OpMode {
         liftR.setPower(-pow);
     }
 
+    //this method is supposed to be continually called to find the white line
+    public boolean findWhileLine() {
+        if(sensorRGB.red() > 1000 && sensorRGB.green() > 1000 && sensorRGB.blue() > 1000) {
+            return true;
+        }
+        return false;
+    }
     //raise only the left lift
     public void raiseLeftLift(double pow) {
         liftL.setPower(pow);
