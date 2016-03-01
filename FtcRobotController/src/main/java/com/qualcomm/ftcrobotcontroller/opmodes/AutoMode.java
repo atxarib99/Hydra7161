@@ -23,7 +23,10 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.RobotLog;
 
 public abstract class AutoMode extends LinearOpMode {
+    //Adafruit BNO055 gyro
     public AdafruitIMU gyro;
+
+    //motors
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
@@ -31,19 +34,27 @@ public abstract class AutoMode extends LinearOpMode {
     public DcMotor manipulator;
     public DcMotor liftL;
     public DcMotor liftR;
+
+    //servos
     public Servo climberSwitch;
-    //    public Servo rightRatchet;
-//    public Servo leftRatchet;
     public Servo rightPaddle;
     public Servo leftPaddle;
-    public MediaPlayer song;
     public Servo basket;
+
+    //MediaPlayer object to get the RobotController to play sounds
+    public MediaPlayer song;
+
+    //DeviceInterfaveModule for sensors
     public DeviceInterfaceModule cdim;
-    public ColorSensor sensorRGB;
-    public DigitalChannel rts;
-    public DigitalChannel lts;
+    public ColorSensor sensorRGB;       //Adafruit color sensor
+    public DigitalChannel rts;          //right touch sensor
+    public DigitalChannel lts;          //left touch sensor
+
+    //volatile double array to hold gyro angle
     static volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
     private boolean hit;
+
+    //static final variables to hold servo positions
     private static final double UNDROPPED = 0;
     private static final double DROPPED = 1;
     private static final double RIGHTPADDLE_OUT = .75;
@@ -58,16 +69,22 @@ public abstract class AutoMode extends LinearOpMode {
     private static final double BASKET_RIGHT = 1;
     private static final double BASKET_IDLE = .5;
 
+    //constructor
     public AutoMode() {
-
+        super(); //ADDED ON 3/1/2016
     }
 
-
+    //This method moves forward at a given power to a given encoder value
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
+        //notifies Driver Station of current event
         telemetry.addData("Auto", "Moving Forwards");
+
+        //resets the Gyro's angle
         resetGyro();
         double angle;
         sendData();
+
+        //while target is not reached
         while(!hit && (encoderVal > getBackWheelAvg())) {
             waitOneFullHardwareCycle();
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
@@ -77,31 +94,36 @@ public abstract class AutoMode extends LinearOpMode {
             waitOneFullHardwareCycle();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             angle = yawAngle[0];
+
+            //if off to the left, correct
             if(angle > 2) {
                 startMotors(pow, (pow / 2));
                 sendData();
                 waitOneFullHardwareCycle();
-            }
-            else if(angle < -2) {
+            } else if(angle < -2) { //if off to the right, correct
                 startMotors((pow / 2), pow);
                 waitOneFullHardwareCycle();
                 sendData();
-            }
-            else {
+            } else { //if heading is fine keep moving straight
                 startMotors(pow, pow);
                 sendData();
                 waitOneFullHardwareCycle();
             }
+
+            //Check if touch sensors are hit
             if(rts.getState() || lts.getState()) {
                 hit = true;
             }
         }
+
+        //once finished stop moving and send data
         waitOneFullHardwareCycle();
         stopMotors();
         sendData();
         waitOneFullHardwareCycle();
     }
 
+    //raise lifts for a certain amount of time due to lack of encoders.
     public void raiseLifts(double pow, int time) throws InterruptedException {
         ElapsedTime thisTime = new ElapsedTime();
         thisTime.startTime();
@@ -117,48 +139,47 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
 
+    //dispense climbers into shelter
     public void dumpClimbers() throws InterruptedException {
         waitOneFullHardwareCycle();
         climberSwitch.setPosition(DROPPED);
     }
 
+    //reset the climber bar
     public void resetClimbers() throws InterruptedException {
         waitOneFullHardwareCycle();
         climberSwitch.setPosition(UNDROPPED);
     }
 
+    //reset the gyro and its angles
     public void resetGyro() throws InterruptedException {
         gyro.startIMU();
         waitOneFullHardwareCycle();
     }
 
-//    public void dropRatchets() {
-//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//    }
-//
-//    public void undoRatchets() {
-//        leftRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//        rightRatchet.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-//
-//    }
-
+    //extend both paddles
     public void extendPaddles() {
-        rightPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
-        leftPaddle.setPosition(0); //TODO: UPDATE THESE VALUES LATER
+        rightPaddle.setPosition(RIGHTPADDLE_OUT);
+        leftPaddle.setPosition(LEFTPADDLE_OUT);
     }
     public void retractPaddles() {
-        rightPaddle.setPosition(0); //TODO: UPDATE THESE VALUES LATER
-        leftPaddle.setPosition(1); //TODO: UPDATE THESE VALUES LATER
+        rightPaddle.setPosition(RIGHTPADDLE_IN);
+        leftPaddle.setPosition(LEFTPADDLE_IN);
     }
 
+    //start the motors in a tank drive
     public void startMotors(double ri, double le) throws InterruptedException {
         motorBL.setPower(le);
+        waitOneFullHardwareCycle();
         motorBR.setPower(-ri);
+        waitOneFullHardwareCycle();
         motorFL.setPower(le);
+        waitOneFullHardwareCycle();
         motorFR.setPower(-ri);
+        waitOneFullHardwareCycle();
     }
 
+    //stop all the motors
     public void stopMotors() throws InterruptedException {
         waitOneFullHardwareCycle();
         motorBL.setPower(0);
@@ -168,12 +189,14 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
 
+    //rotate the robot //TODO: ADD PID CONTROL
     public void rotate() throws InterruptedException {
         waitOneFullHardwareCycle();
         resetGyro();
         sendData();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double angle = yawAngle[0];
+        //while current angle is greater than desired angle
         while(angle > -15) {
             sendData();
             waitOneFullHardwareCycle();
@@ -184,6 +207,7 @@ public abstract class AutoMode extends LinearOpMode {
             angle = yawAngle[0];
         }
         stopMotors();
+        //if overshot
         while(angle < -20) {
             waitOneFullHardwareCycle();
             startMotors(-.2, -.2);
@@ -194,6 +218,7 @@ public abstract class AutoMode extends LinearOpMode {
             angle = yawAngle[0];
         }
         stopMotors();
+        //if undershot
         while(angle > -10) {
             waitOneFullHardwareCycle();
             startMotors(.2, .2);
@@ -208,18 +233,22 @@ public abstract class AutoMode extends LinearOpMode {
 
     }
 
+    //start the manipulator
     public void startManipulator() {
         manipulator.setPower(1);
     }
 
+    //stop the manipulator
     public void stopManipulator() {
         manipulator.setPower(0);
     }
 
+    //reverse the manipulator
     public void reverseManipulator() {
         manipulator.setPower(-1);
     }
 
+    //reset the encoders
     public void resetEncoders() throws InterruptedException {
         while(Math.abs(motorBL.getCurrentPosition()) > 25 || Math.abs(motorBR.getCurrentPosition()) > 25) {
             motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
@@ -236,27 +265,32 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
 
+    //lower the lifts
     public void lowerLifts(double pow) {
         liftL.setPower(-pow);
         liftR.setPower(pow);
     }
 
+    //stops the lifts
     public void stopLifts() {
         liftL.setPower(0);
         liftR.setPower(0);
     }
 
+    //get the encoder average of all the wheels
     public int getEncoderAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))
                 + (Math.abs(motorFL.getCurrentPosition())) + (Math.abs(motorFR.getCurrentPosition())))
                 / 4;
     }
 
+    //get the encoder average of the back wheels
     public int getBackWheelAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition())))
                 / 2;
     }
 
+    //check to be sure if pitch is ok
     public boolean isOk() throws InterruptedException {
         waitOneFullHardwareCycle();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
@@ -268,6 +302,7 @@ public abstract class AutoMode extends LinearOpMode {
         return true;
     }
 
+    //check to see if heading and pitch are ok after rotation
     public boolean allIsOk() throws InterruptedException {
         waitOneFullHardwareCycle();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
@@ -280,6 +315,7 @@ public abstract class AutoMode extends LinearOpMode {
         return false;
     }
 
+    //get and telemetry data to Driver Station
     public void sendData() {
         telemetry.addData("Headings(yaw): ",
                 String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
@@ -296,7 +332,7 @@ public abstract class AutoMode extends LinearOpMode {
 
     }
 
-
+    //Hardware map and initialize motors and servos
     public final void first() {
         motorBL = hardwareMap.dcMotor.get("BL");
         manipulator = hardwareMap.dcMotor.get("mani");

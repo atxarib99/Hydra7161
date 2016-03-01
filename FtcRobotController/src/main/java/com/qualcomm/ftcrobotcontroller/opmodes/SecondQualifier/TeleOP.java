@@ -34,7 +34,6 @@ public class TeleOP extends MyOpMode {
         else {
             stopRightLift();
         }
-        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         telemetry.addData("encoderAvg", getBackWheelAvg());
         telemetry.addData("encoderBL", motorBL.getCurrentPosition());
         telemetry.addData("encoderBR", motorBR.getCurrentPosition());

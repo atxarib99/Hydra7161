@@ -5,7 +5,6 @@
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
-import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -15,16 +14,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.robocol.Telemetry;
-
-import java.net.Inet4Address;
-import java.util.concurrent.TimeUnit;
 
 public abstract class MyOpMode extends OpMode {
+    //static finals variables to hold servo values.
     private static final double UNDROPPED = 0;
     private static final double DROPPED = 1;
     private static final double RIGHTPADDLE_OUT = 0;
@@ -35,11 +28,17 @@ public abstract class MyOpMode extends OpMode {
     private static final double BASKET_IDLE = .5;
     private static final double BASKET_LEFT = 1;
     private static final double BASKET_RIGHT = 0;
+    //final String for logging
     private static final String LOG_TAG = MyOpMode.class.getSimpleName();
-    static volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
+    //volatile double to store gyro values
+    volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
+    //boolean to hold value if basket is running
     public boolean running;
+    //The AdafruitIMU BNO055 gyro
     public AdafruitIMU gyro;
+    //Adafruit colorsensor
     public ColorSensor sensorRGB;
+    //motors
     public DcMotor motorBL;
     public DcMotor motorBR;
     public DcMotor motorFL;
@@ -47,41 +46,44 @@ public abstract class MyOpMode extends OpMode {
     public DcMotor manipulator;
     public DcMotor liftL;
     public DcMotor liftR;
+    //servos
     public Servo climberSwitch;
-//    public Servo rightRatchet;
-//    public Servo leftRatchet;
     public Servo rightPaddle;
     public Servo leftPaddle;
     public Servo basket;
+    //Device Interface Module for sensors
     public DeviceInterfaceModule cdim;
+    //Two Touch sensors
     public DigitalChannel rts;
     public DigitalChannel lts;
+    //constructor
     public MyOpMode() {
         super();
     }
 
     @Override
     public void init() {
+        //hardware mapping
         motorBL = hardwareMap.dcMotor.get("BL");
-        manipulator = hardwareMap.dcMotor.get("mani");
-        cdim = hardwareMap.deviceInterfaceModule.get("dim");
-        rts = hardwareMap.digitalChannel.get("rts");
-        lts = hardwareMap.digitalChannel.get("lts");
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
         liftL = hardwareMap.dcMotor.get("liftL");
         liftR = hardwareMap.dcMotor.get("liftR");
-        basket = hardwareMap.servo.get("basket");
-        sensorRGB = hardwareMap.colorSensor.get("color");
-        running = false;
+        manipulator = hardwareMap.dcMotor.get("mani");
 
+        cdim = hardwareMap.deviceInterfaceModule.get("dim");
+        rts = hardwareMap.digitalChannel.get("rts");
+        lts = hardwareMap.digitalChannel.get("lts");
+        sensorRGB = hardwareMap.colorSensor.get("color");
+
+        basket = hardwareMap.servo.get("basket");
+        running = false;
         climberSwitch = hardwareMap.servo.get("switch");
-//        rightRatchet = hardwareMap.servo.get("ratchetR");
-//        leftRatchet = hardwareMap.servo.get("ratchetL");
         rightPaddle = hardwareMap.servo.get("rPad");
         leftPaddle = hardwareMap.servo.get("lPad");
-        rightPaddle.setPosition(RIGHTPADDLE_IN);
+
+        //hardware mapping the more complex things
         telemetry.addData("gyro", "initializing...");
 
         try {
@@ -104,74 +106,75 @@ public abstract class MyOpMode extends OpMode {
             Log.i(LOG_TAG, e.getMessage());
             telemetry.addData("gyro", "fail");
         }
+        //logging devices this is REQUIRED for color sensor
+        hardwareMap.logDevices();
+        telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
         telemetry.addData("init", "pass");
-
 
     }
 
     @Override
     public void start() {
+        //starting the gyro
         gyro.startIMU();
+        //getting the robot into starting position
         leftPaddle.setPosition(LEFTPADDLE_IN);
-//        leftRatchet.setPosition(0);
-//        rightRatchet.setPosition(0);
+        rightPaddle.setPosition(RIGHTPADDLE_IN);
         basket.setPosition(BASKET_IDLE);
         climberSwitch.setPosition(UNDROPPED);
     }
 
+    //dumping the climbers behind the shelter
     public void dumpClimbers() {
         climberSwitch.setPosition(DROPPED);
    }
 
+    //bringing the dumper for the climbers back in to prevent casualties
     public void resetClimbers() {
         climberSwitch.setPosition(UNDROPPED);
     }
 
-//    public void dropRatchets() {
-//        leftRatchet.setPosition(1);
-//        rightRatchet.setPosition(1);
-//    }
-//
-//    public void undoRatchets() {
-//        leftRatchet.setPosition(1);
-//        rightRatchet.setPosition(1);
-//
-//    }
-
+    //extends both zip line paddles
     public void extendPaddles() {
         rightPaddle.setPosition(RIGHTPADDLE_OUT);
         leftPaddle.setPosition(LEFTPADDLE_OUT);
     }
 
+    //extend the right zip line paddle
     public void extendRightPaddle() {
         rightPaddle.setPosition(RIGHTPADDLE_OUT);
     }
 
+    //retract the right zip line paddle
     public void retractRightPaddle() {
         rightPaddle.setPosition(RIGHTPADDLE_IN);
     }
 
+    //extend the left zip line paddle
     public void extendLeftPaddle() {
         leftPaddle.setPosition(LEFTPADDLE_OUT);
     }
 
+    //retract the left zip line paddle
     public void retractLeftPaddle() {
         leftPaddle.setPosition(LEFTPADDLE_IN);
     }
 
+    //retract both paddles
      public void retractPaddles() {
          rightPaddle.setPosition(RIGHTPADDLE_IN);
          leftPaddle.setPosition(LEFTPADDLE_IN);
      }
 
+    //dump the blocks in the basket NO LONGER SUPPORTED BY NEW DESIGN
     public void dump() {
         basket.setPosition(BASKET_DUMPED);
     }
 
-
+    //dump the blocks to the right or stop the basket if it is already running
     public void dumpRight() {
         if(running) {
-            basket.setPosition(BASKET_IDLE);
+            dumpIdle();
             running = false;
         }
         else {
@@ -180,21 +183,25 @@ public abstract class MyOpMode extends OpMode {
         }
     }
 
+    //dump the blocks to the left or stop the basket if it is already running
     public void dumpleft() {
         if(running) {
-            basket.setPosition(BASKET_IDLE);
+            dumpIdle();
             running = false;
         }
         else {
             basket.setPosition(BASKET_LEFT);
+
             running = true;
         }
     }
 
+    //stop the basket from moving
     public void dumpIdle() {
         basket.setPosition(BASKET_IDLE);
     }
 
+    //starts the base drive motors in a tank drive
     public void startMotors(double ri, double le) {
         motorBL.setPower(-le);
         motorBR.setPower(ri);
@@ -202,6 +209,7 @@ public abstract class MyOpMode extends OpMode {
         motorFR.setPower(ri);
     }
 
+    //stops all the base drive motors
     public void stopMotors() {
         motorBL.setPower(0);
         motorBR.setPower(0);
@@ -209,23 +217,30 @@ public abstract class MyOpMode extends OpMode {
         motorFL.setPower(0);
     }
 
+    //start the manipulators
     public void startManipulator() {
         manipulator.setPower(1);
     }
 
+    //stop the manipulator
     public void stopManipulator() {
         manipulator.setPower(0);
     }
 
+    //reverse the manipulator
     public void reverseManipulator() {
         manipulator.setPower(-1);
     }
 
+    //raise both lifts together
     public void raiseLifts(double pow) {
         liftL.setPower(pow);
         liftR.setPower(-pow);
     }
+
+    //Get values and send them to the driver station
     public void sendData() {
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         telemetry.addData("Headings(yaw): ",
                 String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
         telemetry.addData("Pitches: ",
@@ -240,50 +255,74 @@ public abstract class MyOpMode extends OpMode {
 
 
     }
+
+    //raise only the right lift
     public void raiseRightLift(double pow) {
         liftR.setPower(-pow);
     }
+
+    //raise only the left lift
     public void raiseLeftLift(double pow) {
         liftL.setPower(pow);
     }
+
+    //stops the left lifts movement
     public void stopLeftLift() {
         liftL.setPower(0);
     }
+
+    //stops the right lifts movement
     public void stopRightLift() {
         liftR.setPower(0);
     }
 
+    //resets the encoders using a loop to ensure that the motors properly change their mode
     public void resetEncoders() {
-        motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-        motorBL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorBR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorFL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        telemetry.addData("resettingEncoders", "resetting");
+
+        while(getEncoderAvg() > 5) {
+            motorBL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+            motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
+        }
+        for(int i = 0; i < 5; i++) {
+            motorBL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorBR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorFL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+            motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
+        }
+        telemetry.addData("resettingEncoders", "reset");
     }
 
+    //lowers both lifts simultaneously
     public void lowerLifts(double pow) {
         liftL.setPower(-pow);
         liftR.setPower(pow);
     }
+
+    //lowers the left lift
     public void lowerLeftLift() {
         liftL.setPower(-.75);
     }
+
+    //lowers the right lift
     public void lowerRightLift() {
         liftR.setPower(.75);
     }
-//lolz
+
+    //stops the lifts
     public void stopLifts() {
         liftL.setPower(0);
         liftR.setPower(0);
     }
 
+    //gets the encoder average of all the base motors
     public int getEncoderAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition())) + (Math.abs(motorFL.getCurrentPosition())) + (Math.abs(motorFR.getCurrentPosition()))) / 4;
     }
 
+    //gets the encoder average of the back two base motors
     public int getBackWheelAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2;
     }
