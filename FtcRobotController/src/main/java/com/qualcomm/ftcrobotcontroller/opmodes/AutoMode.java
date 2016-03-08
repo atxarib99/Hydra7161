@@ -238,9 +238,16 @@ public abstract class AutoMode extends LinearOpMode {
         resetGyro();
         double power = pow;
         double angleTo = angle;
+        double error;
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double currentAngle = yawAngle[0];
-        while (currentAngle < )
+        while (Math.abs(pow) > .15) {
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            currentAngle = yawAngle[0];
+            error = angleTo - currentAngle;
+            pow = power * (error) * .0222;
+
+        }
     }
     //start the manipulator
     public void startManipulator() {
