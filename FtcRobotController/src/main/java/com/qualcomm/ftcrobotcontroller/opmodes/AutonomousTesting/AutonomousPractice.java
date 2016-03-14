@@ -9,14 +9,16 @@ public class AutonomousPractice extends AutoMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        waitOneFullHardwareCycle();
+
         first();
+
+        waitOneFullHardwareCycle();
 
         waitForStart();
 
-        moveForward(.3, 500);
+        moveForward(.3, 2500);
 
-        rotate();
+        pRotate(.5, 90);
 
     }
 }
