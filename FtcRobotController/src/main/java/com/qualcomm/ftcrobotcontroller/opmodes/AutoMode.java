@@ -472,7 +472,7 @@ public abstract class AutoMode extends LinearOpMode {
         motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         waitOneFullHardwareCycle();
     }
-    
+
     //get the encoder average of all the wheels
     public int getEncoderAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))
