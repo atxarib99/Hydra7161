@@ -59,6 +59,7 @@ public abstract class AutoMode extends LinearOpMode {
                     // the correct direction. 1 = North, 2 = East, 3 = South, 4 = West
     int avgEncoderDistance;
     private static final double WHEEL_DIAMETER = 4;
+    private static final double DISTANCE_PER_ROTATION = WHEEL_DIAMETER * Math.PI;
     private static final int SINGLE_ROTATION = 1120;
     private static final int MAT_SIZE = 1; //TODO: FIX THIS VALUE
 
@@ -236,13 +237,15 @@ public abstract class AutoMode extends LinearOpMode {
         if(diff != 0)               //if change is not needed do not move
             pRotate(pow, angle);    //uses a PID loop for accurate rotation
     }
+    //greeen yellow orange blue
 
     //moves forward a certain number of tiles
-    public void moveXTiles(int tiles) throws InterruptedException {
-        double oneTile = (SINGLE_ROTATION / WHEEL_DIAMETER);    //encoder value calculation for one tile
-        Double xTiles = oneTile * tiles;                        //encoder value calulation for multiple tiles
-        int encoderVal = xTiles.intValue();                     //cast the encoder value as an integer
-        moveForward(.5, encoderVal);                            //move forward given tiles
+    public void moveXTiles(int numTiles) throws InterruptedException {
+        double oneTileInInches = 24;    //encoder value calculation for one tile
+        Double distToMoveInches = oneTileInInches * numTiles;                        //encoder value calulation for multiple tiles
+        double rotationsToMove = distToMoveInches / DISTANCE_PER_ROTATION;                     //cast the encoder value as an integer
+        int encoderTicksToMove = (int)Math.round(rotationsToMove * SINGLE_ROTATION);
+        moveForward(.5, encoderTicksToMove);                            //move forward given tiles
     }
 
     //rotate the robot
@@ -319,7 +322,7 @@ public abstract class AutoMode extends LinearOpMode {
             sendData();
             telemetry.addData("PID", power);
             previousError = error;
-        } while (Math.abs(pow) > .15);
+        } while (Math.abs(pow) > .1);
         stopMotors();                                   //stop motion
         Double d = angle;
         int rotated = d.intValue();

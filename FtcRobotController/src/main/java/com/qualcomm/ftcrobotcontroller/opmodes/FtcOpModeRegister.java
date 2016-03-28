@@ -61,6 +61,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("GyroTest", com.qualcomm.ftcrobotcontroller.opmodes.IMUGyroOnlyTest.class);
     manager.register("AutoTesting", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.AutonomousPractice.class);
     manager.register("ColorTest", com.qualcomm.ftcrobotcontroller.opmodes.AdafruitRGBExample.class);
+    manager.register("gridAuto", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.CoordinateAuto.class);
 
 
   }
