@@ -198,6 +198,12 @@ public abstract class AutoMode extends LinearOpMode {
         sendData();
         waitOneFullHardwareCycle();
     }
+    
+    public void moveForwardScaled(double pow, int encoderVal)
+    {
+    	pow = MotorScaler.scaleSimple(pow);
+    	moveForward(pow, encoderVal);
+    }
 
     //this method calls child methods to make commands easier
     public void moveToCoordinatePos(int xTileTo, int yTileTo) throws InterruptedException {
@@ -245,7 +251,7 @@ public abstract class AutoMode extends LinearOpMode {
         Double distToMoveInches = oneTileInInches * numTiles;                       //encoder value calulation for multiple tiles
         double rotationsToMove = distToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
         int encoderTicksToMove = (int)Math.round(rotationsToMove * SINGLE_ROTATION);
-        moveForward(.5, encoderTicksToMove);                                        //move forward given tiles
+        moveForwardScaled(.5, encoderTicksToMove);                                        //move forward given tiles
     }
 
     //rotate the robot
@@ -316,7 +322,7 @@ public abstract class AutoMode extends LinearOpMode {
             if(power < -1) {
                 power = -1;
             }
-            startMotors(-power, power);                 //set the motors to turn
+            startMotorsScaled(-power, power);                 //set the motors to turn
             telemetry.addData("Gyro", yawAngle[0]);     //send data to Driver station
             telemetry.addData("Runtime", getRuntime());
             telemetry.addData("AngleTo", angleTo);
@@ -379,6 +385,20 @@ public abstract class AutoMode extends LinearOpMode {
 
     //start the motors in a tank drive
     public void startMotors(double ri, double le) throws InterruptedException {
+        motorBL.setPower(le);
+        waitOneFullHardwareCycle();
+        motorBR.setPower(-ri);
+        waitOneFullHardwareCycle();
+        motorFL.setPower(le);
+        waitOneFullHardwareCycle();
+        motorFR.setPower(-ri);
+        waitOneFullHardwareCycle();
+    }
+    
+    //start the motors in a tank drive
+    public void startMotorsScaled(double ri, double le) throws InterruptedException {
+    	ri = MotorScaler.scaleSimple(ri);
+    	le = MotorScaler.scaleSimple(le);
         motorBL.setPower(le);
         waitOneFullHardwareCycle();
         motorBR.setPower(-ri);
