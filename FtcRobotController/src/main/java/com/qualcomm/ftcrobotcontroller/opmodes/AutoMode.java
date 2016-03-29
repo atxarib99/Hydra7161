@@ -199,8 +199,7 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
     
-    public void moveForwardScaled(double pow, int encoderVal)
-    {
+    public void moveForwardScaled(double pow, int encoderVal) throws InterruptedException {
     	pow = MotorScaler.scaleSimple(pow);
     	moveForward(pow, encoderVal);
     }
@@ -243,7 +242,6 @@ public abstract class AutoMode extends LinearOpMode {
         if(diff != 0)               //if change is not needed do not move
             pRotate(pow, angle);    //uses a PID loop for accurate rotation
     }
-    //greeen yellow orange blue
 
     //moves forward a certain number of tiles
     public void moveXTiles(int numTiles) throws InterruptedException {

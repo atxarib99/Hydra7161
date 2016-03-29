@@ -1,3 +1,5 @@
+package com.qualcomm.ftcrobotcontroller.opmodes;
+
 /**
  * This class is designed to fix the deficiencies between the Modern Robotics platform and
  * the AndyMark 40 Motor in the RUN_WITHOUT_ENCODERS mode. Normally, the relationship between the value sent to the motor 
@@ -13,8 +15,8 @@
  * @version 1.0, Spring 2016
 */
  
-public abstract class MotorScaler
-{
+public class MotorScaler {
+
 	private MotorScaler()
 	{
 	
@@ -24,7 +26,8 @@ public abstract class MotorScaler
  	* Returns a double that represents the "properly scaled" value from controller input to AndyMark 40 Motor.
  	* Essentially, makes the % of total mA for the motor sent the same as the % amount the
  	* joystick is pushed. For example, 0.25 sent would return a value that, when sent to the motor,
- 	* runs the motor at 25% of its mA capacity.
+ 	* runs the motor at 25% of its mA capacity. <Update> While this class may be too complex to analyze,
+     * it should work as intended - Arib</Update>
  	* <p>
  	* This method is optimized to have minimal runtime, but is less accurate as a result.
  	* Use when lots of method runs per second (Setting motor power in teleop)
@@ -33,7 +36,7 @@ public abstract class MotorScaler
  	* @return a double representing the value sent to the motor in order to obtain the mA value
  	* @see    MotorScaler.scaleExact(double inpFromController)
  	*/
-	public double scaleSimple(double inpFromController)
+	public static double scaleSimple(double pwr)
 	{
 		if(pwr > 0.0)
         {
@@ -136,6 +139,7 @@ public abstract class MotorScaler
 	public double scaleExact(double inpFromController)
 	{
 		double valToMotor = 0.0;
+        return 0.0;
 	}
 	
 	/**
@@ -153,7 +157,7 @@ public abstract class MotorScaler
  	*/
 	public double scaleControlledSimple(double inpFromController)
 	{
-	
+	    return 0.0;
 	}
 	
 	/**
@@ -171,6 +175,6 @@ public abstract class MotorScaler
  	*/
 	public double scaleControlledExact(double inpFromController)
 	{
-	
+	    return 0.0;
 	}
 }
