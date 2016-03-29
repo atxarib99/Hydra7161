@@ -241,11 +241,11 @@ public abstract class AutoMode extends LinearOpMode {
 
     //moves forward a certain number of tiles
     public void moveXTiles(int numTiles) throws InterruptedException {
-        double oneTileInInches = 24;    //encoder value calculation for one tile
-        Double distToMoveInches = oneTileInInches * numTiles;                        //encoder value calulation for multiple tiles
-        double rotationsToMove = distToMoveInches / DISTANCE_PER_ROTATION;                     //cast the encoder value as an integer
+        double oneTileInInches = 24;                                                //encoder value calculation for one tile
+        Double distToMoveInches = oneTileInInches * numTiles;                       //encoder value calulation for multiple tiles
+        double rotationsToMove = distToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
         int encoderTicksToMove = (int)Math.round(rotationsToMove * SINGLE_ROTATION);
-        moveForward(.5, encoderTicksToMove);                            //move forward given tiles
+        moveForward(.5, encoderTicksToMove);                                        //move forward given tiles
     }
 
     //rotate the robot
@@ -305,11 +305,11 @@ public abstract class AutoMode extends LinearOpMode {
         //telemetry data for which step we are currently on
         telemetry.addData("auto", "rotate");
         //do while
-        do {
+        while (Math.abs(currentAngle) < angleTo - 2) {
             getAngles();                                //update angles
             currentAngle = yawAngle[0];                 //set the currentAngle to angle returned from gyro
-            error = angleTo - currentAngle;             //calculate error
-            power = pow * (error) * .015;               //set the power based on distance from goal (3-13-16 constant = .015)
+            error = angleTo - Math.abs(currentAngle);             //calculate error
+            power = (pow * (error) * .0005) + .187;               //set the power based on distance from goal (3-13-16 constant = .015)
             if(power > 1) {                             //check to see power is legal amount
                 power = 1;
             }
@@ -319,10 +319,13 @@ public abstract class AutoMode extends LinearOpMode {
             startMotors(-power, power);                 //set the motors to turn
             telemetry.addData("Gyro", yawAngle[0]);     //send data to Driver station
             telemetry.addData("Runtime", getRuntime());
+            telemetry.addData("AngleTo", angleTo);
+            telemetry.addData("currentAngle", currentAngle);
+
             sendData();
             telemetry.addData("PID", power);
             previousError = error;
-        } while (Math.abs(pow) > .1);
+        }
         stopMotors();                                   //stop motion
         Double d = angle;
         int rotated = d.intValue();

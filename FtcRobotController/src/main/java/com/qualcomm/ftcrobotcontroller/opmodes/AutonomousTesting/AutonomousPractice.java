@@ -18,7 +18,7 @@ public class AutonomousPractice extends AutoMode {
 
         moveForward(.3, 2500);
 
-        pRotate(.5, 90);
+        pRotate(.2, 90);
 
     }
 }
