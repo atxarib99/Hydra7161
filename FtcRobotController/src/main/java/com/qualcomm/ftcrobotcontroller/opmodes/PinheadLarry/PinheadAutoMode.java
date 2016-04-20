@@ -187,7 +187,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
         int currentEncoder = getBackWheelAvg() - nullValue;
         //while target is not reached
-        while((encoderVal > currentEncoder)) {
+        while(encoderVal > currentEncoder) {
             waitOneFullHardwareCycle();
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
             telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
@@ -213,18 +213,28 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
             telemetry.addData("Power", power);
 
+
+            telemetry.addData("LeftPower", motorBL.getPower() + "");
+            telemetry.addData("RightPower", motorBR.getPower() + "");
+
             //if off to the left, correct
             if(angle > 2) {
                 startMotors(power, (power * .75));
                 sendData();
+                telemetry.addData("LeftPower", motorBL.getPower() + "");
+                telemetry.addData("RightPower", motorBR.getPower() + "");
                 waitOneFullHardwareCycle();
             } else if(angle < -2) { //if off to the right, correct
                 startMotors((power * .75), power);
-                waitOneFullHardwareCycle();
+                telemetry.addData("LeftPower", motorBL.getPower() + "");
+                telemetry.addData("RightPower", motorBR.getPower() + "");
                 sendData();
+                waitOneFullHardwareCycle();
             } else { //if heading is fine keep moving straight
                 startMotors(power, power);
                 sendData();
+                telemetry.addData("LeftPower", motorBL.getPower() + "");
+                telemetry.addData("RightPower", motorBR.getPower() + "");
                 waitOneFullHardwareCycle();
             }
 
