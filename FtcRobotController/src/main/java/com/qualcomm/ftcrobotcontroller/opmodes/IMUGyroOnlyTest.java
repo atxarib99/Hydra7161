@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**
  * Created by Owner on 8/31/2015.
  */
-public class IMUGyroOnlyTest extends MyOpMode {
+public class IMUGyroOnlyTest extends PinheadOpMode {
 
 
     //The following arrays contain both the Euler angles reported by the IMU (indices = 0) AND the
@@ -37,49 +37,7 @@ public class IMUGyroOnlyTest extends MyOpMode {
      * The following method was introduced in the 3 August 2015 FTC SDK beta release and it runs
      * before "start" runs.
      */
-    @Override
-    public void init() {
-
-        motorBL = hardwareMap.dcMotor.get("BL");
-        manipulator = hardwareMap.dcMotor.get("mani");
-        cdim = hardwareMap.deviceInterfaceModule.get("dim");
-        rts = hardwareMap.digitalChannel.get("rts");
-        lts = hardwareMap.digitalChannel.get("lts");
-        motorBR = hardwareMap.dcMotor.get("BR");
-        motorFR = hardwareMap.dcMotor.get("FR");
-        motorFL = hardwareMap.dcMotor.get("FL");
-        liftL = hardwareMap.dcMotor.get("liftL");
-        liftR = hardwareMap.dcMotor.get("liftR");
-        basket = hardwareMap.servo.get("basket");
-
-        climberSwitch = hardwareMap.servo.get("switch");
-//        rightRatchet = hardwareMap.servo.get("ratchetR");
-//        leftRatchet = hardwareMap.servo.get("ratchetL");
-        rightPaddle = hardwareMap.servo.get("rPad");
-        leftPaddle = hardwareMap.servo.get("lPad");
-        rightPaddle.setPosition(RIGHTPADDLE_IN);
-        leftPaddle.setPosition(LEFTPADDLE_IN);
-//        leftRatchet.setPosition(0);
-//        rightRatchet.setPosition(0);
-        basket.setPosition(BASKET_IDLE);
-        climberSwitch.setPosition(UNDROPPED);
-        telemetry.addData("gyro", "initializing...");
-
-        try {
-            gyro = new AdafruitIMU(hardwareMap, "hydro"
-
-                    //The following was required when the definition of the "I2cDevice" class was incomplete.
-                    //, "cdim", 5
-
-                    , (byte)(AdafruitIMU.BNO055_ADDRESS_A * 2)//By convention the FTC SDK always does 8-bit I2C bus
-                    //addressing
-                    , (byte) AdafruitIMU.OPERATION_MODE_IMU);
-        } catch (RobotCoreException e){
-            Log.i("FtcRobotController", "Exception: " + e.getMessage());
-            telemetry.addData("gyro", "fail");
-        }
-        telemetry.addData("init", "pass");
-    }
+    //can be foudn in PinheadOpMode
 
     /************************************************************************************************
      * Code to run when the op mode is first enabled goes here
@@ -150,6 +108,13 @@ public class IMUGyroOnlyTest extends MyOpMode {
         telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
         telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
         telemetry.addData("avg", (((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))) / 2));
+        telemetry.addData("Headings(yaw): ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
+        telemetry.addData("Pitches: ",
+                String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
+        telemetry.addData("Max I2C read interval: ",
+                String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
+                        , gyro.avgReadInterval));
     }
 
     /*
