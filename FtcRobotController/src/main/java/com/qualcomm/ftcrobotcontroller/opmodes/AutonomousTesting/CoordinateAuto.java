@@ -10,14 +10,14 @@ public class CoordinateAuto extends AutoMode {
     @Override
     public void runOpMode() throws InterruptedException {
         waitOneFullHardwareCycle();
-        cordFirst(5, 2, 4);
+        cordFirst(2, 6, 1);
         waitOneFullHardwareCycle();
 
         waitForStart();
 
         waitOneFullHardwareCycle();
 
-        moveToCoordinatePos(5, 3);
+        moveToCoordinatePos(6, 3);
 
         waitOneFullHardwareCycle();
 
