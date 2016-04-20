@@ -5,6 +5,7 @@
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 import android.media.MediaPlayer;
+import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
@@ -57,6 +58,9 @@ public abstract class AutoMode extends LinearOpMode {
     int facing;     //SPECIAL NOTE: It made much more sense to use integers as a substitute for chars
                     // while coding the heading. I used a compass type orientation for movement in
                     // the correct direction. 1 = North, 2 = East, 3 = South, 4 = West
+
+    int nullValue;
+    public double angleError;
     int avgEncoderDistance;
     private static final double WHEEL_DIAMETER = 4;
     private static final double DISTANCE_PER_ROTATION = WHEEL_DIAMETER * Math.PI;
@@ -142,7 +146,7 @@ public abstract class AutoMode extends LinearOpMode {
         }
 
         hardwareMap.logDevices();
-
+        nullValue = 0;
 
         telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
         telemetry.addData("Auto", "Initialized Successfully!");
@@ -160,8 +164,11 @@ public abstract class AutoMode extends LinearOpMode {
         double angle;
         sendData();
 
+        setNullValue();
+
+        int currentEncoder = getBackWheelAvg() - nullValue;
         //while target is not reached
-        while(!hit && (encoderVal > getBackWheelAvg())) {
+        while(!hit && (encoderVal > currentEncoder)) {
             waitOneFullHardwareCycle();
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
             telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
@@ -170,6 +177,8 @@ public abstract class AutoMode extends LinearOpMode {
             waitOneFullHardwareCycle();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             angle = yawAngle[0];
+
+            currentEncoder = getBackWheelAvg() - nullValue;
 
             //if off to the left, correct
             if(angle > 2) {
@@ -196,6 +205,77 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
         stopMotors();
         sendData();
+        angleError = yawAngle[0];
+        waitOneFullHardwareCycle();
+    }
+
+    public void moveForwardPID(double pow, int encoderVal) throws InterruptedException {
+        //notifies Driver Station of current event
+        telemetry.addData("auto", "Moving Forwards");
+
+        //resets the Gyro's angle
+        resetGyro();
+        double angle;
+        sendData();
+
+        double error = 0;
+        double power = pow;
+        setNullValue();
+
+        int currentEncoder = getBackWheelAvg() - nullValue;
+        //while target is not reached
+        while(!hit && (encoderVal > currentEncoder)) {
+            waitOneFullHardwareCycle();
+            telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
+            telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
+            telemetry.addData("avg", getBackWheelAvg());
+            sendData();
+            waitOneFullHardwareCycle();
+            gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+            angle = yawAngle[0];
+
+            currentEncoder = getBackWheelAvg() - nullValue;
+
+            error = (double) (encoderVal - currentEncoder) / encoderVal;
+
+            power = (pow * error) + .1;
+
+            if(power > 1) {
+                power = 1;
+            }
+
+            if(power < -1) {
+                power = -1;
+            }
+
+            telemetry.addData("Power", power);
+
+            //if off to the left, correct
+            if(angle > 2) {
+                startMotors(power, (power * .75));
+                sendData();
+                waitOneFullHardwareCycle();
+            } else if(angle < -2) { //if off to the right, correct
+                startMotors((power * .75), power);
+                waitOneFullHardwareCycle();
+                sendData();
+            } else { //if heading is fine keep moving straight
+                startMotors(power, power);
+                sendData();
+                waitOneFullHardwareCycle();
+            }
+
+            //Check if touch sensors are hit
+            if(rts.getState() || lts.getState()) {
+                hit = true;
+            }
+        }
+
+        //once finished stop moving and send data
+        waitOneFullHardwareCycle();
+        stopMotors();
+        sendData();
+        angleError = yawAngle[0];
         waitOneFullHardwareCycle();
     }
     
@@ -208,21 +288,25 @@ public abstract class AutoMode extends LinearOpMode {
     public void moveToCoordinatePos(int xTileTo, int yTileTo) throws InterruptedException {
         int yDiff = yTile - yTileTo;    //calculates differences between current position and goal position
         int xDiff = xTile - xTileTo;
-        if(yDiff < 0)                   //set the heading depending on goal *see note for facing var*
+        boolean firstTurn = false;
+        if(yDiff < 0 && facing != 1 && !firstTurn)                   //set the heading depending on goal *see note for facing var*
             setFacing(3);
         waitOneFullHardwareCycle();
-        if(yDiff > 0)
+        if(yDiff > 0 && facing != 1 && !firstTurn)
             setFacing(1);
         waitOneFullHardwareCycle();
         moveXTiles(Math.abs(yDiff));    //uses a method to move the difference in tiles forward
+        pRotateNoReset(-.2, 0);
         waitOneFullHardwareCycle();
-        if(xDiff < 0)                   //resets the headign depending on goal for other axis
+        boolean secondTurn = false;
+        if(xDiff < 0 && facing != 4 && !secondTurn)                   //resets the headign depending on goal for other axis
             setFacing(4);
         waitOneFullHardwareCycle();
-        if(xDiff > 0)
+        if(xDiff > 0 && facing != 2 && !secondTurn)
             setFacing(2);
         waitOneFullHardwareCycle();
         moveXTiles(Math.abs(xDiff));    //uses a mthod to move the difference in tiles forward
+        pRotateNoReset(-.2, 0);
         waitOneFullHardwareCycle();
         stopMotors();                   //stop the motors in case something goes wrong somewhere else
 
@@ -233,12 +317,12 @@ public abstract class AutoMode extends LinearOpMode {
     //changes the heading
     public void setFacing(int f) throws InterruptedException {
         int diff = f - facing;      //calculates the difference between current heading and goal
-        double angle = diff * 90;   //changes the difference to an angle value
-        double pow = .5;            //default power of half
+        double angle = 90;         //changes the difference to an angle value
+        double pow = .2;            //default power of half
         if(angle > 0)               //set the power to turn the correct way
-            pow = .5;
+            pow = .2;
         if(angle < 0)
-            pow = -.5;
+            pow = -.2;
         if(diff != 0)               //if change is not needed do not move
             pRotate(pow, angle);    //uses a PID loop for accurate rotation
     }
@@ -249,7 +333,8 @@ public abstract class AutoMode extends LinearOpMode {
         Double distToMoveInches = oneTileInInches * numTiles;                       //encoder value calulation for multiple tiles
         double rotationsToMove = distToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
         int encoderTicksToMove = (int)Math.round(rotationsToMove * SINGLE_ROTATION);
-        moveForwardScaled(.5, encoderTicksToMove);                                        //move forward given tiles
+        moveForwardPID(.5, encoderTicksToMove);                                        //move forward given tiles
+        stopMotors();
     }
 
     //rotate the robot
@@ -313,24 +398,74 @@ public abstract class AutoMode extends LinearOpMode {
             getAngles();                                //update angles
             currentAngle = yawAngle[0];                 //set the currentAngle to angle returned from gyro
             error = angleTo - Math.abs(currentAngle);             //calculate error
-            power = (pow * (error) * .0005) + .187;               //set the power based on distance from goal (3-13-16 constant = .015)
+            power = (pow * (error) * .0005) + .145;               //set the power based on distance from goal (3-13-16 constant = .015)
+            getAngles();
             if(power > 1) {                             //check to see power is legal amount
                 power = 1;
             }
             if(power < -1) {
                 power = -1;
             }
-            startMotorsScaled(-power, power);                 //set the motors to turn
+            startMotors(-power, power);                 //set the motors to turn
+            getAngles();
             telemetry.addData("Gyro", yawAngle[0]);     //send data to Driver station
             telemetry.addData("Runtime", getRuntime());
             telemetry.addData("AngleTo", angleTo);
+            getAngles();
             telemetry.addData("currentAngle", currentAngle);
 
             sendData();
             telemetry.addData("PID", power);
             previousError = error;
+            getAngles();
         }
-        stopMotors();                                   //stop motion
+        sendData();
+        stopMotors();                                  //stop motion
+        Double d = angle;
+        int rotated = d.intValue();
+        Double ticks = rotated / 90.0;
+        int ticksI = ticks.intValue();
+        updateFacing(ticksI);
+    }
+
+    public void pRotateNoReset(double pow, double angle) throws InterruptedException {
+        //setting needed variables
+        double power = pow;
+        double angleTo = angle;
+        gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+        double currentAngle = yawAngle[0];
+        double previousError = angleTo - currentAngle;
+        double error = angleTo - currentAngle;
+        //telemetry data for which step we are currently on
+        telemetry.addData("auto", "rotate");
+        //while
+        while (currentAngle < angleTo) {
+            getAngles();                                //update angles
+            currentAngle = yawAngle[0];                 //set the currentAngle to angle returned from gyro
+            error = angleTo - Math.abs(currentAngle);             //calculate error
+            power = (pow * (error) * .0005) + .145;               //set the power based on distance from goal (3-13-16 constant = .015)
+            getAngles();
+            if(power > 1) {                             //check to see power is legal amount
+                power = 1;
+            }
+            if(power < -1) {
+                power = -1;
+            }
+            startMotors(power, -power);                 //set the motors to turn
+            getAngles();
+            telemetry.addData("Gyro", yawAngle[0]);     //send data to Driver station
+            telemetry.addData("Runtime", getRuntime());
+            telemetry.addData("AngleTo", angleTo);
+            getAngles();
+            telemetry.addData("currentAngle", currentAngle);
+
+            sendData();
+            telemetry.addData("PID", power);
+            previousError = error;
+            getAngles();
+        }
+        sendData();
+        stopMotors();                                  //stop motion
         Double d = angle;
         int rotated = d.intValue();
         Double ticks = rotated / 90.0;
@@ -497,6 +632,10 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
 
+    public void setNullValue() throws InterruptedException {
+        nullValue = getBackWheelAvg();
+    }
+
     //get the encoder average of all the wheels
     public int getEncoderAvg() {
         return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))
@@ -537,14 +676,15 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
         double rotate = yawAngle[0];
         double pitch = pitchAngle[0];
-        if((rotate < 17 && rotate > 13) && pitch < 1) {
+        if((rotate < 17 && rotate > 13) && pitch < 2.5) {
             return true;
         }
         return false;
     }
 
     //get and telemetry data to Driver Station
-    public void sendData() {
+    public void sendData() throws InterruptedException {
+        getAngles();
         telemetry.addData("Headings(yaw): ",
                 String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
         telemetry.addData("Pitches: ",
