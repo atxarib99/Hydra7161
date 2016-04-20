@@ -201,7 +201,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
             error = (double) (encoderVal - currentEncoder) / encoderVal;
 
-            power = (pow * error) + .1;
+            power = (pow * error) + .25;
 
             if(power > 1) {
                 power = 1;
@@ -258,7 +258,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         pRotateNoReset(-.2, 0);
         waitOneFullHardwareCycle();
         boolean secondTurn = false;
-        if(xDiff < 0 && facing != 4 && !secondTurn)                   //resets the headign depending on goal for other axis
+        if(xDiff < 0 && facing != 4 && !secondTurn)                   //resets the heading depending on goal for other axis
             setFacing(4);
         waitOneFullHardwareCycle();
         if(xDiff > 0 && facing != 2 && !secondTurn)
@@ -438,13 +438,13 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //start the motors in a tank drive
     public void startMotors(double ri, double le) throws InterruptedException {
-        motorBL.setPower(le);
+        motorBL.setPower(-le);
         waitOneFullHardwareCycle();
-        motorBR.setPower(-ri);
+        motorBR.setPower(ri);
         waitOneFullHardwareCycle();
-        motorFL.setPower(le);
+        motorFL.setPower(-le);
         waitOneFullHardwareCycle();
-        motorFR.setPower(-ri);
+        motorFR.setPower(ri);
         waitOneFullHardwareCycle();
     }
 
