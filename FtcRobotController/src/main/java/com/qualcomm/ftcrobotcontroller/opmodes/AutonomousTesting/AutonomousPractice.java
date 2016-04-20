@@ -16,9 +16,15 @@ public class AutonomousPractice extends AutoMode {
 
         waitForStart();
 
-        moveForward(.3, 2500);
+        moveForwardPID(.3, 7500);
 
-        pRotate(.2, 90);
+        Thread.sleep(500);
+
+        pRotateNoReset(-.3, 0);
+
+        Thread.sleep(500);
+
+        pRotate(.3, 90);
 
     }
 }
