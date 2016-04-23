@@ -219,13 +219,13 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
             //if off to the left, correct
             if(angle > 2) {
-                startMotors(power, (power * .75));
+                startMotors((power * .75), power);
                 sendData();
                 telemetry.addData("LeftPower", motorBL.getPower() + "");
                 telemetry.addData("RightPower", motorBR.getPower() + "");
                 waitOneFullHardwareCycle();
             } else if(angle < -2) { //if off to the right, correct
-                startMotors((power * .75), power);
+                startMotors(power, (power * .75) );
                 telemetry.addData("LeftPower", motorBL.getPower() + "");
                 telemetry.addData("RightPower", motorBR.getPower() + "");
                 sendData();
