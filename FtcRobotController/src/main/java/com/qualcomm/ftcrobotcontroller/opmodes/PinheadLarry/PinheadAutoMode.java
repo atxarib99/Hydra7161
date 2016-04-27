@@ -279,7 +279,38 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
         stopMotors();                   //stop the motors in case something goes wrong somewhere else
 
+    }
 
+    public void moveToCordinatePosAngle(int xTileTo, int yTileTo) throws InterruptedException {
+        int yDiff = yTile - yTileTo;
+        int xDiff = xTile - xTileTo;
+        boolean firstTurn = false;
+        if(yDiff < 0 && facing != 1 && !firstTurn)                   //set the heading depending on goal *see note for facing var*
+            setFacing(3);
+        waitOneFullHardwareCycle();
+        if(yDiff > 0 && facing != 1 && !firstTurn)
+            setFacing(1);
+        waitOneFullHardwareCycle();
+
+        int absyDiff = Math.abs(yDiff);                             //create absolute values for calculations
+        int absxDiff = Math.abs(xDiff);
+        double angleToTurn = Math.sin(absxDiff / absyDiff);         //calculate the angle to turn using trigonometry
+        pRotate(.2, angleToTurn);                                   //send the command to turn
+
+        double oneTileInInches = 24;                                                //encoder value calculation for one tile
+        Double xdistToMoveInches = oneTileInInches * xDiff;                          //encoder value calculation for multiple tiles
+        double xRotationsToMove = xdistToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
+        double xencoderTicksToMoveSquared = Math.pow(Math.round(xRotationsToMove * SINGLE_ROTATION), 2);
+
+                                                                                     //calculate the amount of ticks for the other movement
+        Double ydistToMoveInches = oneTileInInches * yDiff;                          //encoder value calculation for multiple tiles
+        double yRotationsToMove = ydistToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
+        double yencoderTicksToMoveSquared = Math.pow(Math.round(yRotationsToMove * SINGLE_ROTATION), 2);
+
+        int hypotenuseTicks = (int) Math.sqrt(xencoderTicksToMoveSquared + yencoderTicksToMoveSquared); //use pythagorean theorem to calculate the
+        moveForwardPID(.5, hypotenuseTicks);
+
+        pRotateNoReset(-.2, 0);                                                     //straighten out if any drift occurs
 
     }
 
@@ -299,7 +330,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     //moves forward a certain number of tiles
     public void moveXTiles(int numTiles) throws InterruptedException {
         double oneTileInInches = 24;                                                //encoder value calculation for one tile
-        Double distToMoveInches = oneTileInInches * numTiles;                       //encoder value calulation for multiple tiles
+        Double distToMoveInches = oneTileInInches * numTiles;                       //encoder value calculation for multiple tiles
         double rotationsToMove = distToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
         int encoderTicksToMove = (int)Math.round(rotationsToMove * SINGLE_ROTATION);
         moveForwardPID(.5, encoderTicksToMove);                                        //move forward given tiles
