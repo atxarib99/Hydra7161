@@ -34,6 +34,7 @@ package com.qualcomm.ftcrobotcontroller;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -89,8 +90,8 @@ public class FtcRobotControllerActivity extends Activity {
 
   protected UpdateUI.Callback callback;
   protected Context context;
+  protected static Context myContext;
   private Utility utility;
-  private static Context myContext;
   protected ImageButton buttonMenu;
 
   protected TextView textDeviceName;
@@ -216,6 +217,10 @@ public class FtcRobotControllerActivity extends Activity {
     if (USE_DEVICE_EMULATION) { HardwareFactory.enableDeviceEmulation(); }
   }
 
+  public static Context getContext() {
+    return myContext;
+  }
+
   @Override
   protected void onStart() {
     super.onStart();
@@ -241,9 +246,6 @@ public class FtcRobotControllerActivity extends Activity {
     wifiLock.acquire();
   }
 
-  public static Context getContext() {
-    return myContext;
-  }
   @Override
   protected void onResume() {
     super.onResume();
