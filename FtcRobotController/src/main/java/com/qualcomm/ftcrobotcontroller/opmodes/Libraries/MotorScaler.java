@@ -1,4 +1,4 @@
-package com.qualcomm.ftcrobotcontroller.opmodes;
+package com.qualcomm.ftcrobotcontroller.opmodes.Libraries;
 
 /**
  * This class is designed to fix the deficiencies between the Modern Robotics platform and

@@ -5,11 +5,11 @@
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 import android.media.MediaPlayer;
-import android.preference.PreferenceActivity;
 import android.util.Log;
 
 import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
 import com.qualcomm.ftcrobotcontroller.R;
+import com.qualcomm.ftcrobotcontroller.opmodes.Libraries.MotorScaler;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.ColorSensor;

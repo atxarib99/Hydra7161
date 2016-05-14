@@ -15,7 +15,7 @@ public class PinheadGrid extends PinheadAutoMode {
 
         waitOneFullHardwareCycle();
 
-        moveToCoordinatePos(6, 3);
+        moveToCordinatePosAngle(6, 3);
 
         waitOneFullHardwareCycle();
 

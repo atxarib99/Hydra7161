@@ -6,16 +6,12 @@ import android.util.Log;
 import com.qualcomm.ftcrobotcontroller.FtcRobotControllerActivity;
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.ftcrobotcontroller.opmodes.AdafruitIMU;
-import com.qualcomm.ftcrobotcontroller.opmodes.MotorScaler;
+import com.qualcomm.ftcrobotcontroller.opmodes.Libraries.MotorScaler;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
  * Created by Arib on 4/19/2016.
