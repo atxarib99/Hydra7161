@@ -9,6 +9,7 @@ import com.qualcomm.ftcrobotcontroller.opmodes.AutoMode;
 /**
  * Created by Arib on 1/4/2016.
  */
+//Decommissioned class due to old method calls. No longer useful. Outcome is unreliable / inconsistent
 public class Autonomous2 extends AutoMode {
     @Override
     public void runOpMode() throws InterruptedException {

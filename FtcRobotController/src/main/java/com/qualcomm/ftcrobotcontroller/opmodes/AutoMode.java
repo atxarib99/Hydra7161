@@ -278,7 +278,7 @@ public abstract class AutoMode extends LinearOpMode {
         angleError = yawAngle[0];
         waitOneFullHardwareCycle();
     }
-    
+
     public void moveForwardScaled(double pow, int encoderVal) throws InterruptedException {
     	pow = MotorScaler.scaleSimple(pow);
     	moveForward(pow, encoderVal);
@@ -337,7 +337,7 @@ public abstract class AutoMode extends LinearOpMode {
         stopMotors();
     }
 
-    //rotate the robot
+    //rotate the robot *Decommissioned method. Uses simple movement which results in inconsistency.
     public void rotate() throws InterruptedException {
         waitOneFullHardwareCycle();
         resetGyro();
@@ -428,6 +428,8 @@ public abstract class AutoMode extends LinearOpMode {
         updateFacing(ticksI);
     }
 
+    //Using PID this method was mainly used to correct the angle to 0 when any drift occurred.
+    //When the resetGyro() method was not called the program remembers how much angle error occurs and can correct for it
     public void pRotateNoReset(double pow, double angle) throws InterruptedException {
         //setting needed variables
         double power = pow;
@@ -435,7 +437,7 @@ public abstract class AutoMode extends LinearOpMode {
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double currentAngle = yawAngle[0];
         double previousError = angleTo - currentAngle;
-        double error = angleTo - currentAngle;
+        double error;
         //telemetry data for which step we are currently on
         telemetry.addData("auto", "rotate");
         //while
