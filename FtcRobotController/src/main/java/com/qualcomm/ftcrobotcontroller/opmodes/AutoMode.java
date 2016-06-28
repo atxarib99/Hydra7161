@@ -338,6 +338,7 @@ public abstract class AutoMode extends LinearOpMode {
     }
 
     //rotate the robot 15 degrees *Decommissioned method. Uses simple movement which results in inconsistency.
+    @Deprecated
     public void rotate() throws InterruptedException {
         waitOneFullHardwareCycle();
         resetGyro();
