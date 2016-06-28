@@ -337,7 +337,7 @@ public abstract class AutoMode extends LinearOpMode {
         stopMotors();
     }
 
-    //rotate the robot *Decommissioned method. Uses simple movement which results in inconsistency.
+    //rotate the robot 15 degrees *Decommissioned method. Uses simple movement which results in inconsistency.
     public void rotate() throws InterruptedException {
         waitOneFullHardwareCycle();
         resetGyro();
@@ -530,7 +530,7 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
     
-    //start the motors in a tank drive
+    //start the motors in a tank drive using scaling library
     public void startMotorsScaled(double ri, double le) throws InterruptedException {
     	ri = MotorScaler.scaleSimple(ri);
     	le = MotorScaler.scaleSimple(le);
@@ -587,6 +587,7 @@ public abstract class AutoMode extends LinearOpMode {
 
     //====================BEGIN CALCULATION METHODS====================
 
+    //updates the coordinates
     private void updateCoordinates() {
         Double inchesTraveled = (avgEncoderDistance / SINGLE_ROTATION) * WHEEL_DIAMETER;
         int inchesTraveledI = inchesTraveled.intValue();
@@ -604,6 +605,7 @@ public abstract class AutoMode extends LinearOpMode {
         }
     }
 
+    //depending on the tick amount updates the facing number
     private void updateFacing(int ticks) {
         for(int i = 0; i < ticks; i++) {
             facing++;
@@ -634,6 +636,7 @@ public abstract class AutoMode extends LinearOpMode {
         waitOneFullHardwareCycle();
     }
 
+    //quick calculation method for resetting encoder
     public void setNullValue() throws InterruptedException {
         nullValue = getBackWheelAvg();
     }
@@ -654,12 +657,15 @@ public abstract class AutoMode extends LinearOpMode {
 
     }
 
+    //calculates the current angles
     public void getAngles() throws InterruptedException {
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         waitOneFullHardwareCycle();
     }
 
-    //check to be sure if pitch is ok
+    //check to be sure if pitch is ok (if the robot is flipped)
+    //Decommissioned
+    @Deprecated
     public boolean isOk() throws InterruptedException {
         waitOneFullHardwareCycle();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
@@ -671,7 +677,9 @@ public abstract class AutoMode extends LinearOpMode {
         return true;
     }
 
-    //check to see if heading and pitch are ok after rotation
+    //check to see if heading and pitch are ok after rotation (if the robot is flipped and right direction)
+    //Decommissioned
+    @Deprecated
     public boolean allIsOk() throws InterruptedException {
         waitOneFullHardwareCycle();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);

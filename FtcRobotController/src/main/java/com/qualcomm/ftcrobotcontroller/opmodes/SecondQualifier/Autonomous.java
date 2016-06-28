@@ -28,6 +28,10 @@ public class Autonomous extends AutoMode {
 
         if(isOk()) {
             dumpClimbers();
+
+            Thread.sleep(1000);
+
+            resetClimbers();
         }
 
         waitOneFullHardwareCycle();
