@@ -18,6 +18,7 @@ public class GridLib {
 
     }
 
+    //This method returns an array doubles
     public static double[] getValues(double wheelDiameter, double xDiff, double yDiff) {
         double[] returning = new double[2];
         final double DISTANCE_PER_ROTATION = wheelDiameter * Math.PI;
