@@ -65,6 +65,10 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("PinHead Larry", com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadTeleOp.class);
     manager.register("Pinhead Grid", com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadGrid.class);
 
+    //START
+    manager.register("TeleOP", SampleOpMode.class);
+    manager.register("Autonomous", AutonomousPractice.class);
+
 
   }
 }
