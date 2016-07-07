@@ -5,6 +5,9 @@ package com.qualcomm.ftcrobotcontroller.opmodes.Libraries;
  */
 
 
+import com.qualcomm.ftcrobotcontroller.opmodes.AdafruitIMU;
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 /**
  * This library is designed to allow any four consistently wheeled robot to do simple autonomous tasks
  * such as move across the field. Its required assets require 4 base wheel AndyMark Motors (or any
@@ -47,7 +50,32 @@ public class GridLib {
         return returning;
     }
 
-    public static void moveToCoordinatePos() {
+    public static void moveToCoordinatePos(AdafruitIMU imu, double[] values, DcMotor... motors) {
+        DcMotor motorBL = motors[0];
+        DcMotor motorBR = motors[1];
+        DcMotor motorFL = motors[2];
+        DcMotor motorFR = motors[3];
+        AdafruitIMU gyro = imu;
+        double[] vals = values;
+        double currentAngle = 0.0;
+        while(currentAngle < vals[0]) {
+            motorBL.setPower(.3);
+            motorBR.setPower(-.3);
+            motorFL.setPower(.3);
+            motorFR.setPower(-.3);
+            //Add gyro stuff
+
+        }
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
+        int currentEncoder = 0;
+        while(currentEncoder < vals[1]) {
+
+        }
+        //100k LINES OF CODE!!!
+
 
     }
 
