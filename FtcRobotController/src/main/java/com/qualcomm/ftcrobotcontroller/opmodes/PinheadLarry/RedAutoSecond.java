@@ -1,0 +1,30 @@
+package com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry;
+
+/**
+ * Created by Arib on 4/19/2016.
+ */
+public class RedAutoSecond extends PinheadAutoMode {
+
+    @Override
+    public void runOpMode() throws InterruptedException {
+        waitOneFullHardwareCycle();
+        cordFirst(3, 6, 1);
+        waitOneFullHardwareCycle();
+
+        waitForStart();
+
+        waitOneFullHardwareCycle();
+
+        Thread.sleep(10000);
+
+        moveToCoordinatePos(3,1);
+
+        waitOneFullHardwareCycle();
+
+//        moveToCoordinatePos(3, 5);
+
+//        waitOneFullHardwareCycle();
+
+
+    }
+}

@@ -31,6 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.CoordinateAuto;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.BlueAutoFirst;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.BlueAutoSecond;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadAutoMode;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadTeleOp;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.RedAutoFirst;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.RedAutoSecond;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -56,18 +63,21 @@ public class FtcOpModeRegister implements OpModeRegister {
      */
 
     manager.register("TeleOp", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.TeleOP.class);
-    manager.register("Autonomous", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
+//    manager.register("Autonomous", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
     manager.register("Autonomous Red", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous2.class);
     manager.register("GyroTest", com.qualcomm.ftcrobotcontroller.opmodes.IMUGyroOnlyTest.class);
     manager.register("AutoTesting", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.AutonomousPractice.class);
     manager.register("ColorTest", com.qualcomm.ftcrobotcontroller.opmodes.AdafruitRGBExample.class);
     manager.register("gridAuto", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.CoordinateAuto.class);
     manager.register("PinHead Larry", com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadTeleOp.class);
-    manager.register("Pinhead Grid", com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadGrid.class);
 
     //START
-    manager.register("TeleOP", SampleOpMode.class);
-    manager.register("Autonomous", AutonomousPractice.class);
+    manager.register("TeleOP", PinheadTeleOp.class);
+    manager.register("AutonomousRedOne", BlueAutoFirst.class);
+    manager.register("AutonomousRedTwo", BlueAutoSecond.class);
+    manager.register("AutonomousBlueOne", RedAutoFirst.class);
+    manager.register("AutonomousBlueTwo", RedAutoSecond.class);
+
 
 
   }

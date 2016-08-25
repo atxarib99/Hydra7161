@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.Servo;
 
 /**
  * Created by Arib on 4/19/2016.
@@ -27,6 +28,17 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     public DcMotor motorBR;
     public DcMotor motorFL;
     public DcMotor motorFR;
+    public DcMotor liftL;
+    public DcMotor liftR;
+    public DcMotor mani;
+
+    //servos
+    public Servo conveyer;
+    public Servo rightDoor;
+    public Servo leftDoor;
+    public Servo rightPaddle;
+    public Servo leftPaddle;
+    public Servo latch;
 
     //DeviceInterfaveModule for sensors
     public DeviceInterfaceModule cdim;
@@ -53,20 +65,17 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     //volatile double array to hold gyro angle
     volatile double[] rollAngle = new double[2], pitchAngle = new double[2], yawAngle = new double[2];
 
-    //static final variables to hold servo positions
-    private static final double UNDROPPED = 0;
-    private static final double DROPPED = 1;
-    private static final double RIGHTPADDLE_OUT = .75;
-    private static final double LEFTPADDLE_OUT = .5;
-    private static final double RIGHTPADDLE_IN = 1;
-    private static final double LEFTPADDLE_IN = 0;
-    private static final double LEFTDUMPER_DUMPED = 0;
-    private static final double LEFTDUMPER_UNDUMPED = 1;
-    private static final double RIGHTDUMPER_DUMPED = 1;
-    private static final double RIGHTDUMPER_UNDUMPED = 0;
-    private static final double BASKET_LEFT = 0;
-    private static final double BASKET_RIGHT = 1;
-    private static final double BASKET_IDLE = .5;
+    //final variables to hold servo positions
+    private final double RIGHT_DOOR_UP = 1;
+    private final double RIGHT_DOOR_DOWN = .5;
+    private final double LEFT_DOOR_UP = .35;
+    private final double LEFT_DOOR_DOWN = .85;
+    private final double RIGHT_PADDLE_OUT = 1;
+    private final double RIGHT_PADDLE_IN = .5;
+    private final double LEFT_PADDLE_OUT = 0;
+    private final double LEFT_PADDLE_IN = .5;
+    private final double LATCH_DOWN = .5;
+    private final double LATCH_UP = .5;
     //====================END CREATING MATH VARIABLES====================
 
     //====================BEGIN CONSTRUCTORS AND INITIALIZER====================
@@ -85,11 +94,20 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         this.xTile = xTile;
         this.yTile = yTile;
         this.facing = facing;
+        cdim = hardwareMap.deviceInterfaceModule.get("dim");
+        motorFL = hardwareMap.dcMotor.get("FL");
+        motorFR = hardwareMap.dcMotor.get("FR");
         motorBL = hardwareMap.dcMotor.get("BL");
         motorBR = hardwareMap.dcMotor.get("BR");
-        motorFR = hardwareMap.dcMotor.get("FR");
-        motorFL = hardwareMap.dcMotor.get("FL");
-        cdim = hardwareMap.deviceInterfaceModule.get("dim");
+        liftL = hardwareMap.dcMotor.get("liftl");
+        liftR = hardwareMap.dcMotor.get("liftr");
+        mani = hardwareMap.dcMotor.get("mani");
+        conveyer = hardwareMap.servo.get("conv");
+        rightDoor = hardwareMap.servo.get("rd");
+        leftDoor = hardwareMap.servo.get("ld");
+        rightPaddle = hardwareMap.servo.get("rp");
+        leftPaddle = hardwareMap.servo.get("lp");
+        latch = hardwareMap.servo.get("latch");
         song = MediaPlayer.create(FtcRobotControllerActivity.getContext(), R.raw.move);
         song.setLooping(true);
         song.seekTo(5000);
@@ -111,6 +129,13 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         hardwareMap.logDevices();
         nullValue = 0;
 
+        rightPaddleIn();
+        leftPaddleIn();
+        closeRightDoor();
+        closeLeftDoor();
+        stopConv();
+
+        latch.setPosition(.5);
         telemetry.addData("gyro", gyro == null? "BAD":"GOOD");
         telemetry.addData("Auto", "Initialized Successfully!");
     }
@@ -394,7 +419,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
             getAngles();                                //update angles
             currentAngle = yawAngle[0];                 //set the currentAngle to angle returned from gyro
             error = angleTo - Math.abs(currentAngle);             //calculate error
-            power = (pow * (error) * .0005) + .145;               //set the power based on distance from goal (3-13-16 constant = .015)
+            power = (pow * (error) * .005) + .215;               //set the power based on distance from goal (3-13-16 constant = .015)
             getAngles();
             if(power > 1) {                             //check to see power is legal amount
                 power = 1;
@@ -507,6 +532,76 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         motorFR.setPower(0);
         motorFL.setPower(0);
         waitOneFullHardwareCycle();
+    }
+
+    public void rightPaddleOut() {
+        rightPaddle.setPosition(RIGHT_PADDLE_OUT);
+    }
+
+    public void extendLifts(double pow) {
+        liftL.setPower(pow);
+        liftR.setPower(-pow);
+    }
+
+    public void stopLifts() {
+        liftL.setPower(0);
+        liftR.setPower(0);
+    }
+
+    public void startMani() {
+        mani.setPower(1);
+    }
+
+    public void reverseMani() {
+        mani.setPower(-1);
+    }
+
+    public void stopMani() {
+        mani.setPower(0);
+    }
+
+    public void openRightDoor() {
+        rightDoor.setPosition(RIGHT_DOOR_DOWN);
+    }
+
+    public void openLeftDoor() {
+        leftDoor.setPosition(LEFT_DOOR_DOWN);
+    }
+
+    public void closeRightDoor() {
+        rightDoor.setPosition(RIGHT_DOOR_UP);
+    }
+
+    public void closeLeftDoor() {
+        leftDoor.setPosition(LEFT_DOOR_UP);
+    }
+
+    public void moveConvRight() {
+        conveyer.setPosition(1);
+    }
+
+    public void moveConvLeft() {
+        conveyer.setPosition(0);
+    }
+
+    public void stopConv() {
+        conveyer.setPosition(.5);
+    }
+
+    public void rightPaddleIn() {
+        rightPaddle.setPosition(RIGHT_PADDLE_IN);
+    }
+
+    public void leftPaddleOut() {
+        leftPaddle.setPosition(LEFT_PADDLE_OUT);
+    }
+
+    public void leftPaddleIn() {
+        leftPaddle.setPosition(LEFT_PADDLE_IN);
+    }
+
+    public void latchDown() {
+        latch.setPosition(LATCH_DOWN);
     }
 
 

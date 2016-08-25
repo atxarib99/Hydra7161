@@ -20,7 +20,7 @@ public class AutonomousPractice extends LinearOpMode {
     DcMotor motorFR;
     DcMotor motorBR;
     DcMotor motorBL;
-
+    AdafruitIMU gyro;
     Servo climbers;
     Servo paddles;
 
@@ -58,7 +58,6 @@ public class AutonomousPractice extends LinearOpMode {
             motorFL.setPower(-1);
         }
         climbers.setPosition(1);
-        AdafruitIMU gyro;
         try {
             gyro = new AdafruitIMU(hardwareMap, "hydro"
 

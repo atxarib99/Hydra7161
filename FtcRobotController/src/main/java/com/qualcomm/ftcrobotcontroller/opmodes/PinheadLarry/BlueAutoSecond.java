@@ -3,19 +3,21 @@ package com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry;
 /**
  * Created by Arib on 4/19/2016.
  */
-public class PinheadGrid extends PinheadAutoMode {
+public class BlueAutoSecond extends PinheadAutoMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
         waitOneFullHardwareCycle();
-        cordFirst(2, 6, 1);
+        cordFirst(3, 6, 4);
         waitOneFullHardwareCycle();
 
         waitForStart();
 
         waitOneFullHardwareCycle();
 
-        moveToCordinatePosAngle(6, 3);
+        Thread.sleep(10000);
+
+        moveToCoordinatePos(1,3);
 
         waitOneFullHardwareCycle();
 

@@ -41,7 +41,7 @@ public abstract class AutoMode extends LinearOpMode {
     public Servo leftPaddle;
     public Servo basket;
 
-    //DeviceInterfaveModule for sensors
+    //DeviceInterfaceModule for sensors
     public DeviceInterfaceModule cdim;
     public ColorSensor sensorRGB;       //Adafruit color sensor
     public DigitalChannel rts;          //right touch sensor
@@ -305,7 +305,7 @@ public abstract class AutoMode extends LinearOpMode {
         if(xDiff > 0 && facing != 2 && !secondTurn)
             setFacing(2);
         waitOneFullHardwareCycle();
-        moveXTiles(Math.abs(xDiff));    //uses a mthod to move the difference in tiles forward
+        moveXTiles(Math.abs(xDiff));    //uses a method to move the difference in tiles forward
         pRotateNoReset(-.2, 0);
         waitOneFullHardwareCycle();
         stopMotors();                   //stop the motors in case something goes wrong somewhere else

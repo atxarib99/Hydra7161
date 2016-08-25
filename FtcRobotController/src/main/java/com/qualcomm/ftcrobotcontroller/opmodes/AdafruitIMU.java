@@ -155,7 +155,7 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
 
     /* SIC registers */
     BNO055_SIC_MATRIX_0_LSB_ADDR                            = 0X43,
-            BNO055_SIC_MATRIX_0_MSB_ADDR                            = 0X44,
+            BNO055_SIC_MATRIX_0_MSB_ADDR                           = 0X44,
             BNO055_SIC_MATRIX_1_LSB_ADDR                            = 0X45,
             BNO055_SIC_MATRIX_1_MSB_ADDR                            = 0X46,
             BNO055_SIC_MATRIX_2_LSB_ADDR                            = 0X47,
@@ -411,7 +411,7 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
     private boolean autoCalibrationOK(int timeOutSeconds){
         boolean readingEnabled = false, calibrationDone = false;
         long calibrationStart = System.nanoTime(), rightNow = System.nanoTime(),
-                loopStart = System.nanoTime();;
+                loopStart = System.nanoTime();
 
         while ((System.nanoTime() - calibrationStart) <= 60000000000L) {//Set a 1-minute overall timeout
             try {
