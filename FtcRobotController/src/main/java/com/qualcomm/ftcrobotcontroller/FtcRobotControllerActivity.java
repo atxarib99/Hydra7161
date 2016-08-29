@@ -34,7 +34,6 @@ package com.qualcomm.ftcrobotcontroller;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -90,7 +89,6 @@ public class FtcRobotControllerActivity extends Activity {
 
   protected UpdateUI.Callback callback;
   protected Context context;
-  protected static Context myContext;
   private Utility utility;
   protected ImageButton buttonMenu;
 
@@ -178,7 +176,6 @@ public class FtcRobotControllerActivity extends Activity {
 
     utility = new Utility(this);
     context = this;
-    myContext = this;
     entireScreenLayout = (LinearLayout) findViewById(R.id.entire_screen);
     buttonMenu = (ImageButton) findViewById(R.id.menu_buttons);
     buttonMenu.setOnClickListener(new View.OnClickListener() {
@@ -215,10 +212,6 @@ public class FtcRobotControllerActivity extends Activity {
     hittingMenuButtonBrightensScreen();
 
     if (USE_DEVICE_EMULATION) { HardwareFactory.enableDeviceEmulation(); }
-  }
-
-  public static Context getContext() {
-    return myContext;
   }
 
   @Override

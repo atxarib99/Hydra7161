@@ -278,30 +278,29 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     public void moveToCoordinatePos(int xTileTo, int yTileTo) throws InterruptedException {
         int yDiff = yTile - yTileTo;    //calculates differences between current position and goal position
         int xDiff = xTile - xTileTo;
-        boolean firstTurn = false;
-        if(yDiff < 0 && facing != 1 && !firstTurn)                   //set the heading depending on goal *see note for facing var*
+        if(yDiff < 0 && facing != 3)                   //set the heading depending on goal *see note for facing var*
             setFacing(3);
         waitOneFullHardwareCycle();
-        if(yDiff > 0 && facing != 1 && !firstTurn)
+        if(yDiff > 0 && facing != 1)
             setFacing(1);
         waitOneFullHardwareCycle();
         moveXTiles(Math.abs(yDiff));    //uses a method to move the difference in tiles forward
         pRotateNoReset(-.2, 0);
         waitOneFullHardwareCycle();
-        boolean secondTurn = false;
-        if(xDiff < 0 && facing != 4 && !secondTurn)                   //resets the heading depending on goal for other axis
+        if(xDiff < 0 && facing != 4)                   //resets the heading depending on goal for other axis
             setFacing(4);
         waitOneFullHardwareCycle();
-        if(xDiff > 0 && facing != 2 && !secondTurn)
+        if(xDiff > 0 && facing != 2)
             setFacing(2);
         waitOneFullHardwareCycle();
-        moveXTiles(Math.abs(xDiff));    //uses a mthod to move the difference in tiles forward
-        pRotateNoReset(-.2, 0);
+        moveXTiles(Math.abs(xDiff));    //uses a method to move the difference in tiles forward
+        pRotateNoReset(-.2, 0);         //this corrects for any drift. Only corrects yaw. does not calculate displacement. yet.
         waitOneFullHardwareCycle();
         stopMotors();                   //stop the motors in case something goes wrong somewhere else
 
     }
 
+    //TODO: FIX THIS METHOD SO THAT IT ACTUALLY WORKS
     public void moveToCordinatePosAngle(int xTileTo, int yTileTo) throws InterruptedException {
         int yDiff = yTile - yTileTo;
         int xDiff = xTile - xTileTo;
@@ -313,6 +312,8 @@ public abstract class PinheadAutoMode extends LinearOpMode {
             setFacing(1);
         waitOneFullHardwareCycle();
 
+        //All of this math can probably be done in a better manner
+        //TODO: FIX THIS MATH TO MAKE IT EASIER TO READ AND FOLLOW THIS MATH IS ALSO PROBABLY WRONG PRETTY MUCH JUST REDO THIS.
         int absyDiff = Math.abs(yDiff);                             //create absolute values for calculations
         int absxDiff = Math.abs(xDiff);
         double angleToTurn = Math.sin(absxDiff / absyDiff);         //calculate the angle to turn using trigonometry
