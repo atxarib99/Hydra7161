@@ -23,6 +23,7 @@ public class AutonomousPractice extends LinearOpMode {
     AdafruitIMU gyro;
     Servo climbers;
     Servo paddles;
+    Servo varun;
 
     public void runOpMode() throws InterruptedException {
         motorFL = hardwareMap.dcMotor.get("motorFL");
@@ -30,6 +31,7 @@ public class AutonomousPractice extends LinearOpMode {
         motorBL = hardwareMap.dcMotor.get("motorBL");
         motorBR = hardwareMap.dcMotor.get("motorBR");
 
+        varun = hardwareMap.servo.get("hunter");
         climbers = hardwareMap.servo.get("climbers");
         paddles = hardwareMap.servo.get("paddles");
 
