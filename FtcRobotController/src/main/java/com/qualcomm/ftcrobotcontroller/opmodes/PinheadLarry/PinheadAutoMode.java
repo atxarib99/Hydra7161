@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 /**
  * Created by Arib on 4/19/2016.
  */
+//blank lines are replaced
 public abstract class PinheadAutoMode extends LinearOpMode {
 
     //====================BEGIN CREATING OBJECTS====================
@@ -157,12 +158,10 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         int currentEncoder = getBackWheelAvg() - nullValue;
         //while target is not reached
         while((encoderVal > currentEncoder)) {
-            waitOneFullHardwareCycle();
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
             telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
             telemetry.addData("avg", getBackWheelAvg());
             sendData();
-            waitOneFullHardwareCycle();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             angle = yawAngle[0];
 
@@ -172,25 +171,20 @@ public abstract class PinheadAutoMode extends LinearOpMode {
             if(angle > 2) {
                 startMotors(pow, (pow * .75));
                 sendData();
-                waitOneFullHardwareCycle();
             } else if(angle < -2) { //if off to the right, correct
                 startMotors((pow * .75), pow);
-                waitOneFullHardwareCycle();
                 sendData();
             } else { //if heading is fine keep moving straight
                 startMotors(pow, pow);
                 sendData();
-                waitOneFullHardwareCycle();
             }
 
         }
 
         //once finished stop moving and send data
-        waitOneFullHardwareCycle();
         stopMotors();
         sendData();
         angleError = yawAngle[0];
-        waitOneFullHardwareCycle();
     }
 
     public void moveForwardPID(double pow, int encoderVal) throws InterruptedException {
@@ -209,12 +203,10 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         int currentEncoder = getBackWheelAvg() - nullValue;
         //while target is not reached
         while(encoderVal > currentEncoder) {
-            waitOneFullHardwareCycle();
             telemetry.addData("BL", Math.abs(motorBL.getCurrentPosition()));
             telemetry.addData("BR", Math.abs(motorBR.getCurrentPosition()));
             telemetry.addData("avg", getBackWheelAvg());
             sendData();
-            waitOneFullHardwareCycle();
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
             angle = yawAngle[0];
 
@@ -244,29 +236,27 @@ public abstract class PinheadAutoMode extends LinearOpMode {
                 sendData();
                 telemetry.addData("LeftPower", motorBL.getPower() + "");
                 telemetry.addData("RightPower", motorBR.getPower() + "");
-                waitOneFullHardwareCycle();
             } else if(angle < -2) { //if off to the right, correct
                 startMotors(power, (power * .75) );
                 telemetry.addData("LeftPower", motorBL.getPower() + "");
                 telemetry.addData("RightPower", motorBR.getPower() + "");
                 sendData();
-                waitOneFullHardwareCycle();
             } else { //if heading is fine keep moving straight
                 startMotors(power, power);
                 sendData();
                 telemetry.addData("LeftPower", motorBL.getPower() + "");
                 telemetry.addData("RightPower", motorBR.getPower() + "");
-                waitOneFullHardwareCycle();
+
             }
 
         }
 
         //once finished stop moving and send data
-        waitOneFullHardwareCycle();
+
         stopMotors();
         sendData();
         angleError = yawAngle[0];
-        waitOneFullHardwareCycle();
+
     }
 
     public void moveForwardScaled(double pow, int encoderVal) throws InterruptedException {
@@ -280,22 +270,22 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         int xDiff = xTile - xTileTo;
         if(yDiff < 0 && facing != 3)                   //set the heading depending on goal *see note for facing var*
             setFacing(3);
-        waitOneFullHardwareCycle();
+
         if(yDiff > 0 && facing != 1)
             setFacing(1);
-        waitOneFullHardwareCycle();
+
         moveXTiles(Math.abs(yDiff));    //uses a method to move the difference in tiles forward
         pRotateNoReset(-.2, 0);
-        waitOneFullHardwareCycle();
+
         if(xDiff < 0 && facing != 4)                   //resets the heading depending on goal for other axis
             setFacing(4);
-        waitOneFullHardwareCycle();
+
         if(xDiff > 0 && facing != 2)
             setFacing(2);
-        waitOneFullHardwareCycle();
+
         moveXTiles(Math.abs(xDiff));    //uses a method to move the difference in tiles forward
         pRotateNoReset(-.2, 0);         //this corrects for any drift. Only corrects yaw. does not calculate displacement. yet.
-        waitOneFullHardwareCycle();
+
         stopMotors();                   //stop the motors in case something goes wrong somewhere else
 
     }
@@ -307,10 +297,10 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         boolean firstTurn = false;
         if(yDiff < 0 && facing != 1 && !firstTurn)                   //set the heading depending on goal *see note for facing var*
             setFacing(3);
-        waitOneFullHardwareCycle();
+
         if(yDiff > 0 && facing != 1 && !firstTurn)
             setFacing(1);
-        waitOneFullHardwareCycle();
+
 
         //All of this math can probably be done in a better manner
         //TODO: FIX THIS MATH TO MAKE IT EASIER TO READ AND FOLLOW THIS MATH IS ALSO PROBABLY WRONG PRETTY MUCH JUST REDO THIS.
@@ -361,7 +351,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //rotate the robot
     public void rotate() throws InterruptedException {
-        waitOneFullHardwareCycle();
+
         resetGyro();
         sendData();
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
@@ -369,33 +359,33 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         //while current angle is greater than desired angle
         while(angle > -15) {
             sendData();
-            waitOneFullHardwareCycle();
+
             startMotors(.2, .2);
-            waitOneFullHardwareCycle();
+
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-            waitOneFullHardwareCycle();
+
             angle = yawAngle[0];
         }
         stopMotors();
         //if overshot
         while(angle < -20) {
-            waitOneFullHardwareCycle();
+
             startMotors(-.2, -.2);
             sendData();
-            waitOneFullHardwareCycle();
+
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-            waitOneFullHardwareCycle();
+
             angle = yawAngle[0];
         }
         stopMotors();
         //if undershot
         while(angle > -10) {
-            waitOneFullHardwareCycle();
+
             startMotors(.2, .2);
             sendData();
-            waitOneFullHardwareCycle();
+
             gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-            waitOneFullHardwareCycle();
+
             angle = yawAngle[0];
         }
         stopMotors();
@@ -502,13 +492,13 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     //start the motors in a tank drive
     public void startMotors(double ri, double le) throws InterruptedException {
         motorBL.setPower(-le);
-        waitOneFullHardwareCycle();
+
         motorBR.setPower(ri);
-        waitOneFullHardwareCycle();
+
         motorFL.setPower(-le);
-        waitOneFullHardwareCycle();
+
         motorFR.setPower(ri);
-        waitOneFullHardwareCycle();
+
     }
 
     //start the motors in a tank drive
@@ -516,23 +506,23 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         ri = MotorScaler.scaleSimple(ri);
         le = MotorScaler.scaleSimple(le);
         motorBL.setPower(le);
-        waitOneFullHardwareCycle();
+
         motorBR.setPower(-ri);
-        waitOneFullHardwareCycle();
+
         motorFL.setPower(le);
-        waitOneFullHardwareCycle();
+
         motorFR.setPower(-ri);
-        waitOneFullHardwareCycle();
+
     }
 
     //stop all the motors
     public void stopMotors() throws InterruptedException {
-        waitOneFullHardwareCycle();
+
         motorBL.setPower(0);
         motorBR.setPower(0);
         motorFR.setPower(0);
         motorFL.setPower(0);
-        waitOneFullHardwareCycle();
+
     }
 
     public void rightPaddleOut() {
@@ -637,7 +627,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     //reset the gyro and its angles
     public void resetGyro() throws InterruptedException {
         gyro.startIMU();
-        waitOneFullHardwareCycle();
+
     }
 
     //reset the encoders
@@ -647,14 +637,14 @@ public abstract class PinheadAutoMode extends LinearOpMode {
             motorBR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
             motorFR.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
             motorFL.setChannelMode(DcMotorController.RunMode.RESET_ENCODERS);
-            waitOneFullHardwareCycle();
+
         }
-        waitOneFullHardwareCycle();
+
         motorBL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorBR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorFL.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
         motorFR.setChannelMode(DcMotorController.RunMode.RUN_WITHOUT_ENCODERS);
-        waitOneFullHardwareCycle();
+
     }
 
     public void setNullValue() throws InterruptedException {
@@ -679,14 +669,14 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     public void getAngles() throws InterruptedException {
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-        waitOneFullHardwareCycle();
+
     }
 
     //check to be sure if pitch is ok
     public boolean isOk() throws InterruptedException {
-        waitOneFullHardwareCycle();
+
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-        waitOneFullHardwareCycle();
+
         double angle = pitchAngle[0];
         if(angle > .5) {
             return false;
@@ -696,9 +686,9 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //check to see if heading and pitch are ok after rotation
     public boolean allIsOk() throws InterruptedException {
-        waitOneFullHardwareCycle();
+
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
-        waitOneFullHardwareCycle();
+
         double rotate = yawAngle[0];
         double pitch = pitchAngle[0];
         if((rotate < 17 && rotate > 13) && pitch < 2.5) {

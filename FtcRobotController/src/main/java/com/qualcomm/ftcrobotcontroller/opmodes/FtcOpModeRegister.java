@@ -77,6 +77,7 @@ public class FtcOpModeRegister implements OpModeRegister {
     manager.register("AutonomousRedTwo", BlueAutoSecond.class);
     manager.register("AutonomousBlueOne", RedAutoFirst.class);
     manager.register("AutonomousBlueTwo", RedAutoSecond.class);
+    manager.register("tele", BasicOpMode.class);
 
 
 
