@@ -31,6 +31,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
 package com.qualcomm.ftcrobotcontroller.opmodes;
 
+import com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.CoordinateAuto;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.BlueAutoFirst;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.BlueAutoSecond;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadAutoMode;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadTeleOp;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.RedAutoFirst;
+import com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.RedAutoSecond;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegister;
 
@@ -55,54 +62,24 @@ public class FtcOpModeRegister implements OpModeRegister {
      * If two or more op modes are registered with the same name, the app will display an error.
      */
 
+    manager.register("TeleOp", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.TeleOP.class);
+//    manager.register("Autonomous", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
+    manager.register("Autonomous Red", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous2.class);
+    manager.register("GyroTest", com.qualcomm.ftcrobotcontroller.opmodes.IMUGyroOnlyTest.class);
+    manager.register("AutoTesting", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.AutonomousPractice.class);
+    manager.register("ColorTest", com.qualcomm.ftcrobotcontroller.opmodes.AdafruitRGBExample.class);
+    manager.register("gridAuto", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.CoordinateAuto.class);
+    manager.register("PinHead Larry", com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadTeleOp.class);
 
-    /*
-     * The following op modes are example op modes provided by QualComm.
-     * Uncomment the lines to make the op modes available to the driver station.
-     */
-    //manager.register("LinearK9TeleOp", LinearK9TeleOp.class);
-    //manager.register("LinearIrExample", LinearIrExample.class);
-    //manager.register("IrSeekerOp", IrSeekerOp.class);
-    //manager.register("CompassCalibration", CompassCalibration.class);
-    //manager.register("NxtTeleOp", NxtTeleOp.class);
+    //START
+    manager.register("TeleOP", PinheadTeleOp.class);
+    manager.register("AutonomousRedOne", BlueAutoFirst.class);
+    manager.register("AutonomousRedTwo", BlueAutoSecond.class);
+    manager.register("AutonomousBlueOne", RedAutoFirst.class);
+    manager.register("AutonomousBlueTwo", RedAutoSecond.class);
+    manager.register("tele", BasicOpMode.class);
 
-    /*
-     * The NullOp op mode
-     */
-    manager.register("NullOp", NullOp.class);
-    manager.register("hydraDrive", hydraDrive.class);
-    manager.register("testDriveFront", testDriveFront.class);
-    manager.register("justTheServos", justTheServos.class);
-    manager.register("AutonomousBlue", hydraAutonomousBlue.class);
-    manager.register("AutonomousRed", hydraAutonomousRed.class);
-    manager.register("testcolors", ColorTeleOp.class);
-    manager.register("Colortest", AdafruitRGBExample.class);
 
-    /*
-     * The following example op modes are designed to work with a K9-style robot.
-     *  - K9TeleOp is a simple driver controlled program.
-     *  - K9IrSeeker uses a legacy IR seeker V2 sensor to follow a beacon.
-     *  - K9Line uses a legacy LEGO NXT light sensor to follow a white line.
-     */
-
-    //manager.register("K9TeleOp", K9TeleOp.class);
-    //manager.register("K9IrSeeker", K9IrSeeker.class);
-    //manager.register("K9Line", K9Line.class);
-
-    /*
-     * The following example op modes are designed to work with a pushbot-style robot.
-     *  - PushBotManual is a driver controled (tank drive) op mode.
-     *  - PushBotAuto uses the event driven (non linear) OpMode class for autonomous operation.
-     *  - PushBotDriveTouch uses the LinearOpMode class and shows how to autonomously drive if a button is not pressed.
-     *  - PushBotIrSeek uses the LinearOpMode class and shows how to track an IR beacon.
-     *  - PushBotSquare uses the LinearOpMOde class and shows how to drive in a square pattern autonomously.
-     */
-
-    //manager.register("PushBotManual", PushBotManual.class);
-    //manager.register("PushBotAuto", PushBotAuto.class);
-    //manager.register("PushBotDriveTouch", PushBotDriveTouch.class);
-    //manager.register("PushBotIrSeek", PushBotIrSeek.class);
-    //manager.register("PushBotSquare", PushBotSquare.class);
 
   }
 }
