@@ -45,7 +45,8 @@ import com.qualcomm.robotcore.hardware.IrSeekerSensor;
  * Turn on the IR beacon. The robot will now follow the IR beacon. <br>
  * To stop the robot, turn the IR beacon off. <br>
  */
-public class IrSeekerOp extends OpMode {
+public class
+IrSeekerOp extends OpMode {
 
   final static double MOTOR_POWER = 0.15; // Higher values will cause the robot to move faster
 
