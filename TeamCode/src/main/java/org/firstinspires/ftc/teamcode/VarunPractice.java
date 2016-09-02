@@ -15,7 +15,6 @@ public class VarunPractice extends OpMode {
     DcMotor MotorFR;
     Servo arm;
     @Override
-
     public void init() {
         MotorBL = hardwareMap.dcMotor.get("BL");
         MotorBR = hardwareMap.dcMotor.get("BR");

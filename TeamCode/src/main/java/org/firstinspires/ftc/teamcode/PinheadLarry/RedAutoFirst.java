@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.PinheadLarry;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 /**
  * Created by Arib on 4/19/2016.
  */
+@Autonomous(name = "Autonomous", group = "LinearOpMode")
 public class RedAutoFirst extends PinheadAutoMode {
 
     @Override

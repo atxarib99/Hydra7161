@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.PinheadLarry;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 /**
  * Created by Arib on 4/11/2016.
  */
 
+
+@TeleOp(name = "Tele-OP", group = "OpMode")
 public class PinheadTeleOp extends PinheadOpMode {
 
     boolean rightOpen = false;
