@@ -112,7 +112,6 @@ public class FtcRobotControllerActivity extends Activity {
 
   protected UpdateUI.Callback callback;
   protected Context context;
-  protected static Context myContext;
   protected Utility utility;
   protected AppUtil appUtil = AppUtil.getInstance();
 
@@ -203,7 +202,6 @@ public class FtcRobotControllerActivity extends Activity {
     setContentView(R.layout.activity_ftc_controller);
 
     context = this;
-    myContext = this;
     utility = new Utility(this);
     appUtil.setThisApp(new PeerAppRobotController(context));
 
@@ -259,10 +257,6 @@ public class FtcRobotControllerActivity extends Activity {
     wifiLock.acquire();
     callback.networkConnectionUpdate(WifiDirectAssistant.Event.DISCONNECTED);
     bindToService();
-  }
-
-  public static Context getContext() {
-    return myContext;
   }
 
   protected UpdateUI createUpdateUI() {
@@ -402,10 +396,16 @@ public class FtcRobotControllerActivity extends Activity {
     int id = item.getItemId();
 
     if (id == R.id.action_programming_mode) {
-      Intent programmingModeIntent = new Intent(ProgrammingModeActivity.launchIntent);
-      programmingModeIntent.putExtra(
-          LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_NETWORK_TYPE, networkType);
-      startActivity(programmingModeIntent);
+      if (cfgFileMgr.getActiveConfig().isNoConfig()) {
+        // Tell the user they must configure the robot before starting programming mode.
+        AppUtil.getInstance().showToast(
+            context, context.getString(R.string.toastConfigureRobotBeforeProgrammingMode));
+      } else {
+        Intent programmingModeIntent = new Intent(ProgrammingModeActivity.launchIntent);
+        programmingModeIntent.putExtra(
+            LaunchActivityConstantsList.PROGRAMMING_MODE_ACTIVITY_NETWORK_TYPE, networkType);
+        startActivity(programmingModeIntent);
+      }
       return true;
     } else if (id == R.id.action_inspection_mode) {
       Intent inspectionModeIntent = new Intent(RcInspectionActivity.rcLaunchIntent);
