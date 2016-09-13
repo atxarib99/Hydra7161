@@ -178,7 +178,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
                 startMotors(pow, pow);
                 sendData();
             }
-
+            idle();
         }
 
         //once finished stop moving and send data
