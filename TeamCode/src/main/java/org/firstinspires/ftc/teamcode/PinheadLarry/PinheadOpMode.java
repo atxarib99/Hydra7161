@@ -171,8 +171,6 @@ public abstract class PinheadOpMode extends OpMode {
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         telemetry.addData("yaw", yawAngle[0]);
     }
-    //I totally love Android Studio
-    int areYouReadingThis = 101;
 
     public void rightPaddleOut() {
         rightPaddle.setPosition(RIGHT_PADDLE_OUT);

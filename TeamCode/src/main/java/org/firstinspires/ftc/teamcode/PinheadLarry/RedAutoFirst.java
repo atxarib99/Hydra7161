@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.PinheadLarry;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 /**
  * Created by Arib on 4/19/2016.
