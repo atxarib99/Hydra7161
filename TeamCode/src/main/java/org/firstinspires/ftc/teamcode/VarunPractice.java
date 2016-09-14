@@ -25,10 +25,33 @@ public class VarunPractice extends OpMode {
     }
 
     public void loop(){
-        if (Math.abs(gamepad1.right_stick_y) > .05){
-
+        if (Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y)> .05){
+            MotorBL.setPower(gamepad1.left_stick_y);
+            MotorBR.setPower(gamepad1.right_stick_y);
+            MotorFL.setPower(gamepad1.left_stick_y);
+            MotorFR.setPower(gamepad1.right_stick_y);
+        }else{
+            MotorBL.setPower(0);
+            MotorBR.setPower(0);
+            MotorFL.setPower(0);
+            MotorFR.setPower(0);
         }
+
+        if (gamepad1.a){
+            arm.setPosition(1);
+        }
+
     }
+
+    @Override
+    public void stop() {
+        MotorBL.setPower(0);
+        MotorBR.setPower(0);
+        MotorFL.setPower(0);
+        MotorFR.setPower(0);
+        arm.setPosition(.5);
+    }
+
 
 
 
