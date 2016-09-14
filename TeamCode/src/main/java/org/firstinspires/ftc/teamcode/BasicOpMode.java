@@ -16,6 +16,7 @@ public class BasicOpMode extends OpMode {
     DcMotor motorFR;
     DcMotor motorBR;
     Servo arm;
+    Servo body;
     Servo leg;
     @Override
     public void init() {
