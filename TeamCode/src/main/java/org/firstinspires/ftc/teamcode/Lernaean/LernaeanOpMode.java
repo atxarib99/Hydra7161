@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.Lernaean.Interfaces.ServoInterface;
 /**
  * Created by Arib on 9/11/2016.
  */
-public abstract class LernaeanOpMode extends OpMode implements DriveInterface, ServoInterface {
+public abstract class LernaeanOpMode extends OpMode {
     DcMotor motorFL;
     DcMotor motorFR;
     DcMotor motorBL;
