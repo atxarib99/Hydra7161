@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by Arib on 8/31/2016.
  */
 public class VarunPractice extends OpMode {
-    DcMotor MotorBL;
+    DcMotor motorBL;
     DcMotor MotorBR;
     DcMotor MotorFL;
     DcMotor MotorFR;
     Servo arm;
     @Override
     public void init() {
-        MotorBL = hardwareMap.dcMotor.get("BL");
+        motorBL = hardwareMap.dcMotor.get("BL");
         MotorBR = hardwareMap.dcMotor.get("BR");
         MotorFL = hardwareMap.dcMotor.get("FL");
         MotorFR = hardwareMap.dcMotor.get("FR");
@@ -26,12 +26,12 @@ public class VarunPractice extends OpMode {
 
     public void loop(){
         if (Math.abs(gamepad1.right_stick_y) > .05 || Math.abs(gamepad1.left_stick_y)> .05){
-            MotorBL.setPower(gamepad1.left_stick_y);
+            motorBL.setPower(gamepad1.left_stick_y);
             MotorBR.setPower(gamepad1.right_stick_y);
             MotorFL.setPower(gamepad1.left_stick_y);
             MotorFR.setPower(gamepad1.right_stick_y);
         }else{
-            MotorBL.setPower(0);
+            motorBL.setPower(0);
             MotorBR.setPower(0);
             MotorFL.setPower(0);
             MotorFR.setPower(0);
