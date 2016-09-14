@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Lernaean.Interfaces.ServoInterface;
 /**
  * Created by Arib on 9/13/2016.
  */
-public abstract class LernaeanAutoMode extends LinearOpMode implements DriveInterface, ServoInterface {
+public abstract class LernaeanAutoMode extends LinearOpMode {
 
     BNO055IMU gyro;
     Orientation angles;
