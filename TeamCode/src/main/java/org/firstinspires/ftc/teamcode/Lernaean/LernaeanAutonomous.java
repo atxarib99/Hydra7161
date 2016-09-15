@@ -8,6 +8,8 @@ public class LernaeanAutonomous extends LernaeanAutoMode {
     @Override
     public void runOpMode() throws InterruptedException {
 
+        map();
+
         moveForward(.5, 180); //move forward off wall
 
         pRotateNoReset(.5, 0); //correct for drift
@@ -18,7 +20,7 @@ public class LernaeanAutonomous extends LernaeanAutoMode {
             startMotors(.8, .8); //move forward until middle sensor on line
         }
         stopMotors();
-        
+
         while(!sideLine()){
             startMotors(-.5, .5); //move backward until aligned with line
         }

@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -53,8 +54,22 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     private final double LEFT_LEFT_OUT = 0;
     private final double LEFT_LEFT_IN = 1;
 
+    private int xTile;
+    private int yTile;
+    int facing;
+    private final double WHEEL_DIAMETER = 4;
+    private final double DISTANCE_PER_ROTATION = WHEEL_DIAMETER * Math.PI;
+    private final int SINGLE_ROTATION = 1120;
 
     public void map() {
+        map(6, 3, 1); //TODO: UPDATE THESE PLACEHOLDERS
+    }
+
+
+    public void map(int x, int y, int f) {
+        xTile = x;
+        yTile = y;
+        facing = f;
         motorBL = hardwareMap.dcMotor.get("BL");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
@@ -81,6 +96,8 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
         accel = gyro.getGravity();
     }
+
+    //===============BEGIN MOVEMENT METHODS=============
 
     public void startMotors(double ri, double le) {
         motorBL.setPower(-le);
@@ -157,12 +174,64 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
                 startMotors(pow, pow);
                 telemetry.update();
             }
-
+            idle();
         }
 
         //once finished stop moving and send data
         stopMotors();
         getAngles();
+        angleError = getGyroYaw();
+    }
+
+    public void moveForwardPID(double pow, int encoderVal) throws InterruptedException {
+
+        resetGyro();
+        double angle;
+        telemetry.update();
+
+        double error;
+        double power;
+        setNullValue();
+
+        int currentEncoder = getEncoderAvg() - nullValue;
+        while(encoderVal > currentEncoder) {
+            telemetry.update();
+            getAngles();
+            angle = getGyroYaw();
+
+            currentEncoder = getEncoderAvg() - nullValue;
+
+            error = (double) (encoderVal - currentEncoder) / encoderVal;
+
+            power = (pow * error) + .25;
+
+            Range.clip(power, -1, 1);
+
+            telemetry.addData("Power", power);
+            telemetry.addData("LeftPower", motorBL.getPower());
+            telemetry.addData("RightPower", motorBR.getPower());
+
+            if(angle > 2) {
+                startMotors((power * .75), power);
+                telemetry.update();
+                telemetry.addData("LeftPower", motorBL.getPower() + "");
+                telemetry.addData("RightPower", motorBR.getPower() + "");
+            } else if(angle < -2) { //if off to the right, correct
+                startMotors(power, (power * .75) );
+                telemetry.addData("LeftPower", motorBL.getPower() + "");
+                telemetry.addData("RightPower", motorBR.getPower() + "");
+                telemetry.update();
+            } else { //if heading is fine keep moving straight
+                startMotors(power, power);
+                telemetry.update();
+                telemetry.addData("LeftPower", motorBL.getPower() + "");
+                telemetry.addData("RightPower", motorBR.getPower() + "");
+
+            }
+            idle();
+        }
+        stopMotors();
+        telemetry.update();
         angleError = getGyroYaw();
     }
 
@@ -193,8 +262,9 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
             telemetry.addData("PID", power);
             telemetry.update();
             previousError = error;
+            idle();
         }
-        telemetry.update()
+        telemetry.update();
         stopMotors();                                  //stop motion
 //        Double d = angle;
 //        int rotated = d.intValue();
@@ -228,8 +298,9 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
             telemetry.addData("PID", power);
             telemetry.update();
             previousError = error;
+            idle();
         }
-        telemetry.update()
+        telemetry.update();
         stopMotors();                                  //stop motion
 //        Double d = angle;
 //        int rotated = d.intValue();
@@ -246,6 +317,56 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         return odsSide.getLightDetected() > .5;
     }
 
+    //=============END MOVEMENT METHODS===========================
+    //=============BEGIN GRID METHODS=================
+    public void setFacing(int f) throws InterruptedException {
+        int diff = f - facing;
+        double angle = 90;
+        double pow = .2;
+        if(angle > 0) {
+            pow = .2;
+        }
+        else if(angle < 0) {
+            pow = -.2;
+        }
+
+        if(diff != 0)
+            pRotate(pow, angle);
+    }
+
+    public void moveXTiles(int numTiles) throws InterruptedException {
+        double oneTileInInches = 24;
+        Double distToMoveInches = oneTileInInches * numTiles;
+        double rotationsToMove = distToMoveInches / DISTANCE_PER_ROTATION;
+        int encoderTicksToMove = (int)Math.round(rotationsToMove * SINGLE_ROTATION);
+        moveForwardPID(.5, encoderTicksToMove);
+        stopMotors();
+    }
+
+    public void moveToCoordinatePos(int xTileTo, int yTileTo) throws InterruptedException {
+        int yDiff = yTileTo - yTile;
+        int xDiff = xTileTo - xTile;
+        if(yDiff > 0) {
+            setFacing(1);
+        } else if(yDiff < 0) {
+            setFacing(3);
+        }
+
+        moveXTiles(Math.abs(yDiff));
+        pRotateNoReset(-.2, 0);
+
+        if(xDiff > 0) {
+            setFacing(2);
+        } else if(xDiff < 0) {
+            setFacing(4);
+        }
+
+        moveXTiles(Math.abs(xDiff));
+        pRotateNoReset(-.2, 0);
+
+        stopMotors();
+
+    }
     //=============BEGIN CALCULATION METHODS==========================
 
     public int getEncoderAvg() {

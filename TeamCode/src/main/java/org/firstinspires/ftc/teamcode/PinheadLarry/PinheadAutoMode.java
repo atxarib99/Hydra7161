@@ -350,6 +350,8 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     }
 
     //rotate the robot
+    //Now deprecated because of obsolete use of gyro without PID
+    @Deprecated
     public void rotate() throws InterruptedException {
 
         resetGyro();
