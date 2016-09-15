@@ -129,8 +129,9 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         rightLeft.setPosition(RIGHT_LEFT_IN);
     }
 
-    //added a comment
-
+    //I'm stupid
+    //Yay boolean
+    //Hey I made this I think
     public void leftLeftOut() {
         leftLeft.setPosition(LEFT_LEFT_OUT);
     }
