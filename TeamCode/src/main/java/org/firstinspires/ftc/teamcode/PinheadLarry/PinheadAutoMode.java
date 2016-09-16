@@ -292,8 +292,8 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //TODO: FIX THIS METHOD SO THAT IT ACTUALLY WORKS
     public void moveToCordinatePosAngle(int xTileTo, int yTileTo) throws InterruptedException {
-        int yDiff = yTile - yTileTo;                                 //Set Y-difference to current tile - goal tile
-        int xDiff = xTile - xTileTo;                                 //Set X-difference to current tile - goal tile
+        int yDiff = yTileTo - yTile;                                 //Set Y-difference to current tile - goal tile
+        int xDiff = xTileTo - xTile;                                 //Set X-difference to current tile - goal tile
         boolean firstTurnComplete = false;                           //Not used for now, return to it later if needed
         if(yDiff < 0)                   //set the heading depending on goal *see note for facing var*
             setFacing(3);
@@ -303,8 +303,6 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
         //All of this math can probably be done in a better manner
         //TODO: FIX THIS MATH TO MAKE IT EASIER TO READ AND FOLLOW THIS MATH IS ALSO PROBABLY WRONG PRETTY MUCH JUST REDO THIS.
-        int absyDiff = yDiff;                             //create absolute values for calculations
-        int absxDiff = xDiff;
         double angleToTurn = Math.atan(xDiff / yDiff);         //calculate the angle to turn using trigonometry
         pRotate(.2, angleToTurn);                                   //send the command to turn
 
