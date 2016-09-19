@@ -300,24 +300,39 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         if(yDiff > 0)
             setFacing(1);
 
-
         //All of this math can probably be done in a better manner
-        //TODO: FIX THIS MATH TO MAKE IT EASIER TO READ AND FOLLOW THIS MATH IS ALSO PROBABLY WRONG PRETTY MUCH JUST REDO THIS.
-        double angleToTurn = Math.atan(xDiff / yDiff);         //calculate the angle to turn using trigonometry
+        //TODO: ARIB CHECK THIS, IT MIGHT BE FIXED? yay
+        double absxDiff = Math.abs(xDiff);
+        double absyDiff = Math.abs(yDiff);
+        double angleToTurn = 0;
+        if(xDiff > 0 && yDiff > 0){                                           //calculate the angle to turn using trigonometry
+            angleToTurn = 90 - Math.atan(absxDiff / absyDiff);         //If in first quadrant
+        }else if(xDiff > 0 && yDiff < 0){
+            angleToTurn = 180 - Math.atan(absxDiff / absyDiff);        //If in second quadrant
+        }else if(xDiff < 0 && yDiff < 0){
+            angleToTurn = 90 + Math.atan(absxDiff / absyDiff);         //If in third quadrant
+        }else if (xDiff < 0 && yDiff > 0){
+            angleToTurn = -Math.atan(absxDiff / absyDiff);             //If in fourth quadrant
+        }
+
         pRotate(.2, angleToTurn);                                   //send the command to turn
 
         double oneTileInInches = 24;                                                //encoder value calculation for one tile
-        Double xdistToMoveInches = oneTileInInches * Math.abs(xDiff);                          //encoder value calculation for multiple tiles
-        double xRotationsToMove = xdistToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
-        double xencoderTicksToMoveSquared = Math.pow(Math.round(xRotationsToMove * SINGLE_ROTATION), 2);
 
-                                                                                     //calculate the amount of ticks for the other movement
-        Double ydistToMoveInches = oneTileInInches * Math.abs(yDiff);                          //encoder value calculation for multiple tiles
-        double yRotationsToMove = ydistToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
-        double yencoderTicksToMoveSquared = Math.pow(Math.round(yRotationsToMove * SINGLE_ROTATION), 2);
+        Double xdistToMoveInches = oneTileInInches * Math.abs(xDiff);                                        //calculate total number of inches to move
+        double xRotationsToMove = xdistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
+        double xencoderTicksToMove = 1440* xRotationsToMove;                                                 //find number of X encoder ticks to move
 
-        int hypotenuseTicks = (int) Math.sqrt(xencoderTicksToMoveSquared + yencoderTicksToMoveSquared); //use pythagorean theorem to calculate the
-        moveForwardPID(.5, hypotenuseTicks);
+        double ydistToMoveInches = oneTileInInches * Math.abs(yDiff);                                        //calculate total number of inches to move
+        double yRotationsToMove = ydistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
+        double yencoderTicksToMove = 1440 * yRotationsToMove;                                                //find number of Y encoder ticks to move
+
+        double xencoderTicksToMoveSquared = Math.pow(Math.round(xencoderTicksToMove * SINGLE_ROTATION), 2);  //find number of encoder ticks squared to move
+        double yencoderTicksToMoveSquared = Math.pow(Math.round(yencoderTicksToMove * SINGLE_ROTATION), 2);
+
+        int hypotenuseTicks = (int) Math.sqrt(xencoderTicksToMoveSquared + yencoderTicksToMoveSquared);      //use pythagorean theorem to calculate the hypotenuse
+
+        moveForwardPID(.5, hypotenuseTicks);                                                                 //move forward along hypotenuse
 
         pRotateNoReset(-.2, 0);                                                     //straighten out if any drift occurs
 
