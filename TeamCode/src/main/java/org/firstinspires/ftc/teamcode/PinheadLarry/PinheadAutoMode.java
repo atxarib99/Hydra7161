@@ -321,7 +321,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
         Double xdistToMoveInches = oneTileInInches * Math.abs(xDiff);                                        //calculate total number of inches to move
         double xRotationsToMove = xdistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
-        double xencoderTicksToMove = 1440* xRotationsToMove;                                                 //find number of X encoder ticks to move
+        double xencoderTicksToMove = 1440 * xRotationsToMove;                                                 //find number of X encoder ticks to move
 
         double ydistToMoveInches = oneTileInInches * Math.abs(yDiff);                                        //calculate total number of inches to move
         double yRotationsToMove = ydistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
@@ -340,7 +340,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //changes the heading
     public void setFacing(int f) throws InterruptedException {
-        int diff = f - facing;      //calculates the difference between current heading and goal
+        int diff = f -   facing;      //calculates the difference between current heading and goal
         double angle = 90;         //changes the difference to an angle value
         double pow = .2;            //default power of half
         if(angle > 0)               //set the power to turn the correct way
