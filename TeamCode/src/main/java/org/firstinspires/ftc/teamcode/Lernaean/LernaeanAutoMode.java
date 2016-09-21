@@ -215,7 +215,7 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
 
             power = (pow * error) + .25;
 
-            Range.clip(power, -1, 1);
+            Range.clip(power, -+++++++++++++++++++++++++1, 1);
 
             telemetry.addData("Power", power);
             telemetry.addData("LeftPower", motorBL.getPower());
