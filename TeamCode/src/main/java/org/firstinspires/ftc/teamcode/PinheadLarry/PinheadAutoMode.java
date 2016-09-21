@@ -6,11 +6,13 @@ import android.util.Log;
 import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
+import org.firstinspires.ftc.robotcontroller.internal.testcode.TestColorSensors;
 import org.firstinspires.ftc.teamcode.AdafruitIMU;
 import org.firstinspires.ftc.teamcode.Libraries.MotorScaler;
 
@@ -40,6 +42,9 @@ public abstract class PinheadAutoMode extends LinearOpMode {
     public Servo rightPaddle;
     public Servo leftPaddle;
     public Servo latch;
+    public ColorSensor middleLine;
+    public ColorSensor sideLine;
+
 
     //DeviceInterfaveModule for sensors
     public DeviceInterfaceModule cdim;
@@ -109,6 +114,8 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         rightPaddle = hardwareMap.servo.get("rp");
         leftPaddle = hardwareMap.servo.get("lp");
         latch = hardwareMap.servo.get("latch");
+        middleLine = hardwareMap.colorSensor.get("middleLine");
+        sideLine = hardwareMap.colorSensor.get("sideLine");
 //        song = MediaPlayer.create(FtcRobotControllerActivity.getContext(), R.raw.move); //TODO: UPDATE RAW FILE WITH FILES
         song.setLooping(true);
         song.seekTo(5000);
@@ -321,11 +328,11 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
         Double xdistToMoveInches = oneTileInInches * Math.abs(xDiff);                                        //calculate total number of inches to move
         double xRotationsToMove = xdistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
-        double xencoderTicksToMove = 1440 * xRotationsToMove;                                                 //find number of X encoder ticks to move
+        double xencoderTicksToMove = 1120 * xRotationsToMove;                                                 //find number of X encoder ticks to move
 
         double ydistToMoveInches = oneTileInInches * Math.abs(yDiff);                                        //calculate total number of inches to move
         double yRotationsToMove = ydistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
-        double yencoderTicksToMove = 1440 * yRotationsToMove;                                                //find number of Y encoder ticks to move
+        double yencoderTicksToMove = 1120 * yRotationsToMove;                                                //find number of Y encoder ticks to move
 
         double xencoderTicksToMoveSquared = Math.pow(Math.round(xencoderTicksToMove * SINGLE_ROTATION), 2);  //find number of encoder ticks squared to move
         double yencoderTicksToMoveSquared = Math.pow(Math.round(yencoderTicksToMove * SINGLE_ROTATION), 2);
@@ -340,15 +347,19 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //changes the heading
     public void setFacing(int f) throws InterruptedException {
-        int diff = f -   facing;      //calculates the difference between current heading and goal
+        int diff = f - facing;      //calculates the difference between current heading and goal
         double angle = 90;         //changes the difference to an angle value
-        double pow = .2;            //default power of half
+        double pow = .2;
         if(angle > 0)               //set the power to turn the correct way
             pow = .2;
         if(angle < 0)
             pow = -.2;
-        if(diff != 0)               //if change is not needed do not move
-            pRotate(pow, angle);    //uses a PID loop for accurate rotation
+        if(angle == 0)
+            pow = 0;
+        for(int i = 0; i < diff; i++) {
+            pRotate(pow, angle);
+        }
+
     }
 
     //moves forward a certain number of tiles
