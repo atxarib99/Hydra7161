@@ -292,35 +292,47 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //TODO: FIX THIS METHOD SO THAT IT ACTUALLY WORKS
     public void moveToCordinatePosAngle(int xTileTo, int yTileTo) throws InterruptedException {
-        int yDiff = yTile - yTileTo;
-        int xDiff = xTile - xTileTo;
-        boolean firstTurn = false;
-        if(yDiff < 0 && facing != 1 && !firstTurn)                   //set the heading depending on goal *see note for facing var*
+        int yDiff = yTileTo - yTile;                                 //Set Y-difference to current tile - goal tile
+        int xDiff = xTileTo - xTile;                                 //Set X-difference to current tile - goal tile
+        boolean firstTurnComplete = false;                           //Not used for now, return to it later if needed
+        if(yDiff < 0)                   //set the heading depending on goal *see note for facing var*
             setFacing(3);
-
-        if(yDiff > 0 && facing != 1 && !firstTurn)
+        if(yDiff > 0)
             setFacing(1);
 
-
         //All of this math can probably be done in a better manner
-        //TODO: FIX THIS MATH TO MAKE IT EASIER TO READ AND FOLLOW THIS MATH IS ALSO PROBABLY WRONG PRETTY MUCH JUST REDO THIS.
-        int absyDiff = Math.abs(yDiff);                             //create absolute values for calculations
-        int absxDiff = Math.abs(xDiff);
-        double angleToTurn = Math.sin(absxDiff / absyDiff);         //calculate the angle to turn using trigonometry
+        //TODO: ARIB CHECK THIS, IT MIGHT BE FIXED? yay
+        double absxDiff = Math.abs(xDiff);
+        double absyDiff = Math.abs(yDiff);
+        double angleToTurn = 0;
+        if(xDiff > 0 && yDiff > 0){                                           //calculate the angle to turn using trigonometry
+            angleToTurn = 90 - Math.atan(absxDiff / absyDiff);         //If in first quadrant
+        }else if(xDiff > 0 && yDiff < 0){
+            angleToTurn = 180 - Math.atan(absxDiff / absyDiff);        //If in second quadrant
+        }else if(xDiff < 0 && yDiff < 0){
+            angleToTurn = 90 + Math.atan(absxDiff / absyDiff);         //If in third quadrant
+        }else if (xDiff < 0 && yDiff > 0){
+            angleToTurn = -Math.atan(absxDiff / absyDiff);             //If in fourth quadrant
+        }
+
         pRotate(.2, angleToTurn);                                   //send the command to turn
 
         double oneTileInInches = 24;                                                //encoder value calculation for one tile
-        Double xdistToMoveInches = oneTileInInches * xDiff;                          //encoder value calculation for multiple tiles
-        double xRotationsToMove = xdistToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
-        double xencoderTicksToMoveSquared = Math.pow(Math.round(xRotationsToMove * SINGLE_ROTATION), 2);
 
-                                                                                     //calculate the amount of ticks for the other movement
-        Double ydistToMoveInches = oneTileInInches * yDiff;                          //encoder value calculation for multiple tiles
-        double yRotationsToMove = ydistToMoveInches / DISTANCE_PER_ROTATION;          //cast the encoder value as an integer
-        double yencoderTicksToMoveSquared = Math.pow(Math.round(yRotationsToMove * SINGLE_ROTATION), 2);
+        Double xdistToMoveInches = oneTileInInches * Math.abs(xDiff);                                        //calculate total number of inches to move
+        double xRotationsToMove = xdistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
+        double xencoderTicksToMove = 1440 * xRotationsToMove;                                                 //find number of X encoder ticks to move
 
-        int hypotenuseTicks = (int) Math.sqrt(xencoderTicksToMoveSquared + yencoderTicksToMoveSquared); //use pythagorean theorem to calculate the
-        moveForwardPID(.5, hypotenuseTicks);
+        double ydistToMoveInches = oneTileInInches * Math.abs(yDiff);                                        //calculate total number of inches to move
+        double yRotationsToMove = ydistToMoveInches / DISTANCE_PER_ROTATION;                                 //calculate number of rotations to move
+        double yencoderTicksToMove = 1440 * yRotationsToMove;                                                //find number of Y encoder ticks to move
+
+        double xencoderTicksToMoveSquared = Math.pow(Math.round(xencoderTicksToMove * SINGLE_ROTATION), 2);  //find number of encoder ticks squared to move
+        double yencoderTicksToMoveSquared = Math.pow(Math.round(yencoderTicksToMove * SINGLE_ROTATION), 2);
+
+        int hypotenuseTicks = (int) Math.sqrt(xencoderTicksToMoveSquared + yencoderTicksToMoveSquared);      //use pythagorean theorem to calculate the hypotenuse
+
+        moveForwardPID(.5, hypotenuseTicks);                                                                 //move forward along hypotenuse
 
         pRotateNoReset(-.2, 0);                                                     //straighten out if any drift occurs
 
@@ -328,7 +340,7 @@ public abstract class PinheadAutoMode extends LinearOpMode {
 
     //changes the heading
     public void setFacing(int f) throws InterruptedException {
-        int diff = f - facing;      //calculates the difference between current heading and goal
+        int diff = f -   facing;      //calculates the difference between current heading and goal
         double angle = 90;         //changes the difference to an angle value
         double pow = .2;            //default power of half
         if(angle > 0)               //set the power to turn the correct way

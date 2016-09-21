@@ -331,7 +331,7 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     //=============BEGIN GRID METHODS=================
     public void setFacing(int f) throws InterruptedException {
         int diff = f - facing;
-        double angle = 90;
+        double angle = 90 * (Math.abs(diff));
         double pow = .2;
         if(angle > 0) {
             pow = .2;
