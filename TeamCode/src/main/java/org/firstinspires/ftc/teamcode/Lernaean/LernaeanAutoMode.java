@@ -46,12 +46,14 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     double angleError;
 
     private final double RIGHT_RIGHT_OUT = 1;
+    private final double RIGHT_RIGHT_SEMI = .5;
     private final double RIGHT_RIGHT_IN = 0;
     private final double RIGHT_LEFT_OUT = 1;
     private final double RIGHT_LEFT_IN = 0;
     private final double LEFT_RIGHT_OUT = 0;
     private final double LEFT_RIGHT_IN = 1;
     private final double LEFT_LEFT_OUT = 0;
+    private final double LEFT_LEFT_SEMI = .5;
     private final double LEFT_LEFT_IN = 1;
 
     private int xTile;
@@ -129,9 +131,6 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         rightLeft.setPosition(RIGHT_LEFT_IN);
     }
 
-    //I'm stupid
-    //Yay boolean
-    //Hey I made this I think
     public void leftLeftOut() {
         leftLeft.setPosition(LEFT_LEFT_OUT);
     }
@@ -146,6 +145,14 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
 
     public void leftRightIn() {
         leftRight.setPosition(LEFT_RIGHT_IN);
+    }
+
+    public void rightRightSemi() {
+        rightRight.setPosition(RIGHT_RIGHT_SEMI);
+    }
+
+    public void leftLeftSemi() {
+        leftLeft.setPosition(LEFT_LEFT_SEMI);
     }
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
@@ -385,6 +392,19 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
     }
 
+    public boolean isRightRed() {
+        if(rightColor.red() > 450) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isLeftRed() {
+        if(leftColor.red() > 450) {
+            return true;
+        }
+        return false;
+    }
     public double getGyroYaw() {
         return (double) angles.firstAngle;
     }
