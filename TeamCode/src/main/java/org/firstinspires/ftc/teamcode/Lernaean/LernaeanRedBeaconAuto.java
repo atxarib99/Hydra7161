@@ -5,6 +5,7 @@ package org.firstinspires.ftc.teamcode.Lernaean;
  */
 public class LernaeanRedBeaconAuto extends LernaeanAutoMode {
 
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -26,7 +27,7 @@ public class LernaeanRedBeaconAuto extends LernaeanAutoMode {
         }
         stopMotors();
 
-        if (isLeftRed){           //read color sensor, extend appropriate button pusher
+        if (isLeftRed()){           //read color sensor, extend appropriate button pusher
             leftRightOut();
         } else {
             leftLeftOut();
@@ -39,7 +40,7 @@ public class LernaeanRedBeaconAuto extends LernaeanAutoMode {
         }
         stopMotors();
 
-        if (isLeftRed){
+        if (isLeftRed()){
             leftRightOut();
         } else {
             leftLeftOut();
