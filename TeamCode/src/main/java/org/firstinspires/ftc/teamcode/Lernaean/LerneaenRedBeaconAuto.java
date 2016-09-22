@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
 /**
  * Created by Arib on 9/14/2016.
  */
-public class LernaeanAutonomous extends LernaeanAutoMode {
+@Autonomous(name="LernaeanRedBeacon", group="Linear Opmode")
+public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
