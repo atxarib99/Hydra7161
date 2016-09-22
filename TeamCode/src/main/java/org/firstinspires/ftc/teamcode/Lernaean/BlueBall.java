@@ -1,8 +1,13 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 /**
  * Created by Arib on 9/21/2016.
  */
+@Autonomous(name="BlueBall", group="Linear Opmode")
 public class BlueBall extends LernaeanAutoMode {
 
     @Override
