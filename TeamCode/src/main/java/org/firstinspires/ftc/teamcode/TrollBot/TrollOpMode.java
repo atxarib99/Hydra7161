@@ -89,20 +89,34 @@ public abstract class TrollOpMode extends OpMode {
         // angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
     }
 
+<<<<<<< HEAD
     /* public boolean isRightRed() {
         if(rightColor.red() > 450) {
+=======
+    /*    if(rightColor.red() > 450) {
+>>>>>>> 897378d08b8ba4004254f80ba42b014d6c09474a
             return true;
         }
         return false;
     } */
 
+<<<<<<< HEAD
     /* public boolean isLeftRed() {
+=======
+
+    public boolean isLeftRed() {
+>>>>>>> 897378d08b8ba4004254f80ba42b014d6c09474a
         if(leftColor.red() > 450) {
             return true;
         }
         return false;
+<<<<<<< HEAD
     } */
 
+=======
+    }
+    */
+>>>>>>> 897378d08b8ba4004254f80ba42b014d6c09474a
     public double getGyroYaw() {
             return 0.0;
     //    return (double) angles.firstAngle;
@@ -129,11 +143,21 @@ public abstract class TrollOpMode extends OpMode {
                     }
                 });
 
+<<<<<<< HEAD
         telemetry.addLine()
                 .addData("ODSMiddle", new Func<String>() {
                     @Override public String value() {
                         return mid.getRawLightDetected() + "" + mid.getLightDetected();
             }
         });
+=======
+        /* telemetry.addLine()
+                .addData("light", new Func<String>)(){
+                    @Override public String value() {
+                        return
+            }
+        */
+        }
+>>>>>>> 897378d08b8ba4004254f80ba42b014d6c09474a
     }
 }
