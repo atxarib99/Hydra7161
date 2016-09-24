@@ -63,13 +63,14 @@
 //     */
 //
 //    manager.register("TeleOp", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.TeleOP.class);
-////    manager.register("Autonomous", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
+//    manager.register("Autonomous", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous.class);
 //    manager.register("Autonomous Red", com.qualcomm.ftcrobotcontroller.opmodes.SecondQualifier.Autonomous2.class);
 //    manager.register("GyroTest", com.qualcomm.ftcrobotcontroller.opmodes.IMUGyroOnlyTest.class);
 //    manager.register("AutoTesting", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.AutonomousPractice.class);
 //    manager.register("ColorTest", com.qualcomm.ftcrobotcontroller.opmodes.AdafruitRGBExample.class);
 //    manager.register("gridAuto", com.qualcomm.ftcrobotcontroller.opmodes.AutonomousTesting.CoordinateAuto.class);
 //    manager.register("PinHead Larry", com.qualcomm.ftcrobotcontroller.opmodes.PinheadLarry.PinheadTeleOp.class);
+//    manager.register("TrollBot", com.qualcomm.ftcrobotcontroller.opmodes.TrollBot.TrollTeleOp.class);
 //
 //    //START
 //    manager.register("TeleOP", PinheadTeleOp.class);
@@ -78,7 +79,7 @@
 //    manager.register("AutonomousBlueOne", RedAutoFirst.class);
 //    manager.register("AutonomousBlueTwo", RedAutoSecond.class);
 //    manager.register("tele", BasicOpMode.class);
-//
+//    manager.register("TrollBot", TrollTeleOp.class);
 //
 //
 //  }
