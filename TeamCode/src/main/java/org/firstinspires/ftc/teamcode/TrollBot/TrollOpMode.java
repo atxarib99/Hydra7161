@@ -25,10 +25,10 @@ public abstract class TrollOpMode extends OpMode {
     DeviceInterfaceModule dim;
     OpticalDistanceSensor mid;
     OpticalDistanceSensor side;
-    BNO055IMU gyro;
-    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-    Orientation angles;
-    Acceleration accel;
+//    BNO055IMU gyro;
+//    BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+//    Orientation angles;
+//    Acceleration accel;
 
     //ColorSensor rightColor;
     //ColorSensor leftColor;
@@ -45,16 +45,17 @@ public abstract class TrollOpMode extends OpMode {
         //rightColor = hardwareMap.colorSensor.get("rcolor");
         //leftColor = hardwareMap.colorSensor.get("lcolor");
         composeTelemetry();
-        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        gyro.initialize(parameters);
-        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-        accel = gyro.getGravity();
+//        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+//        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+////        parameters.calibrationData     = gyro.readCalibrationData();
+//        parameters.loggingEnabled      = true;
+//        parameters.loggingTag          = "IMU";
+//        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+//        gyro.initialize(parameters);
+//        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+//        accel = gyro.getGravity();
+        telemetry.addData("init", "finished");
     }
 
     public abstract void loop();
@@ -65,10 +66,10 @@ public abstract class TrollOpMode extends OpMode {
     }
 
     public void startMotors(double ri, double le) {
-        motorBL.setPower(-le);
-        motorBR.setPower(ri);
-        motorFL.setPower(-le);
-        motorFR.setPower(ri);
+        motorBL.setPower(le);
+        motorBR.setPower(-ri);
+        motorFL.setPower(le);
+        motorFR.setPower(-ri);
     }
 
     public void stopMotors() {
@@ -85,7 +86,7 @@ public abstract class TrollOpMode extends OpMode {
     }
 
     public void getAngles() {
-        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        // angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
     }
 
     /* public boolean isRightRed() {
@@ -101,13 +102,14 @@ public abstract class TrollOpMode extends OpMode {
         }
         return false;
     } */
-    
+
     public double getGyroYaw() {
-        return (double) angles.firstAngle;
+            return 0.0;
+    //    return (double) angles.firstAngle;
     }
 
     public void resetGyro() {
-        gyro.initialize(parameters);
+    //    gyro.initialize(parameters);
     }
 
     public void composeTelemetry() {
@@ -115,7 +117,8 @@ public abstract class TrollOpMode extends OpMode {
         telemetry.addLine()
                 .addData("yaw", new Func<String>() {
                     @Override public String value() {
-                        return angles.firstAngle + "";
+                    //    return angles.firstAngle + "";
+                        return "0.0";
                     }
                 });
 

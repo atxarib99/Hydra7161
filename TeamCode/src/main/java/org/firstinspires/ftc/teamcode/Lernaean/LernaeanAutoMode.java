@@ -317,11 +317,11 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     }
 
     public boolean middleLine() {
-        return odsMiddle.getLightDetected() > .5;
+        return odsMiddle.getLightDetected() > 2;
     }
 
     public boolean sideLine() {
-        return odsSide.getLightDetected() > .5;
+        return odsSide.getLightDetected() > 2;
     }
 
     //=============END MOVEMENT METHODS===========================

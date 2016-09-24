@@ -9,17 +9,16 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TrollTeleOp extends TrollOpMode {
 
     @Override
-        public void loop() {
-            if((Math.abs(gamepad1.right_stick_y) > .05) || Math.abs(gamepad1.left_stick_y) > .05){
+    public void loop() {
+        if((Math.abs(gamepad1.right_stick_y) > .05) || Math.abs(gamepad1.left_stick_y) > .05){
             startMotors(gamepad1.right_stick_y, gamepad1.left_stick_y);
-            } else {
+        } else {
             stopMotors();
-            }
+        }
 
-            getAngles();
+        getAngles();
 
-            composeTelemetry();
+        telemetry.update();
 
-            telemetry.update();
     }
 }

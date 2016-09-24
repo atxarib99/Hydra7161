@@ -258,4 +258,31 @@ public abstract class TrollAutoMode extends LinearOpMode {
                     }
                 });
     }
+
+    public boolean middleLine() {
+        return mid.getLightDetected() > 2;
+    }
+
+    public boolean sideLine() {
+        return side.getLightDetected() > 2;
+    }
+
+    public void moveTillMid() {
+        while (!middleLine() && !sideLine()){
+            startMotors(.5, .5);
+        }
+        stopMotors();
+    }
+
+    public void straightenRedSide() {
+        while (!sideLine()){
+            startMotors(-.5, .5);
+        }
+    }
+
+    public void straightenBlueSide() {
+        while (!sideLine()){
+            startMotors(.5, -.5);
+        }
+    }
 }
