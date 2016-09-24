@@ -30,8 +30,8 @@ public abstract class TrollOpMode extends OpMode {
     Orientation angles;
     Acceleration accel;
 
-    ColorSensor rightColor;
-    ColorSensor leftColor;
+    //ColorSensor rightColor;
+    //ColorSensor leftColor;
 
     @Override
     public void init() {
@@ -42,8 +42,8 @@ public abstract class TrollOpMode extends OpMode {
         dim = hardwareMap.deviceInterfaceModule.get("dim");
         mid = hardwareMap.opticalDistanceSensor.get("mid");
         side = hardwareMap.opticalDistanceSensor.get("side");
-        rightColor = hardwareMap.colorSensor.get("rcolor");
-        leftColor = hardwareMap.colorSensor.get("lcolor");
+        //rightColor = hardwareMap.colorSensor.get("rcolor");
+        //leftColor = hardwareMap.colorSensor.get("lcolor");
         composeTelemetry();
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -88,19 +88,20 @@ public abstract class TrollOpMode extends OpMode {
         angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
     }
 
-    public boolean isRightRed() {
+    /* public boolean isRightRed() {
         if(rightColor.red() > 450) {
             return true;
         }
         return false;
-    }
+    } */
 
-    public boolean isLeftRed() {
+    /* public boolean isLeftRed() {
         if(leftColor.red() > 450) {
             return true;
         }
         return false;
-    }
+    } */
+    
     public double getGyroYaw() {
         return (double) angles.firstAngle;
     }
@@ -124,5 +125,12 @@ public abstract class TrollOpMode extends OpMode {
                         return (getEncoderAvg()) + "";
                     }
                 });
+
+        telemetry.addLine()
+                .addData("ODSMiddle", new Func<String>() {
+                    @Override public String value() {
+                        return mid.getRawLightDetected() + "" + mid.getLightDetected();
+            }
+        });
     }
 }

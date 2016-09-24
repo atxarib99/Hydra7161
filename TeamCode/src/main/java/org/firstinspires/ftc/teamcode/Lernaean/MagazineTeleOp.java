@@ -8,15 +8,12 @@ import org.firstinspires.ftc.teamcode.Lernaean.MagazineOpMode;
  * Created by Arib on 4/19/2016.
  */
 
-
-@TeleOp(name = "Tele-OP", group = "OpMode")
 public class MagazineTeleOp extends MagazineOpMode {
     boolean isrightRightOut = false;
     boolean isrightLeftOut = false;
     boolean isleftRightOut = false;
     boolean isleftLeftOut = false;
 
-    }
     @Override
     public void loop(){
         if(gamepad2.y){

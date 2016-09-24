@@ -7,9 +7,6 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.Lernaean.Interfaces.DriveInterface;
-import org.firstinspires.ftc.teamcode.Lernaean.Interfaces.ServoInterface;
-
 /**
  * Created by Arib on 9/11/2016.
  */

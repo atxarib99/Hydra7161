@@ -15,9 +15,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
-import org.firstinspires.ftc.teamcode.Lernaean.Interfaces.DriveInterface;
-import org.firstinspires.ftc.teamcode.Lernaean.Interfaces.ServoInterface;
-
 /**
  * Created by Arib on 9/13/2016.
  */
@@ -215,7 +212,7 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
 
             power = (pow * error) + .25;
 
-            Range.clip(power, -+++++++++++++++++++++++++1, 1);
+            Range.clip(power, -1, 1);
 
             telemetry.addData("Power", power);
             telemetry.addData("LeftPower", motorBL.getPower());
