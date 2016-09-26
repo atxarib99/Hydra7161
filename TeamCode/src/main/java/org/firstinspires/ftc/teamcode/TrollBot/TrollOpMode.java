@@ -30,7 +30,7 @@ public abstract class TrollOpMode extends OpMode {
 //    Orientation angles;
 //    Acceleration accel;
 
-    //ColorSensor rightColor;
+    ColorSensor rightColor;
     //ColorSensor leftColor;
 
     @Override
@@ -42,7 +42,7 @@ public abstract class TrollOpMode extends OpMode {
         dim = hardwareMap.deviceInterfaceModule.get("dim");
         mid = hardwareMap.opticalDistanceSensor.get("mid");
         side = hardwareMap.opticalDistanceSensor.get("side");
-        //rightColor = hardwareMap.colorSensor.get("rcolor");
+        rightColor = hardwareMap.colorSensor.get("rcolor");
         //leftColor = hardwareMap.colorSensor.get("lcolor");
         composeTelemetry();
 //        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
@@ -99,6 +99,14 @@ public abstract class TrollOpMode extends OpMode {
     //    gyro.initialize(parameters);
     }
 
+    public double getRightColorRed(){
+        return rightColor.red();
+    }
+
+    public double getRightColorBlue(){
+        return rightColor.blue();
+    }
+
     public void composeTelemetry() {
 
         telemetry.addLine()
@@ -115,11 +123,19 @@ public abstract class TrollOpMode extends OpMode {
                         return (getEncoderAvg()) + "";
                     }
                 });
+
         telemetry.addLine()
                 .addData("ODSMiddle", new Func<String>() {
                     @Override public String value() {
                         return mid.getRawLightDetected() + "" + mid.getLightDetected();
-            }
-        });
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("rightColor", new Func<String>() {
+                    @Override public String value() {
+                        return "reds: " + getRightColorRed() + "  " + "blues: " + getRightColorBlue() + "";
+                    }
+                });
     }
 }
