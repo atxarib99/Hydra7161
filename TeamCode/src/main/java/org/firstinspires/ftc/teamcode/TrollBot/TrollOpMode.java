@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -48,13 +49,16 @@ public abstract class TrollOpMode extends OpMode {
 //        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
 //        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
 //        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-////        parameters.calibrationData     = gyro.readCalibrationData();
+//        parameters.calibrationData     = gyro.readCalibrationData();
 //        parameters.loggingEnabled      = true;
 //        parameters.loggingTag          = "IMU";
 //        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
 //        gyro.initialize(parameters);
 //        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
 //        accel = gyro.getGravity();
+        hardwareMap.logDevices();
+        dim.setDigitalChannelMode(0, DigitalChannelController.Mode.OUTPUT);
+        dim.setDigitalChannelState(0, false);
         telemetry.addData("init", "finished");
     }
 
@@ -90,14 +94,13 @@ public abstract class TrollOpMode extends OpMode {
     }
 
 
-    public double getGyroYaw() {
-            return 0.0;
-    //    return (double) angles.firstAngle;
-    }
-
-    public void resetGyro() {
-    //    gyro.initialize(parameters);
-    }
+//    public double getGyroYaw() {
+//        return (double) angles.firstAngle;
+//    }
+//
+//    public void resetGyro() {
+//        gyro.initialize(parameters);
+//    }
 
     public double getRightColorRed(){
         return rightColor.red();
@@ -112,9 +115,10 @@ public abstract class TrollOpMode extends OpMode {
         telemetry.addLine()
                 .addData("yaw", new Func<String>() {
                     @Override public String value() {
-                    //    return angles.firstAngle + "";
-                        return "0.0";
+//                        return angles.firstAngle + "";
+                        return 0.0 + "";
                     }
+
                 });
 
         telemetry.addLine()
