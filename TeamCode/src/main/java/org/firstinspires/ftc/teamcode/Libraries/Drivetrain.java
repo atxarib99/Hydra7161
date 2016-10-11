@@ -12,14 +12,22 @@ public class Drivetrain {
     DcMotor FL;
     DcMotor BR;
     DcMotor BL;
+
     LinearOpMode opMode;
+
+    Sensor sensor;
+
+    private final String LOG_TAG = "DriveTrain";
     public Drivetrain(LinearOpMode opMode){
         this.opMode = opMode;
         FR = this.opMode.hardwareMap.dcMotor.get("FR");
         BL = this.opMode.hardwareMap.dcMotor.get("BL");
         FL = this.opMode.hardwareMap.dcMotor.get("FL");
         BR = this.opMode.hardwareMap.dcMotor.get("BR");
-        this.opMode.telemetry.addData("init", "init finished");
+        this.opMode.telemetry.addData(LOG_TAG + "init", "finished drivetrain init");
+        this.opMode.telemetry.update();
+        sensor = new Sensor(opMode);
+        this.opMode.telemetry.addData(LOG_TAG + "init", "init finished");
         this.opMode.telemetry.update();
     }
 

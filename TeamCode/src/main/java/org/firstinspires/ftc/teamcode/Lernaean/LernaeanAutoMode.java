@@ -390,17 +390,11 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     }
 
     public boolean isRightRed() {
-        if(rightColor.red() > 450) {
-            return true;
-        }
-        return false;
+        return rightColor.red() > 450;
     }
 
     public boolean isLeftRed() {
-        if(leftColor.red() > 450) {
-            return true;
-        }
-        return false;
+        return leftColor.red() > 450;
     }
     public double getGyroYaw() {
         return (double) angles.firstAngle;
