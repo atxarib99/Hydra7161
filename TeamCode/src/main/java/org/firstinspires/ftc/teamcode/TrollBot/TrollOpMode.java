@@ -34,6 +34,7 @@ public abstract class TrollOpMode extends OpMode {
     ColorSensor rightColor;
     //ColorSensor leftColor;
 
+
     @Override
     public void init() {
         motorBL = hardwareMap.dcMotor.get("BL");
