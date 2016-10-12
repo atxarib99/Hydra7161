@@ -22,16 +22,17 @@ public class Sensor {
     ColorSensor colorL;
     LinearOpMode opMode;
     Orientation angles;
+    BNO055IMU.Parameters parameters;
     public Sensor(LinearOpMode opMode) {
         this.opMode = opMode;
         mid = opMode.hardwareMap.opticalDistanceSensor.get("mid");
         side = opMode.hardwareMap.opticalDistanceSensor.get("side");
         colorR = opMode.hardwareMap.colorSensor.get("colorR");
         colorL = opMode.hardwareMap.colorSensor.get("colorL");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
@@ -57,5 +58,9 @@ public class Sensor {
 
     public boolean isSideLine() {
         return side.getRawLightDetected() > 2;
+    }
+
+    public boolean resetGyro() {
+        return gyro.initialize(parameters);
     }
 }
