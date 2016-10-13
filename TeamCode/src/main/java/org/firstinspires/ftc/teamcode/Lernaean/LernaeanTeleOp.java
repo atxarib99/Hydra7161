@@ -8,10 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleOp", group = "opMode")
 public class LernaeanTeleOp extends LernaeanOpMode {
-    boolean isrightRightOut = false;
-    boolean isrightLeftOut = false;
-    boolean isleftRightOut = false;
-    boolean isleftLeftOut = false;
+    boolean isbackOut = false;
+    boolean isfrontOut = false;
 
     @Override
     public void loop(){
@@ -19,34 +17,18 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         //booleans YAY!
 
         if(gamepad1.y){
-            if (!isrightRightOut) {
-                rightRightOut();
+            if (!isbackOut) {
+                backOut();
             } else {
-                rightRightIn();
+                backIn();
             }
         }
 
         if(gamepad1.x){
-            if(!isrightLeftOut){
-                rightLeftOut();
+            if(!isfrontOut){
+                frontOut();
             } else {
-                rightRightIn();
-            }
-        }
-
-        if (gamepad1.b){
-            if(!isleftRightOut){
-                leftRightOut();
-            } else {
-                leftRightIn();
-            }
-        }
-
-        if(gamepad1.a){
-            if(!isleftLeftOut){
-                leftLeftOut();
-            } else {
-                leftRightIn();
+                frontIn();
             }
         }
 

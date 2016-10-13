@@ -1,137 +1,121 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Func;
+
 /**
  * Created by Hunter on 9/15/2016.
  */
 public abstract class MagazineOpMode extends OpMode {
 
-    DcMotor BL;
-    DcMotor BR;
-    DcMotor FL;
-    DcMotor FR;
-    DcMotor Manipulator;
-    DcMotor Shooter;
-    Servo Magazine;
-    Servo rightRight;
-    Servo rightLeft;
-    Servo leftRight;
-    Servo leftLeft;
+    DcMotor motorR;
+    DcMotor motorL;
+    DcMotor manipulator;
+    DcMotor shooter;
+    Servo front;
+    Servo back;
     DeviceInterfaceModule cdim;
     ColorSensor rightColor;
     ColorSensor leftColor;
-    OpticalDistanceSensor odsMiddle;
-    OpticalDistanceSensor odsSide;
+    OpticalDistanceSensor odsRight;
+    OpticalDistanceSensor odsLeft;
 
-    private final double rrIn = 0;
-    private final double rrOut = 1;
-    private final double rlIn = 0;
-    private final double rlOut = 1;
-    private final double lrIn = 1;
-    private final double lrOut = 0;
-    private final double llIn = 1;
-    private final double llOut = 0;
+    private final double backIn = 0;
+    private final double backOut = 1;
+    private final double frontIn = 0;
+    private final double frontOut = 1;
 
     private boolean reverseDrive = false;
 
     @Override
     public void init(){
-        BL = hardwareMap.dcMotor.get("BL");
-        FR = hardwareMap.dcMotor.get("FR");
-        FL = hardwareMap.dcMotor.get("FL");
-        BR = hardwareMap.dcMotor.get("BR");
-        Manipulator = hardwareMap.dcMotor.get("Manipulator");
-        Shooter = hardwareMap.dcMotor.get("Shooter");
-        Magazine = hardwareMap.servo.get("Magazine");
-        rightRight = hardwareMap.servo.get("RRS");
-        rightLeft = hardwareMap.servo.get("RLS");
-        leftRight = hardwareMap.servo.get("LRS");
-        leftLeft = hardwareMap.servo.get("LLS");
+        motorL = hardwareMap.dcMotor.get("motorL");
+        motorR = hardwareMap.dcMotor.get("motorR");
+        manipulator = hardwareMap.dcMotor.get("mani");
+        //shooter = hardwareMap.dcMotor.get("shooter");
+        back = hardwareMap.servo.get("back");
+        front = hardwareMap.servo.get("front");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         rightColor = hardwareMap.colorSensor.get("rCol");
         leftColor = hardwareMap.colorSensor.get("lCol");
-        odsMiddle = hardwareMap.opticalDistanceSensor.get("odsM");
-        odsSide = hardwareMap.opticalDistanceSensor.get("odsS");
+        odsRight = hardwareMap.opticalDistanceSensor.get("odsR");
+        odsLeft = hardwareMap.opticalDistanceSensor.get("odsL");
 
     }
-    public void runMotors(double lf, double rt){
+    public void startMotors(double lf, double rt){
         if (reverseDrive){
             lf *= -1;
             rt *= -1;
         }
-        BL.setPower(lf);
-        BR.setPower(-rt);
-        FL.setPower(lf);
-        BR.setPower(-rt);
+        motorR.setPower(rt);
+        motorL.setPower(-lf);
     }
 
     public void stopMotors(){
-        BL.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BR.setPower(0);
+        motorL.setPower(0);
+        motorR.setPower(0);
     }
 
     public void runManip(double cl){
-        Manipulator.setPower(cl);
+        manipulator.setPower(cl);
     }
 
     public void runShooter(double sh){
-        Shooter.setPower(sh);
+        shooter.setPower(sh);
     }
 
-    public void runMagazine(double mg){
-        Magazine.setPosition(mg);
+    public void backOut() {
+        back.setPosition(backOut);
     }
 
-    public void rightRightOut() {
-        rightRight.setPosition(rrOut);
+    public void backIn() {
+        back.setPosition(backIn);
     }
 
-    public void rightRightIn() {
-        rightRight.setPosition(rrIn);
+    public void frontOut() {
+        front.setPosition(frontOut);
     }
 
-    public void rightLeftOut() {
-        rightLeft.setPosition(rlOut);
+    public void frontIn() {
+        front.setPosition(frontIn);
     }
 
-    public void rightLeftIn() {
-        rightLeft.setPosition(rlIn);
-    }
-
-    public void leftLeftOut() {
-        leftLeft.setPosition(llOut);
-    }
-
-    public void leftLeftIn() {
-        leftLeft.setPosition(llIn);
-    }
-
-    public void leftRightOut() { leftRight.setPosition(lrOut); }
-
-    public void leftRightIn() {
-        leftRight.setPosition(lrIn);
-    }
 
     public void stopAll(){
-        BL.setPower(0);
-        BR.setPower(0);
-        FL.setPower(0);
-        BR.setPower(0);
-        Shooter.setPower(0);
-        Manipulator.setPower(0);
+        motorL.setPower(0);
+        motorR.setPower(0);
+        shooter.setPower(0);
+        manipulator.setPower(0);
 
     }
 
-    public void Reverse(){
+    public double getRightODS() {
+        return odsRight.getLightDetected();
+    }
+
+    public double getLeftODS() {
+        return odsLeft.getLightDetected();
+    }
+
+    public double getRawRightODS() {
+        return odsRight.getRawLightDetected();
+    }
+
+    public double getRawLeftODS() {
+        return odsLeft.getRawLightDetected();
+    }
+
+    public int getEncoderAvg() {
+        return (Math.abs(motorR.getCurrentPosition()) + Math.abs(motorL.getCurrentPosition())) / 2;
+    }
+
+    public void reverse(){
         if (reverseDrive){
             reverseDrive = false;
         }
@@ -140,8 +124,30 @@ public abstract class MagazineOpMode extends OpMode {
         }
     }
 
-    @Override
-    public abstract void loop();
+    public void composeTelemetry() {
+
+        telemetry.addLine()
+                .addData("rightODS", new Func<String>() {
+                    @Override public String value() {
+                        return "Right: Raw: " + getRawRightODS() + " Normal: " + getRightODS() + "";
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("leftODS", new Func<String>() {
+                    @Override public String value() {
+                        return "Left: Raw: " + getRawLeftODS() + " Normal: " + getLeftODS() + "";
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("encoder", new Func<String>() {
+                    @Override public String value() {
+                        return getEncoderAvg() + "";
+                    }
+                });
+
+    }
 
     @Override
     public void stop(){

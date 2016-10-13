@@ -11,41 +11,29 @@ import com.qualcomm.robotcore.hardware.Servo;
  * Created by Arib on 9/11/2016.
  */
 public abstract class LernaeanOpMode extends OpMode {
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor motorBL;
-    DcMotor motorBR;
-    Servo rightRight;
-    Servo rightLeft;
-    Servo leftRight;
-    Servo leftLeft;
+    DcMotor motorL;
+    DcMotor motorR;
+    Servo front;
+    Servo back;
     DeviceInterfaceModule cdim;
     ColorSensor rightColor;
     ColorSensor leftColor;
     OpticalDistanceSensor odsMiddle;
     OpticalDistanceSensor odsSide;
 
-    private final double RIGHT_RIGHT_OUT = 1;
-    private final double RIGHT_RIGHT_IN = 0;
-    private final double RIGHT_LEFT_OUT = 1;
-    private final double RIGHT_LEFT_IN = 0;
-    private final double LEFT_RIGHT_OUT = 0;
-    private final double LEFT_RIGHT_IN = 1;
-    private final double LEFT_LEFT_OUT = 0;
-    private final double LEFT_LEFT_IN = 1;
+    private final double BACK_OUT = 1;
+    private final double BACK_IN = 0;
+    private final double FRONT_OUT = 1;
+    private final double FRONT_IN = 0;
 
 
 
     @Override
     public void init() {
-        motorBL = hardwareMap.dcMotor.get("BL");
-        motorFR = hardwareMap.dcMotor.get("FR");
-        motorFL = hardwareMap.dcMotor.get("FL");
-        motorBR = hardwareMap.dcMotor.get("BR");
-        rightRight = hardwareMap.servo.get("RRS");
-        rightLeft = hardwareMap.servo.get("RLS");
-        leftRight = hardwareMap.servo.get("LRS");
-        leftLeft = hardwareMap.servo.get("LLS");
+        motorL = hardwareMap.dcMotor.get("L");
+        motorR = hardwareMap.dcMotor.get("R");
+        back = hardwareMap.servo.get("back");
+        front = hardwareMap.servo.get("front");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         rightColor = hardwareMap.colorSensor.get("rCol");
         leftColor = hardwareMap.colorSensor.get("lCol");
@@ -54,49 +42,29 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void startMotors(double ri, double le) {
-        motorBL.setPower(-le);
-        motorBR.setPower(ri);
-        motorFL.setPower(-le);
-        motorFR.setPower(ri);
+        motorL.setPower(-le);
+        motorR.setPower(ri);
     }
 
     public void stopMotors() {
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-        motorFL.setPower(0);
-        motorFR.setPower(0);
+        motorL.setPower(0);
+        motorR.setPower(0);
     }
 
-    public void rightRightOut() {
-        rightRight.setPosition(RIGHT_RIGHT_OUT);
+    public void frontOut() {
+        front.setPosition(FRONT_OUT);
     }
 
-    public void rightRightIn() {
-        rightRight.setPosition(RIGHT_RIGHT_IN);
+    public void frontIn() {
+        front.setPosition(FRONT_IN);
     }
 
-    public void rightLeftOut() {
-        rightLeft.setPosition(RIGHT_LEFT_OUT);
+    public void backOut() {
+        back.setPosition(BACK_OUT);
     }
 
-    public void rightLeftIn() {
-        rightLeft.setPosition(RIGHT_LEFT_IN);
-    }
-
-    public void leftLeftOut() {
-        leftLeft.setPosition(LEFT_LEFT_OUT);
-    }
-
-    public void leftLeftIn() {
-        leftLeft.setPosition(LEFT_LEFT_IN);
-    }
-
-    public void leftRightOut() {
-        leftRight.setPosition(LEFT_RIGHT_OUT);
-    }
-
-    public void leftRightIn() {
-        leftRight.setPosition(LEFT_RIGHT_IN);
+    public void backIn() {
+        back.setPosition(BACK_IN);
     }
 
 }
