@@ -425,6 +425,9 @@ public abstract class PinheadAutoMode extends LinearOpMode {
         double power = pow;
         double angleTo = angle;
         double error;
+        double inte;
+        double der;
+
         gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
         double currentAngle = yawAngle[0];
         double previousError = angleTo - currentAngle;
