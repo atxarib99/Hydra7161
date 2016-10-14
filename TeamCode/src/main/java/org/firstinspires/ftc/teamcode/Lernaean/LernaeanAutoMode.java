@@ -24,14 +24,10 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     Orientation angles;
     Acceleration accel;
 
-    DcMotor motorFL;
-    DcMotor motorFR;
-    DcMotor motorBL;
-    DcMotor motorBR;
-    Servo rightRight;
-    Servo rightLeft;
-    Servo leftRight;
-    Servo leftLeft;
+    DcMotor motorL;
+    DcMotor motorR;
+    Servo back;
+    Servo front;
     DeviceInterfaceModule cdim;
     ColorSensor rightColor;
     ColorSensor leftColor;
@@ -42,17 +38,12 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     int nullValue = 0;
     double angleError;
 
-    private final double RIGHT_RIGHT_OUT = 1;
-    private final double RIGHT_RIGHT_SEMI = .5;
-    private final double RIGHT_RIGHT_IN = 0;
-    private final double RIGHT_LEFT_OUT = 1;
-    private final double RIGHT_LEFT_IN = 0;
-    private final double LEFT_RIGHT_OUT = 0;
-    private final double LEFT_RIGHT_IN = 1;
-    private final double LEFT_LEFT_OUT = 0;
-    private final double LEFT_LEFT_SEMI = .5;
-    private final double LEFT_LEFT_IN = 1;
-
+    private final double FRONT_OUT = 1;
+    private final double FRONT_SEMI = .5;
+    private final double FRONT_IN = 0;
+    private final double BACK_OUT = 1;
+    private final double BACK_SEMI = .5;
+    private final double BACK_IN = 0;
     private int xTile;
     private int yTile;
     int facing;
@@ -69,14 +60,10 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         xTile = x;
         yTile = y;
         facing = f;
-        motorBL = hardwareMap.dcMotor.get("BL");
-        motorFR = hardwareMap.dcMotor.get("FR");
-        motorFL = hardwareMap.dcMotor.get("FL");
-        motorBR = hardwareMap.dcMotor.get("BR");
-        rightRight = hardwareMap.servo.get("RRS");
-        rightLeft = hardwareMap.servo.get("RLS");
-        leftRight = hardwareMap.servo.get("LRS");
-        leftLeft = hardwareMap.servo.get("LLS");
+        motorL = hardwareMap.dcMotor.get("L");
+        motorR = hardwareMap.dcMotor.get("R");
+        front = hardwareMap.servo.get("front");
+        back = hardwareMap.servo.get("back");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         rightColor = hardwareMap.colorSensor.get("rCol");
         leftColor = hardwareMap.colorSensor.get("lCol");
@@ -99,57 +86,37 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     //===============BEGIN MOVEMENT METHODS=============
 
     public void startMotors(double ri, double le) {
-        motorBL.setPower(-le);
-        motorBR.setPower(ri);
-        motorFL.setPower(-le);
-        motorFR.setPower(ri);
+        motorL.setPower(-le);
+        motorR.setPower(ri);
     }
 
     public void stopMotors() {
-        motorBL.setPower(0);
-        motorBR.setPower(0);
-        motorFL.setPower(0);
-        motorFR.setPower(0);
+        motorL.setPower(0);
+        motorR.setPower(0);
     }
 
-    public void rightRightOut() {
-        rightRight.setPosition(RIGHT_RIGHT_OUT);
+    public void frontOut() {
+        front.setPosition(FRONT_OUT);
     }
 
-    public void rightRightIn() {
-        rightRight.setPosition(RIGHT_RIGHT_IN);
+    public void frontSemi() {
+        front.setPosition(FRONT_SEMI);
     }
 
-    public void rightLeftOut() {
-        rightLeft.setPosition(RIGHT_LEFT_OUT);
+    public void frontIn() {
+        front.setPosition(FRONT_IN);
     }
 
-    public void rightLeftIn() {
-        rightLeft.setPosition(RIGHT_LEFT_IN);
+    public void backOut() {
+        back.setPosition(BACK_OUT);
     }
 
-    public void leftLeftOut() {
-        leftLeft.setPosition(LEFT_LEFT_OUT);
+    public void backSemi() {
+        back.setPosition(BACK_SEMI);
     }
 
-    public void leftLeftIn() {
-        leftLeft.setPosition(LEFT_LEFT_IN);
-    }
-
-    public void leftRightOut() {
-        leftRight.setPosition(LEFT_RIGHT_OUT);
-    }
-
-    public void leftRightIn() {
-        leftRight.setPosition(LEFT_RIGHT_IN);
-    }
-
-    public void rightRightSemi() {
-        rightRight.setPosition(RIGHT_RIGHT_SEMI);
-    }
-
-    public void leftLeftSemi() {
-        leftLeft.setPosition(LEFT_LEFT_SEMI);
+    public void backIn() {
+        back.setPosition(BACK_IN);
     }
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
@@ -215,24 +182,24 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
             Range.clip(power, -1, 1);
 
             telemetry.addData("Power", power);
-            telemetry.addData("LeftPower", motorBL.getPower());
-            telemetry.addData("RightPower", motorBR.getPower());
+            telemetry.addData("LeftPower", motorL.getPower());
+            telemetry.addData("RightPower", motorR.getPower());
 
             if(angle > 2) {
                 startMotors((power * .75), power);
                 telemetry.update();
-                telemetry.addData("LeftPower", motorBL.getPower() + "");
-                telemetry.addData("RightPower", motorBR.getPower() + "");
+                telemetry.addData("LeftPower", motorL.getPower() + "");
+                telemetry.addData("RightPower", motorR.getPower() + "");
             } else if(angle < -2) { //if off to the right, correct
                 startMotors(power, (power * .75) );
-                telemetry.addData("LeftPower", motorBL.getPower() + "");
-                telemetry.addData("RightPower", motorBR.getPower() + "");
+                telemetry.addData("LeftPower", motorL.getPower() + "");
+                telemetry.addData("RightPower", motorR.getPower() + "");
                 telemetry.update();
             } else { //if heading is fine keep moving straight
                 startMotors(power, power);
                 telemetry.update();
-                telemetry.addData("LeftPower", motorBL.getPower() + "");
-                telemetry.addData("RightPower", motorBR.getPower() + "");
+                telemetry.addData("LeftPower", motorL.getPower() + "");
+                telemetry.addData("RightPower", motorR.getPower() + "");
 
             }
             idle();
@@ -377,9 +344,8 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     //=============BEGIN CALCULATION METHODS==========================
 
     public int getEncoderAvg() {
-        return ((Math.abs(motorBL.getCurrentPosition())) + (Math.abs(motorBR.getCurrentPosition()))
-                + (Math.abs(motorFL.getCurrentPosition())) + (Math.abs(motorFR.getCurrentPosition())))
-                / 4;
+        return ((Math.abs(motorL.getCurrentPosition())) + (Math.abs(motorR.getCurrentPosition())))
+                / 2;
     }
     public void setNullValue() {
         nullValue = getEncoderAvg();
