@@ -32,17 +32,17 @@ public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
 
         //Robot should now be in correct position ready to press beacon
 
-        rightRightSemi();       //push button slightly out to detect color
+        backSemi();       //push button slightly out to detect color
 
         if (isRightRed()) {      //if the color is red push and we are red team press the red button
-            rightRightOut();
+            backOut();
             Thread.sleep(500);
-            rightRightIn();
+            backIn();
         } else {                //else push out the other button
-            rightRightIn();
-            rightLeftOut();
+            backIn();
+            frontOut();
             Thread.sleep(500);
-            rightLeftIn();
+            frontIn();
         }
 
         while (!middleLine()) {  //move forward again to the next beacon
@@ -52,12 +52,12 @@ public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
         stopMotors();
 
         if (isRightRed()) {      //if the color is red push and we are red team press the red button
-            rightRightOut();
+            frontOut();
             Thread.sleep(500);
-            rightRightIn();
+            frontIn();
         } else {                //else push out the other button
-            rightRightIn();
-            rightLeftOut();
+            frontIn();
+            backOut();
             Thread.sleep(500);
         }
     }

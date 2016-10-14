@@ -31,9 +31,9 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
         stopMotors();
 
         if (isLeftRed()){           //read color sensor, extend appropriate button pusher
-            leftRightOut();
+            frontOut();
         } else {
-            leftLeftOut();
+            backOut();
         }
 
         moveForward(.5, 200); //move forward off of first line
@@ -44,9 +44,9 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
         stopMotors();
 
         if (isLeftRed()){
-            leftRightOut();
+            frontOut();
         } else {
-            leftLeftOut();
+            backOut();
         }
 
     }
