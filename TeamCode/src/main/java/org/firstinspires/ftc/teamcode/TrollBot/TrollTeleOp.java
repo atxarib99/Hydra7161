@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.TrollBot;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
  * Created by TechMaster on 9/22/2016.
  */
 @TeleOp(name = "TrollTele-OP", group = "OpMode")
+@Disabled
 public class TrollTeleOp extends TrollOpMode {
 
     @Override

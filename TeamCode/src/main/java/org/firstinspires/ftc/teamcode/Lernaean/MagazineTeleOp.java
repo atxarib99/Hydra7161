@@ -16,6 +16,7 @@ public class MagazineTeleOp extends MagazineOpMode {
     @Override
     public void loop(){
 
+        telemetry.update();
         if(gamepad2.x){
             if(!isFrontOut){
                 frontOut();
@@ -43,14 +44,14 @@ public class MagazineTeleOp extends MagazineOpMode {
             runManip(0);
         }
 
-        if (Math.abs(gamepad1.right_stick_y) > .05 || (Math.abs(gamepad1.left_stick_x) > .05)){
-            startMotors(gamepad1.right_stick_y,gamepad1.left_stick_y );
+        if (Math.abs(gamepad1.right_stick_y) > .05 || (Math.abs(gamepad1.left_stick_y) > .05)){
+            startMotors(gamepad1.right_stick_y, gamepad1.left_stick_y );
         } else {
             stopMotors();
         }
-    }
-    @Override
-    public void stop(){
 
+        if(gamepad1.a){
+            reverse();
+        }
     }
 }

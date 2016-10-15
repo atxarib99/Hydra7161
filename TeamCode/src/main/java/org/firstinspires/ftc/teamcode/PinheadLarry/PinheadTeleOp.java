@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.PinheadLarry;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 /**
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 @TeleOp(name = "Tele-OP", group = "OpMode")
+@Disabled
 public class PinheadTeleOp extends PinheadOpMode {
 
     boolean rightOpen = false;

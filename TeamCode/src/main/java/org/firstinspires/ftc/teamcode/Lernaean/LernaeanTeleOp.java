@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.Lernaean;
 
 
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "TeleOp", group = "opMode")
+@Disabled
 public class LernaeanTeleOp extends LernaeanOpMode {
     boolean isbackOut = false;
     boolean isfrontOut = false;

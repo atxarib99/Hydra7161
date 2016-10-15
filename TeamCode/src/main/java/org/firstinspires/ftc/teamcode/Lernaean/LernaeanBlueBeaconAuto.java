@@ -20,19 +20,19 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
 
         pRotate(.5, 45); //turn towards beacons
 
-        while(!leftLine()){
+        while (!leftLine()) {
             startMotors(.8, .8); //move forward until middle sensor on line
         }
         stopMotors();
 
-        while(!rightLine()){
+        while (!rightLine()) {
             startMotors(-.5, .5); //turn backward until aligned with line
         }
         stopMotors();
 
         backSemi();
 
-        if (isLeftRed()){           //read color sensor, extend appropriate button pusher
+        if (isLeftRed()) {           //read color sensor, extend appropriate button pusher
             backIn();
             frontOut();
             Thread.sleep(500);
@@ -47,14 +47,14 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
 
         moveForward(.5, 200); //move forward off of first line
 
-        while(!rightLine()){
+        while (!rightLine()) {
             startMotors(.8, .8); //move forward until middle sensor on line
         }
         stopMotors();
 
         backSemi();
 
-        if (isLeftRed()){
+        if (isLeftRed()) {
             backIn();
             frontOut();
             Thread.sleep(500);
@@ -67,4 +67,5 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
             backIn();
         }
 
+    }
 }

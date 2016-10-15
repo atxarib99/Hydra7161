@@ -35,6 +35,7 @@ public abstract class MagazineOpMode extends OpMode {
 
     @Override
     public void init(){
+        composeTelemetry();
         motorL = hardwareMap.dcMotor.get("motorL");
         motorR = hardwareMap.dcMotor.get("motorR");
         manipulator = hardwareMap.dcMotor.get("mani");
@@ -42,10 +43,12 @@ public abstract class MagazineOpMode extends OpMode {
         back = hardwareMap.servo.get("back");
         front = hardwareMap.servo.get("front");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
-        rightColor = hardwareMap.colorSensor.get("rCol");
-        leftColor = hardwareMap.colorSensor.get("lCol");
+        //rightColor = hardwareMap.colorSensor.get("rCol");
+        //leftColor = hardwareMap.colorSensor.get("lCol");
         odsRight = hardwareMap.opticalDistanceSensor.get("odsR");
         odsLeft = hardwareMap.opticalDistanceSensor.get("odsL");
+        telemetry.addData("init", "finsihed");
+        telemetry.update();
 
     }
     public void startMotors(double lf, double rt){
@@ -53,8 +56,8 @@ public abstract class MagazineOpMode extends OpMode {
             lf *= -1;
             rt *= -1;
         }
-        motorR.setPower(rt);
-        motorL.setPower(-lf);
+        motorR.setPower(-rt);
+        motorL.setPower(lf);
     }
 
     public void stopMotors(){
@@ -151,6 +154,7 @@ public abstract class MagazineOpMode extends OpMode {
 
     @Override
     public void stop(){
-
+        motorL.setPower(0);
+        motorR.setPower(0);
     }
 }

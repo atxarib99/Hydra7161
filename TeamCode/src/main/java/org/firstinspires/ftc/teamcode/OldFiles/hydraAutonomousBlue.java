@@ -40,7 +40,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Autonomous mode
  * enable movement based on sensors and preset code
  */
-public class hydraAutonomousBlue extends LinearOpMode implements hydraDriveBase {
+public class hydraAutonomousBlue extends LinearOpMode{
     //creates motors
     DcMotor motorBL; //motors for movement
     DcMotor motorBR;
