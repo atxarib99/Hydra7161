@@ -38,12 +38,12 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     int nullValue = 0;
     double angleError;
 
-    private final double FRONT_OUT = 1;
-    private final double FRONT_SEMI = .5;
-    private final double FRONT_IN = 0;
-    private final double BACK_OUT = 1;
-    private final double BACK_SEMI = .5;
-    private final double BACK_IN = 0;
+    private final double FRONT_OUT = 0;
+    private final double FRONT_SEMI = .2;
+    private final double FRONT_IN = .5;
+    private final double BACK_OUT = 0;
+    private final double BACK_SEMI = .2;
+    private final double BACK_IN = .5;
     private int xTile;
     private int yTile;
     int facing;

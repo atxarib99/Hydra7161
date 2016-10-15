@@ -30,10 +30,19 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
         }
         stopMotors();
 
+        backSemi();
+
         if (isLeftRed()){           //read color sensor, extend appropriate button pusher
+            backIn();
             frontOut();
+            Thread.sleep(500);
+            frontIn();
         } else {
+            backIn();
+            Thread.sleep(500);
             backOut();
+            Thread.sleep(500);
+            backIn();
         }
 
         moveForward(.5, 200); //move forward off of first line
@@ -43,11 +52,19 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
         }
         stopMotors();
 
+        backSemi();
+
         if (isLeftRed()){
+            backIn();
             frontOut();
+            Thread.sleep(500);
+            frontIn();
         } else {
+            backIn();
+            Thread.sleep(500);
             backOut();
+            Thread.sleep(500);
+            backIn();
         }
 
-    }
 }

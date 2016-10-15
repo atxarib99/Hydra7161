@@ -35,6 +35,8 @@ public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
         backSemi();       //push button slightly out to detect color
 
         if (isRightRed()) {      //if the color is red push and we are red team press the red button
+            backIn();
+            Thread.sleep(500);
             backOut();
             Thread.sleep(500);
             backIn();
@@ -51,14 +53,18 @@ public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
 
         stopMotors();
 
+        backSemi();
+
         if (isRightRed()) {      //if the color is red push and we are red team press the red button
+            backIn();
             frontOut();
             Thread.sleep(500);
             frontIn();
         } else {                //else push out the other button
-            frontIn();
-            backOut();
+            backIn();
+            frontOut();
             Thread.sleep(500);
+            frontIn();
         }
     }
 }

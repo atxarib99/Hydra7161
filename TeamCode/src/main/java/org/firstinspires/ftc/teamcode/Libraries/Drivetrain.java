@@ -117,8 +117,8 @@ public class Drivetrain {
         while(Math.abs(currentAngle) < angleTo - 2) {
             currentAngle = sensor.getGyroYaw();
             error = angleTo - Math.abs(currentAngle);                   //TODO: UPDATE PID VALS *higher vals since less motors and 20s*
-            power = (pow * (error) * .005) + .215;                      //update p values
-            inte = inte + (opMode.getRuntime() * error * .005);         //update inte value
+            power = (pow * (error) * .005);                      //update p values
+            inte += (opMode.getRuntime() * error * .005);         //update inte value
             der = (error - previousError) / opMode.getRuntime() * .005; //update der value
 
             power += inte + der;
