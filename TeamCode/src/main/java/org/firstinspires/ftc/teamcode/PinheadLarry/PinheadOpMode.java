@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.AdafruitIMU;
+import org.firstinspires.ftc.teamcode.OldFiles.AdafruitIMU;
 
 /**
  * Created by Arib on 4/11/2016.

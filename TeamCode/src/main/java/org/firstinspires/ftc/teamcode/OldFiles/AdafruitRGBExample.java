@@ -29,7 +29,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE. */
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldFiles;
 
 import android.app.Activity;
 import android.graphics.Color;
@@ -37,40 +37,70 @@ import android.view.View;
 
 import com.qualcomm.ftccommon.DbgLog;
 import com.qualcomm.ftcrobotcontroller.R;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
 /*
  *
  * This is an example LinearOpMode that shows how to use
- * a legacy (NXT-compatible) Hitechnic Color Sensor v2.
+ * the Adafruit RGB Sensor.  It assumes that the I2C
+ * cable for the sensor is connected to an I2C port on the
+ * Core Device Interface Module.
  *
- * The op mode assumes that the color sensor
- * is configured with a name of "nxt".
+ * It also assuems that the LED pin of the sensor is connected
+ * to the digital signal pin of a digital port on the
+ * Core Device Interface Module.
+ *
+ * You can use the digital port to turn the sensor's onboard
+ * LED on or off.
+ *
+ * The op mode assumes that the Core Device Interface Module
+ * is configured with a name of "dim" and that the Adafruit color sensor
+ * is configured as an I2C device with a name of "lady".
+ *
+ * It also assumes that the LED pin of the RGB sensor
+ * is connected to the signal pin of digital port #5 (zero indexed)
+ * of the Core Device Interface Module.
  *
  * You can use the X button on either gamepad to turn the LED on and off.
  *
  */
-public class HTRGBExample extends LinearOpMode {
+public class AdafruitRGBExample extends AutoMode {
 
-  ColorSensor sensorRGB;
+//  ColorSensor sensorRGB;
+//  DeviceInterfaceModule cdim;
 
+  // we assume that the LED pin of the RGB sensor is connected to
+  // digital port 5 (zero indexed).
+  static final int LED_CHANNEL = 5;
 
   @Override
   public void runOpMode() throws InterruptedException {
 
     // write some device information (connection info, name and type)
     // to the log file.
+    first();
+
+    //wait one cycle
+    waitOneFullHardwareCycle();
+
     hardwareMap.logDevices();
 
+    // get a reference to our DeviceInterfaceModule object.
+    cdim = hardwareMap.deviceInterfaceModule.get("dim");
+
+    // set the digital channel to output mode.
+    // remember, the Adafruit sensor is actually two devices.
+    // It's an I2C sensor and it's also an LED that can be turned on or off.
+    cdim.setDigitalChannelMode(LED_CHANNEL, DigitalChannelController.Mode.OUTPUT);
+
     // get a reference to our ColorSensor object.
-    sensorRGB = hardwareMap.colorSensor.get("nxt");
+    sensorRGB = hardwareMap.colorSensor.get("color");
 
     // bEnabled represents the state of the LED.
     boolean bEnabled = true;
 
     // turn the LED on in the beginning, just so user will know that the sensor is active.
-    sensorRGB.enableLed(true);
+    cdim.setDigitalChannelState(LED_CHANNEL, bEnabled);
 
     // wait one cycle.
     waitOneFullHardwareCycle();
@@ -91,12 +121,22 @@ public class HTRGBExample extends LinearOpMode {
     // bPrevState and bCurrState represent the previous and current state of the button.
     boolean bPrevState = false;
     boolean bCurrState = false;
+    resetGyro();
 
     // while the op mode is active, loop and read the RGB data.
     // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
     while (opModeIsActive()) {
       // check the status of the x button on either gamepad.
       bCurrState = gamepad1.x || gamepad2.x;
+      gyro.getIMUGyroAngles(rollAngle, pitchAngle, yawAngle);
+      telemetry.addData("Headings(yaw): ",
+              String.format("Euler= %4.5f, Quaternion calculated= %4.5f", yawAngle[0], yawAngle[1]));
+      telemetry.addData("Pitches: ",
+              String.format("Euler= %4.5f, Quaternion calculated= %4.5f", pitchAngle[0], pitchAngle[1]));
+      telemetry.addData("Max I2C read interval: ",
+              String.format("%4.4f ms. Average interval: %4.4f ms.", gyro.maxReadInterval
+                      , gyro.avgReadInterval));
+
 
       // check for button state transitions.
       if (bCurrState == true && bCurrState != bPrevState)  {
@@ -112,7 +152,8 @@ public class HTRGBExample extends LinearOpMode {
         bEnabled = true;
 
         // turn on the LED.
-        sensorRGB.enableLed(bEnabled);
+        cdim.setDigitalChannelState(LED_CHANNEL, bEnabled);
+
       } else if (bCurrState == false && bCurrState != bPrevState)  {
         // button is transitioning to a released state.
 
@@ -126,11 +167,11 @@ public class HTRGBExample extends LinearOpMode {
         bEnabled = false;
 
         // turn off the LED.
-        sensorRGB.enableLed(false);
+        cdim.setDigitalChannelState(LED_CHANNEL, bEnabled);
       }
 
       // convert the RGB values to HSV values.
-      Color.RGBToHSV(sensorRGB.red(), sensorRGB.green(), sensorRGB.blue(), hsvValues);
+      Color.RGBToHSV((sensorRGB.red() * 255) / 800, (sensorRGB.green() * 255) / 800, (sensorRGB.blue() * 255) / 800, hsvValues);
 
       // send the info back to driver station using telemetry function.
       telemetry.addData("Clear", sensorRGB.alpha());

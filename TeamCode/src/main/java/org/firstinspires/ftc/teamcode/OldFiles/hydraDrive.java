@@ -1,5 +1,5 @@
 
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  * <p>
  *Enables control of the robot via the gamepad
  */
-public class hydraDrive extends OpMode implements hydraDriveBase, LiftInterface, ClawInterface {
+public class hydraDrive extends OpMode {
     //creates motors
     DcMotor motorBL; //motors for movement
     DcMotor motorBR;

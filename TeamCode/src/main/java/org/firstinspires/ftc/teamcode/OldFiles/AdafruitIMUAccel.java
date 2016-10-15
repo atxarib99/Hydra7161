@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.OldFiles;
 
 import android.util.Log;
 
@@ -51,7 +51,7 @@ import java.util.concurrent.locks.Lock;
  *
  */
 
-public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCallback{
+public class AdafruitIMUAccel implements HardwareDevice, I2cController.I2cPortReadyCallback{
 
     public static final int BNO055_ADDRESS_A = 0x28;//From Adafruit_BNO055.h
     public static final int BNO055_ADDRESS_B = 0x29;
@@ -156,7 +156,7 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
 
     /* SIC registers */
     BNO055_SIC_MATRIX_0_LSB_ADDR                            = 0X43,
-            BNO055_SIC_MATRIX_0_MSB_ADDR                           = 0X44,
+            BNO055_SIC_MATRIX_0_MSB_ADDR                            = 0X44,
             BNO055_SIC_MATRIX_1_LSB_ADDR                            = 0X45,
             BNO055_SIC_MATRIX_1_MSB_ADDR                            = 0X46,
             BNO055_SIC_MATRIX_2_LSB_ADDR                            = 0X47,
@@ -248,6 +248,7 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
     // reported by the IMU (indices = 0) AND the Tait-Bryan angles calculated from the 4 components of
     // the quaternion vector (indices = 1)
     private double[] rollOffset = new double[2], pitchOffset = new double[2], yawOffset = new double[2];
+    private double[] linearMotion = new double[3];
     /* For IMU mode, the register addresses 0X1A thru 0X2D (20 bytes) should be read consecutively */
   /* Enable I2C Read Mode and address the bytes in the ReadCache using the following parameters: */
     private int numberOfRegisters = 20;
@@ -265,6 +266,7 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
             Thread.sleep(milliSecs);
         } catch (InterruptedException e){}
     }
+
     /*
      * Operational modes are explained in the IMU datasheet in Table 3-3 on p.20, and elsewhere
      * in Section 3.3 which begins on p.20. A "fusion" mode must be chosen, in order for the IMU to
@@ -277,7 +279,7 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
     */
 
     //The Constructor for the AdafruitIMU class
-    public AdafruitIMU(HardwareMap currentHWmap, String configuredIMUname,
+    public AdafruitIMUAccel(HardwareMap currentHWmap, String configuredIMUname,
                        //String configuredInterfaceName, int configuredPort,
                        byte baseAddress, byte operMode) throws RobotCoreException {
         boolean okSoFar = true;
@@ -412,7 +414,7 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
     private boolean autoCalibrationOK(int timeOutSeconds){
         boolean readingEnabled = false, calibrationDone = false;
         long calibrationStart = System.nanoTime(), rightNow = System.nanoTime(),
-                loopStart = System.nanoTime();
+                loopStart = System.nanoTime();;
 
         while ((System.nanoTime() - calibrationStart) <= 60000000000L) {//Set a 1-minute overall timeout
             try {
@@ -473,9 +475,9 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
             }
         }
         Log.i("FtcRobotController", "Autocalibration timed out! Cal status byte = "
-                + String.format("0X%02X",i2cReadCache[I2cController.I2C_BUFFER_START_ADDRESS])
+                + String.format("0X%02X", i2cReadCache[I2cController.I2C_BUFFER_START_ADDRESS])
                 + ". Self Test byte = "
-                + String.format("0X%02X",i2cReadCache[I2cController.I2C_BUFFER_START_ADDRESS + 1])
+                + String.format("0X%02X", i2cReadCache[I2cController.I2C_BUFFER_START_ADDRESS + 1])
                 + ".");
         return false;
     }
@@ -505,7 +507,18 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
     * Tait-Bryan equations listed in:
     * https://en.wikipedia.org/wiki/Conversion_between_quaternions_and_Euler_angles
     */
+    public void getIMUAccelData(double[] accs) {
 
+            accs[0] = (double) ((short)
+                    ((i2cReadCache[BNO055_LINEAR_ACCEL_DATA_X_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
+                    | (i2cReadCache[BNO055_LINEAR_ACCEL_DATA_X_LSB_ADDR - readCacheOffset] & 0XFF)) / 100.0;
+            accs[1] = (double) ((short)
+                    ((i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Y_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
+                    | (i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Y_LSB_ADDR - readCacheOffset] & 0XFF)) / 100.0;
+            accs[2] = (double) ((short)
+                    ((i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Z_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
+                    | (i2cReadCache[BNO055_LINEAR_ACCEL_DATA_Z_LSB_ADDR - readCacheOffset] & 0XFF)) / 100.0;
+    }
     public void getIMUGyroAngles(double[] roll, double[] pitch, double[] yaw) {
         short tempR = 0, tempP = 0, tempY = 0;
         double tempRoll = 0.0, tempPitch = 0.0, tempYaw = 0.0;
@@ -530,6 +543,8 @@ public class AdafruitIMU implements HardwareDevice, I2cController.I2cPortReadyCa
                         (double) ((short)
                                 ((i2cReadCache[BNO055_QUATERNION_DATA_Z_MSB_ADDR - readCacheOffset] & 0XFF) << 8)
                                 | (i2cReadCache[BNO055_QUATERNION_DATA_Z_LSB_ADDR - readCacheOffset] & 0XFF)) / 16384.0;
+
+
         /*
         * See IMU datasheet, Section 3.6.2 on p.30 AND Section 4.2.1 on pp. 51 & 52. IT APPEARS THAT
         * THE DOCUMENTATION HAS MISLABELED "ROLL" AS "PITCH" AND "PITCH" AS "ROLL". THIS FORCES

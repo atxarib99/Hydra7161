@@ -7,7 +7,7 @@ package org.firstinspires.ftc.teamcode.Libraries;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.AdafruitIMU;
+import org.firstinspires.ftc.teamcode.OldFiles.AdafruitIMU;
 
 /**
  * This library is designed to allow any four consistently wheeled robot to do simple autonomous tasks

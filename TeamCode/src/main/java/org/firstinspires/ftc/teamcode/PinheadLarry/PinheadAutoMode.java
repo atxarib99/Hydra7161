@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.PinheadLarry;
 import android.media.MediaPlayer;
 import android.util.Log;
 
-import com.qualcomm.ftcrobotcontroller.R;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.exception.RobotCoreException;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -11,9 +10,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
-import org.firstinspires.ftc.robotcontroller.internal.testcode.TestColorSensors;
-import org.firstinspires.ftc.teamcode.AdafruitIMU;
+import org.firstinspires.ftc.teamcode.OldFiles.AdafruitIMU;
 import org.firstinspires.ftc.teamcode.Libraries.MotorScaler;
 
 /**

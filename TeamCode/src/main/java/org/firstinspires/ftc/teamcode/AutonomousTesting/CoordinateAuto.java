@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.AutonomousTesting;
 
 
-import org.firstinspires.ftc.teamcode.AutoMode;
+import org.firstinspires.ftc.teamcode.OldFiles.AutoMode;
 
 /**
  * Created by Arib on 3/24/2016.
