@@ -20,13 +20,13 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
 
         pRotate(.5, 45); //turn towards beacons
 
-        while(!middleLine()){
+        while(!leftLine()){
             startMotors(.8, .8); //move forward until middle sensor on line
         }
         stopMotors();
 
-        while(!sideLine()){
-            startMotors(-.5, .5); //pivot backward until aligned with line
+        while(!rightLine()){
+            startMotors(-.5, .5); //turn backward until aligned with line
         }
         stopMotors();
 
@@ -38,7 +38,7 @@ public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
 
         moveForward(.5, 200); //move forward off of first line
 
-        while(!middleLine()){
+        while(!rightLine()){
             startMotors(.8, .8); //move forward until middle sensor on line
         }
         stopMotors();

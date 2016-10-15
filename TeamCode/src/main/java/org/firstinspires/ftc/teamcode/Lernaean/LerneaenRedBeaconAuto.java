@@ -14,19 +14,19 @@ public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
         //Red Team
         map();
 
-        moveForward(.5, 180); //move forward off wall
+        moveForward(-.5, 180); //move backward off wall
 
         pRotateNoReset(.5, 0); //correct for drift
 
         pRotate(.5, -45); //turn towards beacons
 
-        while (!middleLine()) {
-            startMotors(.8, .8); //move forward until middle sensor on line
+        while (!leftLine()) {
+            startMotors(-.8, -.8); //move forward until middle sensor on line
         }
         stopMotors();
 
-        while (!sideLine()) {
-            startMotors(-.5, .5); //move backward until aligned with line
+        while (!rightLine()) {
+            startMotors(-.5, 0); //turn backward until aligned with line
         }
         stopMotors();
 
@@ -45,8 +45,8 @@ public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
             frontIn();
         }
 
-        while (!middleLine()) {  //move forward again to the next beacon
-            startMotors(.8, .8);
+        while (!rightLine()) {  //move forward again to the next beacon
+            startMotors(-.8, -.8);
         }
 
         stopMotors();

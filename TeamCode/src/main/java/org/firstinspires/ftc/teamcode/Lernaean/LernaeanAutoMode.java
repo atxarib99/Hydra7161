@@ -31,8 +31,8 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
     DeviceInterfaceModule cdim;
     ColorSensor rightColor;
     ColorSensor leftColor;
-    OpticalDistanceSensor odsMiddle;
-    OpticalDistanceSensor odsSide;
+    OpticalDistanceSensor odsRight;
+    OpticalDistanceSensor odsLeft;
     BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
 
     int nullValue = 0;
@@ -67,8 +67,8 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         rightColor = hardwareMap.colorSensor.get("rCol");
         leftColor = hardwareMap.colorSensor.get("lCol");
-        odsMiddle = hardwareMap.opticalDistanceSensor.get("odsM");
-        odsSide = hardwareMap.opticalDistanceSensor.get("odsS");
+        odsRight = hardwareMap.opticalDistanceSensor.get("odsR");
+        odsLeft = hardwareMap.opticalDistanceSensor.get("odsL");
         composeTelemetry();
         gyro = hardwareMap.get(BNO055IMU.class, "gyro");
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
@@ -283,12 +283,12 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
 //        updateFacing(ticksI);
     }
 
-    public boolean middleLine() {
-        return odsMiddle.getLightDetected() > 2;
+    public boolean rightLine() {
+        return odsRight.getLightDetected() > 2;
     }
 
-    public boolean sideLine() {
-        return odsSide.getLightDetected() > 2;
+    public boolean leftLine() {
+        return odsLeft.getLightDetected() > 2;
     }
 
     //=============END MOVEMENT METHODS===========================
