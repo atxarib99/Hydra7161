@@ -13,13 +13,13 @@ import com.qualcomm.robotcore.hardware.Servo;
 public abstract class LernaeanOpMode extends OpMode {
     DcMotor motorL;
     DcMotor motorR;
+    DcMotor manipulator;
     Servo front;
     Servo back;
     DeviceInterfaceModule cdim;
-    ColorSensor rightColor;
-    ColorSensor leftColor;
-    OpticalDistanceSensor odsMiddle;
-    OpticalDistanceSensor odsSide;
+    ColorSensor color;
+    OpticalDistanceSensor left;
+    OpticalDistanceSensor right;
 
     private final double BACK_OUT = 1;
     private final double BACK_IN = 0;
@@ -32,13 +32,13 @@ public abstract class LernaeanOpMode extends OpMode {
     public void init() {
         motorL = hardwareMap.dcMotor.get("L");
         motorR = hardwareMap.dcMotor.get("R");
+        manipulator = hardwareMap.dcMotor.get("mani");
         back = hardwareMap.servo.get("back");
         front = hardwareMap.servo.get("front");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
-        rightColor = hardwareMap.colorSensor.get("rCol");
-        leftColor = hardwareMap.colorSensor.get("lCol");
-        odsMiddle = hardwareMap.opticalDistanceSensor.get("odsM");
-        odsSide = hardwareMap.opticalDistanceSensor.get("odsS");
+        color = hardwareMap.colorSensor.get("color");
+        left = hardwareMap.opticalDistanceSensor.get("odsL");
+        right = hardwareMap.opticalDistanceSensor.get("odsR");
     }
 
     public void startMotors(double ri, double le) {

@@ -1,70 +1,88 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
+import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
+import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
+import org.firstinspires.ftc.teamcode.Libraries.Sensor;
+import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
  * Created by TechMaster on 9/21/2016.
  */
 @Autonomous(name="BlueBeaconAuto", group="Linear Opmode")
-public class LernaeanBlueBeaconAuto extends LernaeanAutoMode {
+public class LernaeanBlueBeaconAuto extends LinearOpMode {
 
+    Drivetrain drivetrain;
+    BeaconPushers beaconPushers;
+    Manipulator manipulator;
+    Shooter shooter;
 
     @Override
     public void runOpMode() throws InterruptedException {
+        drivetrain = new Drivetrain(this);
+        beaconPushers = new BeaconPushers(this);
+        manipulator = new Manipulator(this);
+        shooter = new Shooter(this);
 
-        map();
+        drivetrain.moveForward(.5, (int) (.477 * 1120));
 
-        moveForward(.5, 180); //move forward off wall
+        drivetrain.setNullValue();
 
-        pRotateNoReset(.5, 0); //correct for drift
+        drivetrain.rotateP(.5, 45);
 
-        pRotate(.5, 45); //turn towards beacons
+        drivetrain.setNullValue();
 
-        while (!leftLine()) {
-            startMotors(.8, .8); //move forward until middle sensor on line
-        }
-        stopMotors();
+        drivetrain.moveForward(.8, (int) (4.77 * 1120)); //4.77
 
-        while (!rightLine()) {
-            startMotors(-.5, .5); //turn backward until aligned with line
-        }
-        stopMotors();
+        while(!drivetrain.sensor.isLeftLine())
+            drivetrain.startMotors(.4, .4);
 
-        backSemi();
+        drivetrain.stopMotors();
 
-        if (isLeftRed()) {           //read color sensor, extend appropriate button pusher
-            backIn();
-            frontOut();
+        while(!drivetrain.sensor.isRightLine())
+            drivetrain.startMotors(.4, 0);
+
+        drivetrain.stopMotors();
+
+        boolean moveBack = beaconPushers.isBackRed();
+
+        if(!moveBack) {
+            beaconPushers.backOut(true);
             Thread.sleep(500);
-            frontIn();
+            beaconPushers.backOut(false);
         } else {
-            backIn();
+            beaconPushers.frontOut(true);
             Thread.sleep(500);
-            backOut();
-            Thread.sleep(500);
-            backIn();
+            beaconPushers.frontOut(false);
         }
 
-        moveForward(.5, 200); //move forward off of first line
+        drivetrain.moveForward(.8, (int) (3.1 * 1120));
 
-        while (!rightLine()) {
-            startMotors(.8, .8); //move forward until middle sensor on line
-        }
-        stopMotors();
+        drivetrain.stopMotors();
 
-        backSemi();
+        while(!drivetrain.sensor.isLeftLine())
+            drivetrain.startMotors(.4, .4);
 
-        if (isLeftRed()) {
-            backIn();
-            frontOut();
+        drivetrain.stopMotors();
+
+        while(!drivetrain.sensor.isRightLine())
+            drivetrain.startMotors(.4, 0);
+
+        drivetrain.stopMotors();
+
+        moveBack = beaconPushers.isBackRed();
+
+        if(!moveBack) {
+            beaconPushers.backOut(true);
             Thread.sleep(500);
-            frontIn();
+            beaconPushers.backOut(false);
         } else {
-            backIn();
+            beaconPushers.frontOut(true);
             Thread.sleep(500);
-            backOut();
-            Thread.sleep(500);
-            backIn();
+            beaconPushers.frontOut(false);
         }
 
     }

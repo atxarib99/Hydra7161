@@ -16,19 +16,15 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class Sensor {
 
     BNO055IMU gyro;
-    OpticalDistanceSensor mid;
-    OpticalDistanceSensor side;
-    ColorSensor colorR;
-    ColorSensor colorL;
+    OpticalDistanceSensor left;
+    OpticalDistanceSensor right;
     LinearOpMode opMode;
     Orientation angles;
     BNO055IMU.Parameters parameters;
     public Sensor(LinearOpMode opMode) {
         this.opMode = opMode;
-        mid = opMode.hardwareMap.opticalDistanceSensor.get("mid");
-        side = opMode.hardwareMap.opticalDistanceSensor.get("side");
-        colorR = opMode.hardwareMap.colorSensor.get("colorR");
-        colorL = opMode.hardwareMap.colorSensor.get("colorL");
+        right = opMode.hardwareMap.opticalDistanceSensor.get("odsR");
+        left = opMode.hardwareMap.opticalDistanceSensor.get("odsL");
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -36,28 +32,21 @@ public class Sensor {
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        gyro = this.opMode.hardwareMap.get(BNO055IMU.class, "gyro");
+        resetGyro();
         angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
-
     }
 
     public double getGyroYaw() {
         return angles.firstAngle;
     }
 
-    public boolean isRightRed() {
-        return colorR.red() > 450;
+    public boolean isRightLine() {
+        return right.getRawLightDetected() > 2;
     }
 
-    public boolean isLeftRed() {
-        return colorL.red() > 450;
-    }
-
-    public boolean isMidLine() {
-        return mid.getRawLightDetected() > 2;
-    }
-
-    public boolean isSideLine() {
-        return side.getRawLightDetected() > 2;
+    public boolean isLeftLine() {
+        return left.getRawLightDetected() > 2;
     }
 
     public boolean resetGyro() {

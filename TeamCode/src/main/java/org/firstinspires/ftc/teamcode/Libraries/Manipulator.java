@@ -8,19 +8,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
  */
 public class Manipulator {
     DcMotor manip;
-    DcMotor magazine;
     LinearOpMode opMode;
     public Manipulator (LinearOpMode opMode){
         this.opMode = opMode;
-        manip = this.opMode.hardwareMap.dcMotor.get("manip");
-        magazine = this.opMode.hardwareMap.dcMotor.get("magazine");
+        manip = this.opMode.hardwareMap.dcMotor.get("mani");
     }
 
     public void runCollector(double pow){
-        manip.setPower(pow);
-    }
-
-    public void runMagazine(double pow){
-        magazine.setPower(pow);
+        manip.setPower(pow * -1);
     }
 }

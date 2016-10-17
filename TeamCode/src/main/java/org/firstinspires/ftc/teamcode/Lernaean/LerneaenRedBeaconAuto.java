@@ -1,70 +1,88 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
+import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
+import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
+import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
  * Created by Arib on 9/14/2016.
  */
 @Autonomous(name="LernaeanRedBeacon", group="Linear Opmode")
-public class LerneaenRedBeaconAuto extends LernaeanAutoMode {
+public class LerneaenRedBeaconAuto extends LinearOpMode {
 
+    Drivetrain drivetrain;
+    BeaconPushers beaconPushers;
+    Manipulator manipulator;
+    Shooter shooter;
     @Override
     public void runOpMode() throws InterruptedException {
 
-        //Red Team
-        map();
+        drivetrain = new Drivetrain(this);
+        beaconPushers = new BeaconPushers(this);
+        manipulator = new Manipulator(this);
+        shooter = new Shooter(this);
 
-        moveForward(-.5, 180); //move backward off wall
+        drivetrain.moveForward(-.5, (int) (.477 * 1120));
 
-        pRotateNoReset(.5, 0); //correct for drift
+        drivetrain.setNullValue();
 
-        pRotate(.5, -45); //turn towards beacons
+        drivetrain.rotateP(.5, -45);
 
-        while (!leftLine()) {
-            startMotors(-.8, -.8); //move forward until middle sensor on line
-        }
-        stopMotors();
+        drivetrain.setNullValue();
 
-        while (!rightLine()) {
-            startMotors(-.5, 0); //turn backward until aligned with line
-        }
-        stopMotors();
+        drivetrain.moveForward(-.8, (int) (4.77 * 1120)); //4.77
 
-        //Robot should now be in correct position ready to press beacon
+        while(!drivetrain.sensor.isLeftLine())
+            drivetrain.startMotors(-.4, -.4);
 
-        backSemi();       //push button slightly out to detect color
+        drivetrain.stopMotors();
 
-        if (isRightRed()) {      //if the color is red push and we are red team press the red button
-            backIn();
+        while(!drivetrain.sensor.isRightLine())
+            drivetrain.startMotors(-.4, 0);
+
+        drivetrain.stopMotors();
+
+        boolean moveBack = beaconPushers.isBackRed();
+
+        if(moveBack) {
+            beaconPushers.backOut(true);
             Thread.sleep(500);
-            backOut();
+            beaconPushers.backOut(false);
+        } else {
+            beaconPushers.frontOut(true);
             Thread.sleep(500);
-            backIn();
-        } else {                //else push out the other button
-            backIn();
-            frontOut();
-            Thread.sleep(500);
-            frontIn();
-        }
-
-        while (!rightLine()) {  //move forward again to the next beacon
-            startMotors(-.8, -.8);
+            beaconPushers.frontOut(false);
         }
 
-        stopMotors();
+        drivetrain.moveForward(-.8, (int) (3.1 * 1120));
 
-        backSemi();
+        drivetrain.stopMotors();
 
-        if (isRightRed()) {      //if the color is red push and we are red team press the red button
-            backIn();
-            frontOut();
+        while(!drivetrain.sensor.isLeftLine())
+            drivetrain.startMotors(-.4, -.4);
+
+        drivetrain.stopMotors();
+
+        while(!drivetrain.sensor.isRightLine())
+            drivetrain.startMotors(-.4, 0);
+
+        drivetrain.stopMotors();
+
+        moveBack = beaconPushers.isBackRed();
+
+        if(moveBack) {
+            beaconPushers.backOut(true);
             Thread.sleep(500);
-            frontIn();
-        } else {                //else push out the other button
-            backIn();
-            frontOut();
+            beaconPushers.backOut(false);
+        } else {
+            beaconPushers.frontOut(true);
             Thread.sleep(500);
-            frontIn();
+            beaconPushers.frontOut(false);
         }
+
     }
 }

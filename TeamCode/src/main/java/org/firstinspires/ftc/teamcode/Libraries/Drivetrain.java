@@ -11,12 +11,12 @@ import java.util.regex.Matcher;
  * Created by Arib on 10/6/2016.
  */
 public class Drivetrain {
-    DcMotor right;
-    DcMotor left;
+    DcMotor motorR;
+    DcMotor motorL;
 
     LinearOpMode opMode;
 
-    Sensor sensor;
+    public Sensor sensor;
 
     int nullValue;
     double angleError;
@@ -25,8 +25,8 @@ public class Drivetrain {
     public Drivetrain(LinearOpMode opMode){
         this.opMode = opMode;
         nullValue = 0;
-        left = this.opMode.hardwareMap.dcMotor.get("left");
-        right = this.opMode.hardwareMap.dcMotor.get("right");
+        motorL = this.opMode.hardwareMap.dcMotor.get("L");
+        motorR = this.opMode.hardwareMap.dcMotor.get("R");
         this.opMode.telemetry.addData(LOG_TAG + "init", "finished drivetrain init");
         this.opMode.telemetry.update();
         sensor = new Sensor(opMode);
@@ -35,13 +35,13 @@ public class Drivetrain {
     }
 
     public void startMotors(double ri, double le) {
-        right.setPower(ri);
-        left.setPower(-le);
+        motorR.setPower(ri);
+        motorL.setPower(-le);
     }
 
     public void stopMotors() {
-        right.setPower(0);
-        left.setPower(0);
+        motorR.setPower(0);
+        motorL.setPower(0);
     }
 
     public void setNullValue() {
@@ -49,7 +49,7 @@ public class Drivetrain {
     }
 
     public int getEncoderAvg() {
-        return  ((Math.abs(right.getCurrentPosition())) + Math.abs(left.getCurrentPosition())) / 2;
+        return  ((Math.abs(motorR.getCurrentPosition())) + Math.abs(motorL.getCurrentPosition())) / 2;
     }
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
@@ -75,24 +75,24 @@ public class Drivetrain {
             Range.clip(power, -1, 1);
 
             opMode.telemetry.addData("Power", power);
-            opMode.telemetry.addData("LeftPower", left.getPower());
-            opMode.telemetry.addData("RightPower", right.getPower());
+            opMode.telemetry.addData("LeftPower", motorL.getPower());
+            opMode.telemetry.addData("RightPower", motorR.getPower());
             opMode.telemetry.update();
 
             if(angle > 2) {
                 startMotors((power * .75), power);
-                opMode.telemetry.addData("LeftPower", left.getPower());
-                opMode.telemetry.addData("RightPower", right.getPower());
+                opMode.telemetry.addData("LeftPower", motorL.getPower());
+                opMode.telemetry.addData("RightPower", motorR.getPower());
                 opMode.telemetry.update();
             } else if(angle < -2) {
                 startMotors(power, (power * .75));
-                opMode.telemetry.addData("LeftPower", left.getPower());
-                opMode.telemetry.addData("RightPower", right.getPower());
+                opMode.telemetry.addData("LeftPower", motorL.getPower());
+                opMode.telemetry.addData("RightPower", motorR.getPower());
                 opMode.telemetry.update();
             } else {
                 startMotors(power, power);
-                opMode.telemetry.addData("LeftPower", left.getPower());
-                opMode.telemetry.addData("RightPower", right.getPower());
+                opMode.telemetry.addData("LeftPower", motorL.getPower());
+                opMode.telemetry.addData("RightPower", motorR.getPower());
                 opMode.telemetry.update();
             }
             opMode.idle();
