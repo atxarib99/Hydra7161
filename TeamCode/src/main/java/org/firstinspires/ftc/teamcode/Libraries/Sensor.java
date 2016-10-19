@@ -32,7 +32,7 @@ public class Sensor {
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        gyro = this.opMode.hardwareMap.get(BNO055IMU.class, "gyro");
+        //gyro = this.opMode.hardwareMap.get(BNO055IMU.class, "gyro");
         resetGyro();
         angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
     }

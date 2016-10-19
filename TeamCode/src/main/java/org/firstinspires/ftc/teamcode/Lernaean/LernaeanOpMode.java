@@ -21,15 +21,22 @@ public abstract class LernaeanOpMode extends OpMode {
     OpticalDistanceSensor left;
     OpticalDistanceSensor right;
 
+    Thread driveThread;
+    Thread maniThread;
+    Thread beaconThread;
+    Thread sensorThread;
+
     private final double BACK_OUT = 1;
     private final double BACK_IN = 0;
     private final double FRONT_OUT = 1;
     private final double FRONT_IN = 0;
+    private boolean reversed;
 
 
 
     @Override
     public void init() {
+        reversed = false;
         motorL = hardwareMap.dcMotor.get("L");
         motorR = hardwareMap.dcMotor.get("R");
         manipulator = hardwareMap.dcMotor.get("mani");
@@ -42,8 +49,13 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void startMotors(double ri, double le) {
-        motorL.setPower(-le);
-        motorR.setPower(ri);
+        if(reversed) {
+            motorL.setPower(le);
+            motorR.setPower(-ri);
+        } else {
+            motorL.setPower(-le);
+            motorR.setPower(ri);
+        }
     }
 
     public void stopMotors() {
@@ -65,6 +77,22 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void backIn() {
         back.setPosition(BACK_IN);
+    }
+
+    public void startMani() {
+        manipulator.setPower(1);
+    }
+
+    public void stopMani() {
+        manipulator.setPower(0);
+    }
+
+    public void reverseMani() {
+        manipulator.setPower(-1);
+    }
+
+    public void reverse() {
+        reversed = !reversed;
     }
 
 }

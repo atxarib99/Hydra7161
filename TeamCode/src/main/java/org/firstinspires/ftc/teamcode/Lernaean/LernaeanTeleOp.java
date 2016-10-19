@@ -18,7 +18,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
         //booleans YAY!
 
-        if(gamepad1.y){
+        if(gamepad2.a){
             if (!isbackOut) {
                 backOut();
             } else {
@@ -26,7 +26,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
         }
 
-        if(gamepad1.x){
+        if(gamepad2.x){
             if(!isfrontOut){
                 frontOut();
             } else {
@@ -40,5 +40,23 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             stopMotors();
         }
 
+        if(gamepad1.right_bumper) {
+            if(manipulator.getPower() > .2)
+                reverseMani();
+            else
+                startMani();
+        }
+
+        if(gamepad1.left_bumper)
+            stopMani();
+
+        if(gamepad1.a) {
+            try {
+                reverse();
+                Thread.sleep(25);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
