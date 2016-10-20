@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.robotcore.external.Func;
+
 /**
  * Created by Arib on 9/11/2016.
  */
@@ -14,6 +16,8 @@ public abstract class LernaeanOpMode extends OpMode {
     DcMotor motorL;
     DcMotor motorR;
     DcMotor manipulator;
+    DcMotor shooterR;
+    DcMotor shooterL;
     Servo front;
     Servo back;
     DeviceInterfaceModule cdim;
@@ -37,9 +41,12 @@ public abstract class LernaeanOpMode extends OpMode {
     @Override
     public void init() {
         reversed = false;
+        composeTelemetry();
         motorL = hardwareMap.dcMotor.get("L");
         motorR = hardwareMap.dcMotor.get("R");
         manipulator = hardwareMap.dcMotor.get("mani");
+        shooterR = hardwareMap.dcMotor.get("sR");
+        shooterL = hardwareMap.dcMotor.get("sL");
         back = hardwareMap.servo.get("back");
         front = hardwareMap.servo.get("front");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
@@ -94,5 +101,67 @@ public abstract class LernaeanOpMode extends OpMode {
     public void reverse() {
         reversed = !reversed;
     }
+
+    public void startShooter() {
+        shooterL.setPower(1);
+        shooterR.setPower(-1);
+    }
+
+    public void reverseShooter() {
+        shooterL.setPower(-1);
+        shooterR.setPower(1);
+    }
+
+    public void stopShooter() {
+        shooterL.setPower(0);
+        shooterR.setPower(0);
+    }
+
+    public double getRightODS() {
+        return right.getLightDetected();
+    }
+
+    public double getLeftODS() {
+        return left.getLightDetected();
+    }
+
+    public double getRawRightODS() {
+        return right.getRawLightDetected();
+    }
+
+    public double getRawLeftODS() {
+        return left.getRawLightDetected();
+    }
+
+    public int getEncoderAvg() {
+        return (Math.abs(motorR.getCurrentPosition()) + Math.abs(motorL.getCurrentPosition())) / 2;
+    }
+
+    public void composeTelemetry() {
+
+        telemetry.addLine()
+                .addData("rightODS", new Func<String>() {
+                    @Override public String value() {
+                        return "Right: Raw: " + getRawRightODS() + " Normal: " + getRightODS() + "";
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("leftODS", new Func<String>() {
+                    @Override public String value() {
+                        return "Left: Raw: " + getRawLeftODS() + " Normal: " + getLeftODS() + "";
+                    }
+                });
+
+        telemetry.addLine()
+                .addData("encoder", new Func<String>() {
+                    @Override public String value() {
+                        return getEncoderAvg() + "";
+                    }
+                });
+
+    }
+
+
 
 }

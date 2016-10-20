@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.Lernaean.MagazineOpMode;
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Lernaean.MagazineOpMode;
  */
 
 @TeleOp(name = "teleOp" , group = "OpMode")
+@Disabled
 public class MagazineTeleOp extends MagazineOpMode {
     boolean isFrontOut = false;
     boolean isBackOut = false;

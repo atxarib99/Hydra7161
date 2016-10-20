@@ -7,8 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
-@TeleOp(name = "TeleOp", group = "opMode")
-@Disabled
+@TeleOp(name = "LTeleOp", group = "opMode")
 public class LernaeanTeleOp extends LernaeanOpMode {
     boolean isbackOut = false;
     boolean isfrontOut = false;
@@ -16,7 +15,12 @@ public class LernaeanTeleOp extends LernaeanOpMode {
     @Override
     public void loop(){
 
-        //booleans YAY!
+        if(gamepad2.right_bumper) {
+            startShooter();
+        }
+
+        if(gamepad2.left_bumper)
+            stopShooter();
 
         if(gamepad2.a){
             if (!isbackOut) {
@@ -34,17 +38,14 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
         }
 
-        if (Math.abs(gamepad1.right_stick_y) > .05 || (Math.abs(gamepad1.left_stick_x) > .05)){
+        if (Math.abs(gamepad1.right_stick_y) > .05 || (Math.abs(gamepad1.left_stick_y) > .05)){
             startMotors(gamepad1.right_stick_y,gamepad1.left_stick_y );
         } else {
             stopMotors();
         }
 
         if(gamepad1.right_bumper) {
-            if(manipulator.getPower() > .2)
-                reverseMani();
-            else
-                startMani();
+            startMani();
         }
 
         if(gamepad1.left_bumper)
@@ -58,5 +59,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 e.printStackTrace();
             }
         }
+
+        telemetry.update();
     }
 }
