@@ -59,6 +59,8 @@ public class LernaeanBlueBeaconAuto extends LinearOpMode {
             beaconPushers.frontOut(false);
         }
 
+        drivetrain.setNullValue();
+
         drivetrain.moveForward(.8, (int) (3.1 * 1120));
 
         drivetrain.stopMotors();

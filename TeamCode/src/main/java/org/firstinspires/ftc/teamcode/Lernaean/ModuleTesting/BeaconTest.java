@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,10 +21,10 @@ public class BeaconTest extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        drivetrain = new Drivetrain(this);
-        shooter = new Shooter(this);
-        beaconPushers = new BeaconPushers(this);
-        manipulator = new Manipulator(this);
+        drivetrain      = new Drivetrain(this);
+        shooter         = new Shooter(this);
+        beaconPushers   = new BeaconPushers(this);
+        manipulator     = new Manipulator(this);
 
         while(opModeIsActive()) {
             boolean backRed = beaconPushers.isBackRed();
@@ -37,6 +37,15 @@ public class BeaconTest extends LinearOpMode {
             }
 
             telemetry.addData("beacon", toTele);
+
+            if(backRed) {
+                beaconPushers.backPush();
+            } else {
+                beaconPushers.frontPush();
+            }
+
+            while (!gamepad1.a);
+
         }
     }
 }
