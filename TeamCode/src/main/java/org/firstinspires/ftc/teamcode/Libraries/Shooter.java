@@ -15,8 +15,8 @@ public class Shooter {
     LinearOpMode opMode;
     public Shooter(LinearOpMode opMode){
         this.opMode = opMode;
-        shooterL = this.opMode.hardwareMap.dcMotor.get("shooterR");
-        shooterR = this.opMode.hardwareMap.dcMotor.get("shooterL");
+        shooterL = this.opMode.hardwareMap.dcMotor.get("sR");
+        shooterR = this.opMode.hardwareMap.dcMotor.get("sL");
         this.opMode.telemetry.addData("init", "init finished");
         this.opMode.telemetry.update();
     }

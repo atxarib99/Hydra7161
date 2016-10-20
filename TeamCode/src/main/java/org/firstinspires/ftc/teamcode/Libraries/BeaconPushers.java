@@ -27,6 +27,7 @@ public class BeaconPushers {
     }
 
     public boolean isBackRed() {
+        opMode.telemetry.addData("color val", color.red());
         return color.red() > 450;
     }
 
