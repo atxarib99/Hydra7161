@@ -1,11 +1,6 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
-
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name = "LTeleOp", group = "opMode")
 public class LernaeanTeleOp extends LernaeanOpMode {
@@ -52,12 +47,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             stopMani();
 
         if(gamepad1.a) {
-            try {
-                reverse();
-                Thread.sleep(25);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            while(gamepad1.a);
+            reverse();
         }
 
         telemetry.update();

@@ -50,13 +50,9 @@ public class LernaeanBlueBeaconAuto extends LinearOpMode {
         boolean moveBack = beaconPushers.isBackRed();
 
         if(!moveBack) {
-            beaconPushers.backOut(true);
-            Thread.sleep(500);
-            beaconPushers.backOut(false);
+            beaconPushers.backPush();
         } else {
-            beaconPushers.frontOut(true);
-            Thread.sleep(500);
-            beaconPushers.frontOut(false);
+            beaconPushers.frontPush();
         }
 
         drivetrain.setNullValue();
@@ -78,13 +74,9 @@ public class LernaeanBlueBeaconAuto extends LinearOpMode {
         moveBack = beaconPushers.isBackRed();
 
         if(!moveBack) {
-            beaconPushers.backOut(true);
-            Thread.sleep(500);
-            beaconPushers.backOut(false);
+            beaconPushers.backPush();
         } else {
-            beaconPushers.frontOut(true);
-            Thread.sleep(500);
-            beaconPushers.frontOut(false);
+            beaconPushers.frontPush();
         }
 
     }

@@ -137,6 +137,14 @@ public abstract class LernaeanOpMode extends OpMode {
         return (Math.abs(motorR.getCurrentPosition()) + Math.abs(motorL.getCurrentPosition())) / 2;
     }
 
+    public int getRed() {
+        return color.red();
+    }
+
+    public int getBlue() {
+        return color.blue();
+    }
+
     public void composeTelemetry() {
 
         telemetry.addLine()
@@ -159,6 +167,13 @@ public abstract class LernaeanOpMode extends OpMode {
                         return getEncoderAvg() + "";
                     }
                 });
+        telemetry.addLine()
+                .addData("Color", new Func<String>() {
+                    @Override public String value() {
+                        return "Red: " + getRed() + " Blue: " + getBlue();
+                    }
+                });
+
 
     }
 
