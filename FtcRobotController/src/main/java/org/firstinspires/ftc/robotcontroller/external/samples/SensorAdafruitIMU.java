@@ -58,7 +58,6 @@ import java.util.Locale;
  * @see <a href="http://www.adafruit.com/products/2472">Adafruit IMU</a>
  */
 @Autonomous(name = "Sensor: Adafruit IMU", group = "Sensor")
-@Disabled                            // Uncomment this to add to the opmode list
 public class SensorAdafruitIMU extends LinearOpMode
     {
     //----------------------------------------------------------------------------------------------
@@ -92,7 +91,7 @@ public class SensorAdafruitIMU extends LinearOpMode
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu = hardwareMap.get(BNO055IMU.class, "gyro");
         imu.initialize(parameters);
 
         // Set up our telemetry dashboard
@@ -124,7 +123,7 @@ public class SensorAdafruitIMU extends LinearOpMode
                 // Acquiring the angles is relatively expensive; we don't want
                 // to do that in each of the three items that need that info, as that's
                 // three times the necessary expense.
-                angles   = imu.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+                angles   = imu.getAngularOrientation();
                 gravity  = imu.getGravity();
                 }
             });
@@ -144,34 +143,37 @@ public class SensorAdafruitIMU extends LinearOpMode
         telemetry.addLine()
             .addData("heading", new Func<String>() {
                 @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.firstAngle);
+                    double value = angles.firstAngle * -1;
+                    if(angles.firstAngle < -180)
+                        value -= 360;
+                    return value + "";
                     }
                 })
             .addData("roll", new Func<String>() {
                 @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.secondAngle);
+                    return angles.secondAngle + "";
                     }
                 })
             .addData("pitch", new Func<String>() {
                 @Override public String value() {
-                    return formatAngle(angles.angleUnit, angles.thirdAngle);
+                    return angles.thirdAngle + "";
                     }
                 });
 
-        telemetry.addLine()
-            .addData("grvty", new Func<String>() {
-                @Override public String value() {
-                    return gravity.toString();
-                    }
-                })
-            .addData("mag", new Func<String>() {
-                @Override public String value() {
-                    return String.format(Locale.getDefault(), "%.3f",
-                            Math.sqrt(gravity.xAccel*gravity.xAccel
-                                    + gravity.yAccel*gravity.yAccel
-                                    + gravity.zAccel*gravity.zAccel));
-                    }
-                });
+//        telemetry.addLine()
+//            .addData("grvty", new Func<String>() {
+//                @Override public String value() {
+//                    return gravity.toString();
+//                    }
+//                })
+//            .addData("mag", new Func<String>() {
+//                @Override public String value() {
+//                    return String.format(Locale.getDefault(), "%.3f",
+//                            Math.sqrt(gravity.xAccel*gravity.xAccel
+//                                    + gravity.yAccel*gravity.yAccel
+//                                    + gravity.zAccel*gravity.zAccel));
+//                    }
+//                });
     }
 
     //----------------------------------------------------------------------------------------------
