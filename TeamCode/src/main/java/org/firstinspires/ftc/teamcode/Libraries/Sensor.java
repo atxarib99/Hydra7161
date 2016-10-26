@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
@@ -15,30 +16,42 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  */
 public class Sensor {
 
-    BNO055IMU gyro;
+    public BNO055IMU gyro;
     OpticalDistanceSensor left;
     OpticalDistanceSensor right;
     LinearOpMode opMode;
     Orientation angles;
+    Acceleration gravity;
     BNO055IMU.Parameters parameters;
-    public Sensor(LinearOpMode opMode) {
+    public Sensor(LinearOpMode opMode) throws InterruptedException {
         this.opMode = opMode;
         right = opMode.hardwareMap.opticalDistanceSensor.get("odsR");
         left = opMode.hardwareMap.opticalDistanceSensor.get("odsL");
         parameters = new BNO055IMU.Parameters();
         parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json"; // see the calibration sample opmode
         parameters.loggingEnabled      = true;
         parameters.loggingTag          = "IMU";
         parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        //gyro = this.opMode.hardwareMap.get(BNO055IMU.class, "gyro");
-        resetGyro();
-        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+
+        // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
+        // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
+        // and named "imu".
+        gyro = opMode.hardwareMap.get(BNO055IMU.class, "gyro");
+        gyro.initialize(parameters);
+
+        angles   = gyro.getAngularOrientation();
+        gravity  = gyro.getGravity();
+
     }
 
     public double getGyroYaw() {
-        return angles.firstAngle;
+        updateValues();
+        double value = angles.firstAngle * -1;
+        if(angles.firstAngle < -180)
+            value -= 360;
+        return value;
     }
 
     public boolean isRightLine() {
@@ -51,5 +64,9 @@ public class Sensor {
 
     public boolean resetGyro() {
         return gyro.initialize(parameters);
+    }
+
+    public void updateValues() {
+        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
     }
 }

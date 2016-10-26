@@ -18,12 +18,15 @@ public class BeaconPushers {
     private final int FRONT_IN = 0;
     private final int FRONT_OUT = 1;
 
+    private final String LOG_TAG = "BeaconPushers";
     public BeaconPushers(LinearOpMode opMode) {
         this.opMode = opMode;
 
         back = this.opMode.hardwareMap.servo.get("back");
         front = this.opMode.hardwareMap.servo.get("front");
         color = this.opMode.hardwareMap.colorSensor.get("color");
+        this.opMode.telemetry.addData(LOG_TAG + "init", "finished drivetrain init");
+        this.opMode.telemetry.update();
     }
 
     public boolean isBackRed() {

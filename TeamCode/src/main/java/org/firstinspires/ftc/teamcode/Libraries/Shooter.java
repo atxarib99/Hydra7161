@@ -13,11 +13,13 @@ public class Shooter {
     DcMotor shooterR;
     DcMotor shooterL;
     LinearOpMode opMode;
-    public Shooter(LinearOpMode opMode){
+
+    private final String LOG_TAG = "Shooter";
+    public Shooter(LinearOpMode opMode) {
         this.opMode = opMode;
         shooterL = this.opMode.hardwareMap.dcMotor.get("sR");
         shooterR = this.opMode.hardwareMap.dcMotor.get("sL");
-        this.opMode.telemetry.addData("init", "init finished");
+        this.opMode.telemetry.addData(LOG_TAG + "init", "finished drivetrain init");
         this.opMode.telemetry.update();
     }
     public void startShooter(double sp){

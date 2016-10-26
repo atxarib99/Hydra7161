@@ -9,9 +9,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 public class Manipulator {
     DcMotor manip;
     LinearOpMode opMode;
+
+    private final String LOG_TAG = "DriveTrain";
     public Manipulator (LinearOpMode opMode){
         this.opMode = opMode;
         manip = this.opMode.hardwareMap.dcMotor.get("mani");
+        this.opMode.telemetry.addData(LOG_TAG + "init", "finished drivetrain init");
+        this.opMode.telemetry.update();
     }
 
     public void runCollector(double pow){

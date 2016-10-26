@@ -22,7 +22,7 @@ public class Drivetrain {
     double angleError;
 
     private final String LOG_TAG = "DriveTrain";
-    public Drivetrain(LinearOpMode opMode){
+    public Drivetrain(LinearOpMode opMode)throws InterruptedException {
         this.opMode = opMode;
         nullValue = 0;
         motorL = this.opMode.hardwareMap.dcMotor.get("L");
@@ -53,7 +53,7 @@ public class Drivetrain {
     }
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
-        sensor.resetGyro();
+//        sensor.resetGyro();
         double angle;
         opMode.telemetry.update();
 
@@ -103,7 +103,6 @@ public class Drivetrain {
     }
 
     public void rotateP(double pow, int deg) throws InterruptedException {
-        sensor.resetGyro();
 
         double power = pow;
         double angleTo = deg;
@@ -114,18 +113,35 @@ public class Drivetrain {
         double currentAngle = sensor.getGyroYaw();
         double previousError = angleTo - currentAngle;
 
-        while(Math.abs(currentAngle) < angleTo - 2) {
-            currentAngle = sensor.getGyroYaw();
-            error = angleTo - Math.abs(currentAngle);                   //TODO: UPDATE PID VALS *higher vals since less motors and 20s*
-            power = (pow * (error) * .005);                      //update p values
-            inte += (opMode.getRuntime() * error * .005);         //update inte value
-            der = (error - previousError) / opMode.getRuntime() * .005; //update der value
+        opMode.telemetry.addData("Current Angle", currentAngle + "");
+        opMode.telemetry.addData("Angle To", angleTo + "");
+        opMode.telemetry.update();
 
-            power += inte + der;
+        sensor.resetGyro();
+
+        currentAngle = 0;
+
+        while(Math.abs(currentAngle) < Math.abs(angleTo) - 2) {
+            sensor.updateValues();
+            currentAngle = sensor.getGyroYaw();
+            error = Math.abs(angleTo) - Math.abs(currentAngle);                   //TODO: UPDATE PID VALS *higher vals since less motors and 20s*
+            if(Math.abs(currentAngle) > angleTo + 5)
+                error = angleTo - 0;
+            else
+                error = angleTo - Math.abs(currentAngle);
+            power = (pow * (error) * .025);                      //update p values
+            //inte += (opMode.getRuntime() * error * .005);         //update inte value
+            //der = (error - previousError) / opMode.getRuntime() * .005; //update der value
+
+//            power += inte + der;
+
+            if(currentAngle > 0)
+                power *= -1;
 
             Range.clip(power, -1, 1);
             startMotors(-power, power);
             opMode.telemetry.addData("PID", power);
+            opMode.telemetry.addData("angle", currentAngle);
 
             opMode.telemetry.update();
             previousError = error;
