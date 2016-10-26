@@ -34,7 +34,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         }
 
         if (Math.abs(gamepad1.right_stick_y) > .05 || (Math.abs(gamepad1.left_stick_y) > .05)){
-            startMotors(gamepad1.right_stick_y,gamepad1.left_stick_y );
+            startMotors(gamepad1.right_stick_y, gamepad1.left_stick_y);
         } else {
             stopMotors();
         }
