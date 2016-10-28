@@ -20,6 +20,7 @@ public abstract class LernaeanOpMode extends OpMode {
     DcMotor shooterL;
     Servo front;
     Servo back;
+    Servo activate;
     DeviceInterfaceModule cdim;
     ColorSensor color;
     OpticalDistanceSensor left;
@@ -30,6 +31,8 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double FRONT_OUT = 1;
     private final double FRONT_IN = 0;
     private boolean reversed;
+
+    public double shooterPower;
 
     Runnable startMotorsR = new Runnable() {
         @Override
@@ -113,6 +116,7 @@ public abstract class LernaeanOpMode extends OpMode {
 
     @Override
     public void init() {
+        shooterPower = 1;
         reversed = false;
         composeTelemetry();
         motorL = hardwareMap.dcMotor.get("L");
@@ -122,6 +126,7 @@ public abstract class LernaeanOpMode extends OpMode {
         shooterL = hardwareMap.dcMotor.get("sL");
         back = hardwareMap.servo.get("back");
         front = hardwareMap.servo.get("front");
+        activate = hardwareMap.servo.get("active");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
         color = hardwareMap.colorSensor.get("color");
         left = hardwareMap.opticalDistanceSensor.get("odsL");
@@ -176,8 +181,8 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void startShooter() {
-        shooterL.setPower(1);
-        shooterR.setPower(-1);
+        shooterL.setPower(.65);
+        shooterR.setPower(-.65);
     }
 
     public void reverseShooter() {
@@ -188,6 +193,13 @@ public abstract class LernaeanOpMode extends OpMode {
     public void stopShooter() {
         shooterL.setPower(0);
         shooterR.setPower(0);
+    }
+
+    public void activateShooter(boolean active) {
+        if(active)
+            activate.setPosition(0);
+        else
+            activate.setPosition(1);
     }
 
     public double getRightODS() {

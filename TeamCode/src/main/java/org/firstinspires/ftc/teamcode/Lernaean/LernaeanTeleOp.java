@@ -14,6 +14,14 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             startShooter();
         }
 
+        if(gamepad2.x) {
+            activateShooter(true);
+        }
+
+        if(gamepad2.b) {
+            activateShooter(false);
+        }
+
         if(gamepad2.left_bumper)
             stopShooter();
 
@@ -39,11 +47,11 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             stopMotors();
         }
 
-        if(gamepad1.right_bumper) {
+        if(gamepad2.right_trigger > .05) {
             startMani();
         }
 
-        if(gamepad1.left_bumper)
+        if(gamepad2.left_trigger > .05)
             stopMani();
 
         if(gamepad1.a) {
