@@ -55,11 +55,11 @@ public class Sensor {
     }
 
     public boolean isRightLine() {
-        return right.getRawLightDetected() > 2;
+        return right.getRawLightDetected() > .5;
     }
 
     public boolean isLeftLine() {
-        return left.getRawLightDetected() > 2;
+        return left.getRawLightDetected() > .5;
     }
 
     public boolean resetGyro() {
@@ -67,6 +67,6 @@ public class Sensor {
     }
 
     public void updateValues() {
-        angles = gyro.getAngularOrientation().toAxesReference(AxesReference.INTRINSIC).toAxesOrder(AxesOrder.ZYX);
+        angles = gyro.getAngularOrientation();
     }
 }
