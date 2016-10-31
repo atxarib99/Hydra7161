@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
+import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -109,10 +110,7 @@ public abstract class LernaeanOpMode extends OpMode {
     Thread maniThread = new Thread(stopManiR);
     Thread beaconThread;
     Thread sensorThread;
-
-
-
-
+    Thread rpmStabilization;
 
     @Override
     public void init() {
@@ -131,6 +129,9 @@ public abstract class LernaeanOpMode extends OpMode {
         color = hardwareMap.colorSensor.get("color");
         left = hardwareMap.opticalDistanceSensor.get("odsL");
         right = hardwareMap.opticalDistanceSensor.get("odsR");
+        shooterPower = .5;
+        frontIn();
+        backIn();
     }
 
     public void startMotors(double ri, double le) {
@@ -181,8 +182,8 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void startShooter() {
-        shooterL.setPower(.65);
-        shooterR.setPower(-.65);
+        shooterL.setPower(shooterPower);
+        shooterR.setPower(-shooterPower);
     }
 
     public void reverseShooter() {
@@ -197,7 +198,7 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void activateShooter(boolean active) {
         if(active)
-            activate.setPosition(0);
+            activate.setPosition(.45);
         else
             activate.setPosition(1);
     }
@@ -230,6 +231,10 @@ public abstract class LernaeanOpMode extends OpMode {
         return color.blue();
     }
 
+    public double getShooterPower() {
+        return shooterPower;
+    }
+
     public void composeTelemetry() {
 
         telemetry.addLine()
@@ -256,6 +261,12 @@ public abstract class LernaeanOpMode extends OpMode {
                 .addData("Color", new Func<String>() {
                     @Override public String value() {
                         return "Red: " + getRed() + " Blue: " + getBlue();
+                    }
+                });
+        telemetry.addLine()
+                .addData("ShooterPower", new Func<String>() {
+                    @Override public String value() {
+                        return "ShooterPower: " + getShooterPower();
                     }
                 });
 

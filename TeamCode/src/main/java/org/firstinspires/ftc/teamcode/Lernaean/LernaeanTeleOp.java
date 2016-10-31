@@ -6,6 +6,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class LernaeanTeleOp extends LernaeanOpMode {
     boolean isbackOut = false;
     boolean isfrontOut = false;
+    double flyRPM;
+    double oldFly;
+    double calculatedRPM = 0;
+
+    double[] flyArray = new double[100];
+    int flyTicks = 0;
 
     @Override
     public void loop(){
@@ -20,6 +26,16 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
         if(gamepad2.b) {
             activateShooter(false);
+        }
+
+        if(gamepad2.dpad_up) {
+            while(gamepad2.dpad_up);
+            shooterPower += .05;
+        }
+
+        if(gamepad2.dpad_down) {
+            while(gamepad2.dpad_down);
+            shooterPower -= .05;
         }
 
         if(gamepad2.left_bumper)
@@ -47,11 +63,11 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             stopMotors();
         }
 
-        if(gamepad2.right_trigger > .05) {
+        if(gamepad2.right_trigger > .05 && gamepad2.left_trigger > .05) {
+            reverseMani();
+        } else if(gamepad2.right_trigger > .05) {
             startMani();
-        }
-
-        if(gamepad2.left_trigger > .05)
+        } else if(gamepad2.left_trigger > .05)
             stopMani();
 
         if(gamepad1.a) {
@@ -59,6 +75,32 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             reverse();
         }
 
+        flyRPM = (((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2) - oldFly) / getRuntime();
+
+        oldFly = ((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2);
+
+        if(flyTicks > 99) {
+            double sum = 0;
+            for(int i = 0; i < 100; i++) {
+                sum += flyArray[i];
+            }
+            calculatedRPM = sum / 100;
+            telemetry.addData("Sum", sum);
+            telemetry.update();
+            flyTicks /= 100;
+        } else {
+            flyTicks++;
+            telemetry.addData("ticks", flyTicks);
+        }
+
+        try {
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        resetStartTime();
+        telemetry.addData("encoderVals", "Right: " + shooterR.getCurrentPosition() + "Left: " + shooterL.getCurrentPosition());
+        telemetry.addData("RPM", calculatedRPM);
         telemetry.update();
     }
 }
