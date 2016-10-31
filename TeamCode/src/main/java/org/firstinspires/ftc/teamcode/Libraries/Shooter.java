@@ -28,6 +28,6 @@ public class Shooter {
     }
     public void stopShooter(){
         shooterL.setPower(0);
-        shooterR.setPower(-0);
+        shooterR.setPower(0);
     }
 }

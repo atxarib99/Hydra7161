@@ -30,7 +30,7 @@ public class LineDetectionTest extends LinearOpMode {
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
 
-        version = "1.0";
+        version = "1.19";
 
         telemetry.addData("version: ", version);
         telemetry.addData("init", "init fully finished");
@@ -45,7 +45,7 @@ public class LineDetectionTest extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.25, (int) (.225 * 1120));
+        drivetrain.moveForward(.25, (int) (.25 * 1120));
 
         drivetrain.stopMotors();
 
@@ -54,7 +54,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.addData("currentStep", "rotating");
         telemetry.update();
 
-        drivetrain.rotateP(.5, -37);
+        drivetrain.rotateP(.5, -24);
 
         drivetrain.stopMotors();
 
@@ -73,18 +73,46 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
-        while(!drivetrain.sensor.isRightLine())
-            drivetrain.startMotors(.4, .4);
+        while(!drivetrain.sensor.isLeftLine()) {
+            drivetrain.startMotors(.3, .3);
+            idle();
+        }
 
         drivetrain.stopMotors();
 
         telemetry.addData("currentStep", "finding the otherline");
         telemetry.update();
 
-        while(!drivetrain.sensor.isLeftLine())
+        while(!drivetrain.sensor.isRightLine()) {
             drivetrain.startMotors(.4, 0);
+            idle();
+        }
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("currentStep", "finding the firstline again");
+        telemetry.update();
+
+        while(!drivetrain.sensor.isLeftLine()) {
+            drivetrain.startMotors(0, -.4);
+            idle();
+        }
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("currentStep", "finding the otherline");
+        telemetry.update();
+
+        while(!drivetrain.sensor.isRightLine()) {
+            drivetrain.startMotors(.4, 0);
+            idle();
+        }
 
         telemetry.addData("currentStep", "finished");
+
+        telemetry.addData("rightODS", drivetrain.sensor.rightODS());
+        telemetry.addData("leftOdS", drivetrain.sensor.leftODS());
+        telemetry.update();
 
         drivetrain.stopMotors();
     }

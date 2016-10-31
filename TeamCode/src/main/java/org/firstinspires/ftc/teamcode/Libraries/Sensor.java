@@ -54,12 +54,20 @@ public class Sensor {
         return value;
     }
 
-    public boolean isRightLine() {
+    public boolean isRightLine() throws InterruptedException {
         return right.getRawLightDetected() > .5;
     }
 
-    public boolean isLeftLine() {
+    public boolean isLeftLine() throws InterruptedException {
         return left.getRawLightDetected() > .5;
+    }
+
+    public double rightODS() {
+        return right.getRawLightDetected();
+    }
+
+    public double leftODS() {
+        return left.getRawLightDetected();
     }
 
     public boolean resetGyro() {

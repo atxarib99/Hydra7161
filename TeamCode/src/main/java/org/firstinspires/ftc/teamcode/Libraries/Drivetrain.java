@@ -34,12 +34,12 @@ public class Drivetrain {
         this.opMode.telemetry.update();
     }
 
-    public void startMotors(double ri, double le) {
+    public void startMotors(double ri, double le) throws InterruptedException {
         motorR.setPower(ri);
         motorL.setPower(-le);
     }
 
-    public void stopMotors() {
+    public void stopMotors() throws InterruptedException {
         motorR.setPower(0);
         motorL.setPower(0);
     }

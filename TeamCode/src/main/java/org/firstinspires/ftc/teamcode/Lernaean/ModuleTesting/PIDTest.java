@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/28/2016.
  */
+@Autonomous(name = "PIDTest", group = "LinearOpMode")
 public class PIDTest extends LinearOpMode {
 
     Drivetrain drivetrain;
@@ -34,9 +36,13 @@ public class PIDTest extends LinearOpMode {
         telemetry.update();
 
         while(opModeIsActive()) {
-            while(gamepad1.a);
             drivetrain.sensor.resetGyro();
+            telemetry.addData("runMode", "ready");
+            telemetry.update();
+            while(!gamepad1.a);
+            telemetry.addData("runMode", "running");
             drivetrain.rotateP(.5, 90);
+            idle();
         }
     }
 }
