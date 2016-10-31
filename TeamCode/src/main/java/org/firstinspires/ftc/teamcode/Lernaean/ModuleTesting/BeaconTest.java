@@ -28,6 +28,7 @@ public class BeaconTest extends LinearOpMode {
 
         while(opModeIsActive()) {
             boolean backRed = beaconPushers.isBackRed();
+            telemetry.addData("color", beaconPushers);
             String toTele;
             if(backRed) {
                 toTele = "The back sensor detects red and the front is blank";

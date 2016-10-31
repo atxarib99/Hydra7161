@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Libraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
@@ -32,6 +33,11 @@ public class BeaconPushers {
     public boolean isBackRed() {
         opMode.telemetry.addData("color val", color.red());
         return color.red() > 450;
+    }
+
+    public int getColorVal() {
+
+        return color.red();
     }
 
     public void frontOut(boolean works) {
