@@ -19,12 +19,21 @@ public class BeaconTest extends LinearOpMode {
     BeaconPushers beaconPushers;
     Manipulator manipulator;
 
+    String version;
+
     @Override
     public void runOpMode() throws InterruptedException {
         drivetrain      = new Drivetrain(this);
         shooter         = new Shooter(this);
         beaconPushers   = new BeaconPushers(this);
         manipulator     = new Manipulator(this);
+
+        version = "1.3";
+
+        telemetry.addData("version", version);
+        telemetry.update();
+
+        waitForStart();
 
         while(opModeIsActive()) {
             boolean backRed = beaconPushers.isBackRed();
@@ -38,10 +47,14 @@ public class BeaconTest extends LinearOpMode {
             }
 
             telemetry.addData("beacon", toTele);
+            telemetry.update();
+
+            Thread.sleep(2000);
 
             if(backRed) {
                 beaconPushers.backPush();
-            } else {
+            }
+            else {
                 beaconPushers.frontPush();
             }
 
