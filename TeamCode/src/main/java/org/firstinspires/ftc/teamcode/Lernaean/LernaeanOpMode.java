@@ -129,7 +129,7 @@ public abstract class LernaeanOpMode extends OpMode {
         color = hardwareMap.colorSensor.get("color");
         left = hardwareMap.opticalDistanceSensor.get("odsL");
         right = hardwareMap.opticalDistanceSensor.get("odsR");
-        shooterPower = .5;
+        shooterPower = .3;
         frontIn();
         backIn();
     }

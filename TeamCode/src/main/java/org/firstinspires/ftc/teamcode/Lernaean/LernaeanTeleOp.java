@@ -89,6 +89,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             telemetry.update();
             flyTicks /= 100;
         } else {
+            flyArray[flyTicks] = flyRPM;
             flyTicks++;
             telemetry.addData("ticks", flyTicks);
         }
