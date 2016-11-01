@@ -29,7 +29,7 @@ public class PIDTest extends LinearOpMode {
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
 
-        version = "1.0";
+        version = "1.1";
 
         telemetry.addData("version: ", version);
         telemetry.addData("init", "init fully finished");
@@ -41,7 +41,7 @@ public class PIDTest extends LinearOpMode {
             telemetry.update();
             while(!gamepad1.a);
             telemetry.addData("runMode", "running");
-            drivetrain.rotateP(.5, 90);
+            drivetrain.rotatePReset(.5, 90);
             idle();
         }
     }

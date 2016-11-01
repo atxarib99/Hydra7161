@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 
+import android.widget.ThemedSpinnerAdapter;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -30,7 +32,7 @@ public class LineDetectionTest extends LinearOpMode {
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
 
-        version = "1.19";
+        version = "1.35";
 
         telemetry.addData("version: ", version);
         telemetry.addData("init", "init fully finished");
@@ -51,10 +53,33 @@ public class LineDetectionTest extends LinearOpMode {
 
         drivetrain.setNullValue();
 
+        telemetry.addData("currentStep", "shooting");
+        telemetry.update();
+
+        manipulator.activateShooter();
+
+        shooter.startShooter(-.4);
+
+        Thread.sleep(500);
+
+        manipulator.runCollector(-1);
+
+        Thread.sleep(3000);
+
+        idle();
+        beaconPushers.backOut(false);
+        idle();
+        beaconPushers.frontOut(false);
+        idle();
+
         telemetry.addData("currentStep", "rotating");
         telemetry.update();
 
-        drivetrain.rotateP(.5, -24);
+        shooter.stopShooter();
+
+        manipulator.runCollector(0);
+
+        drivetrain.rotateP(.5, -34); /// 31 or so if going for first line
 
         drivetrain.stopMotors();
 
@@ -68,15 +93,15 @@ public class LineDetectionTest extends LinearOpMode {
 
         Thread.sleep(1000);
 
-        drivetrain.moveForward(.8, (int) (.77 * 1120)); //4.77
-
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
-        while(!drivetrain.sensor.isLeftLine()) {
-            drivetrain.startMotors(.3, .3);
-            idle();
-        }
+//        while(!drivetrain.sensor.isLeftLine()) {
+//            drivetrain.startMotors(.3, .3);
+//            idle();
+//        }
+
+        drivetrain.moveFowardToLine(.3, .3);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
@@ -84,7 +109,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.update();
 
         while(!drivetrain.sensor.isRightLine()) {
-            drivetrain.startMotors(.4, 0);
+            drivetrain.startMotors(.3, 0);
             idle();
         }
 
@@ -94,7 +119,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.update();
 
         while(!drivetrain.sensor.isLeftLine()) {
-            drivetrain.startMotors(0, -.4);
+            drivetrain.startMotors(0, -.3);
             idle();
         }
 
@@ -104,7 +129,12 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.update();
 
         while(!drivetrain.sensor.isRightLine()) {
-            drivetrain.startMotors(.4, 0);
+            drivetrain.startMotors(.3, 0);
+            idle();
+        }
+
+        while(!drivetrain.sensor.isLeftLine()) {
+            drivetrain.startMotors(.25, .25);
             idle();
         }
 
