@@ -19,12 +19,52 @@ public class Shooter {
         this.opMode = opMode;
         shooterL = this.opMode.hardwareMap.dcMotor.get("sR");
         shooterR = this.opMode.hardwareMap.dcMotor.get("sL");
+        shooterL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        shooterL.setMaxSpeed(750);
+        shooterR.setMaxSpeed(750);
         this.opMode.telemetry.addData(LOG_TAG + "init", "finished drivetrain init");
         this.opMode.telemetry.update();
     }
     public void startShooter(double sp){
         shooterL.setPower(sp);
         shooterR.setPower(-sp);
+    }
+
+    public boolean startShooterRPM(int RPM) {
+        double flyRPM;
+        double oldFly = 0;
+        double calculatedRPM = 0;
+        double pastCalculatedRPM = 0;
+
+        double[] flyArray = new double[100];
+        int flyTicks = 0;
+        while(calculatedRPM < 650 || calculatedRPM > 750) {
+            flyRPM = (((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2) - oldFly) / opMode.getRuntime();
+
+            oldFly = ((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2);
+
+            if(flyTicks > 99) {
+                double sum = 0;
+                for(int i = 0; i < 100; i++) {
+                    sum += flyArray[i];
+                }
+                calculatedRPM = (pastCalculatedRPM * .7) + ((sum / 100) * .3);
+                pastCalculatedRPM = calculatedRPM;
+                flyTicks /= 100;
+            } else {
+                flyArray[flyTicks] = flyRPM;
+                flyTicks++;
+            }
+
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return true;
     }
     public void stopShooter(){
         shooterL.setPower(0);
