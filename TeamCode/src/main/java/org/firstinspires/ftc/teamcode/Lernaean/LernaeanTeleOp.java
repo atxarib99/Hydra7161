@@ -9,6 +9,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
     double flyRPM;
     double oldFly;
     double calculatedRPM = 0;
+    double pastCalculatedRPM = 0;
 
     double[] flyArray = new double[100];
     int flyTicks = 0;
@@ -84,7 +85,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             for(int i = 0; i < 100; i++) {
                 sum += flyArray[i];
             }
-            calculatedRPM = sum / 100;
+            calculatedRPM = (pastCalculatedRPM * .7) + ((sum / 100) * .3);
+            pastCalculatedRPM = calculatedRPM;
             telemetry.addData("Sum", sum);
             telemetry.update();
             flyTicks /= 100;
