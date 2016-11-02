@@ -22,6 +22,7 @@ public class LineDetectionTest extends LinearOpMode {
     Manipulator manipulator;
     Shooter shooter;
     BeaconPushers beaconPushers;
+    double voltage;
 
     String version;
 
@@ -31,6 +32,7 @@ public class LineDetectionTest extends LinearOpMode {
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
 
         version = "1.35";
 
@@ -58,7 +60,7 @@ public class LineDetectionTest extends LinearOpMode {
 
         manipulator.activateShooter();
 
-        shooter.startShooter(-.4);
+        shooter.startShooter(-.3);
 
         Thread.sleep(500);
 
@@ -78,6 +80,20 @@ public class LineDetectionTest extends LinearOpMode {
         shooter.stopShooter();
 
         manipulator.runCollector(0);
+//
+//        drivetrain.moveForward(.5, 2000);
+//
+//        drivetrain.stopMotors();
+//
+//        drivetrain.rotateP(1, -45);
+//
+//        Thread.sleep(250);
+//
+//        drivetrain.rotateP(.5, 0);
+//
+//        Thread.sleep(250);
+//
+//        drivetrain.moveBackward(-.5, -2000);
 
         drivetrain.rotateP(.5, -34); /// 31 or so if going for first line
 

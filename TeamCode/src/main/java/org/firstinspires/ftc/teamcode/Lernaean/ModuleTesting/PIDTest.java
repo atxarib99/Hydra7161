@@ -29,11 +29,13 @@ public class PIDTest extends LinearOpMode {
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
 
-        version = "1.1";
+        version = "1.14";
 
         telemetry.addData("version: ", version);
         telemetry.addData("init", "init fully finished");
         telemetry.update();
+
+        waitForStart();
 
         while(opModeIsActive()) {
             drivetrain.sensor.resetGyro();
