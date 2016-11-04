@@ -55,13 +55,15 @@ public class Drivetrain {
             opMode.telemetry.addData("RightPower", motorR.getPower());
             opMode.telemetry.update();
 
-            if(angle < startAngle - 2) {
-                startMotors((power * .75), power);
-            } else if(angle > startAngle + 2) {
-                startMotors(power, (power * .75));
-            } else {
-                startMotors(power, power);
-            }
+//            if(angle < startAngle - 2) {
+//                startMotors((power * .75), power);
+//            } else if(angle > startAngle + 2) {
+//                startMotors(power, (power * .75));
+//            } else {
+//                startMotors(power, power);
+//            }
+
+            startMotors(power, power);
             opMode.idle();
         }
         stopMotors();
@@ -172,7 +174,7 @@ public class Drivetrain {
         double angleTo = deg;
         double error;
         double inte = 0;
-        double inteNoE;
+        double inteNoE = 0;
         double der;
 
         double currentAngle = sensor.getGyroYaw();
@@ -188,17 +190,14 @@ public class Drivetrain {
 
         while(Math.abs(currentAngle) < Math.abs(angleTo) - 2) {
             currentAngle = sensor.getGyroYaw();
-            opMode.telemetry.addData("Current Angle", currentAngle + "");
-            opMode.telemetry.update();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            opMode.telemetry.update();
-            power = (pow * (error) * .006);                      //update p values
-            inte = ((opMode.getRuntime() * 1000000) * error * .005);         //update inte value
-            inteNoE = ((opMode.getRuntime() * 1000000) * .005);
+            power = (pow * (error) * .005) + .1;                      //update p values
+            inte = ((opMode.getRuntime()) * error * .0015);         //update inte value
+            inteNoE = ((opMode.getRuntime()) * .006);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
-//            power += inte + der;
+            power = power + inteNoE + der;
 
             if(angleTo > 0)
                 power *= -1;
@@ -209,7 +208,6 @@ public class Drivetrain {
             opMode.telemetry.addData("integral", inte);
             opMode.telemetry.addData("integral without error", inteNoE);
             opMode.telemetry.addData("angle", currentAngle);
-
             opMode.telemetry.update();
             previousError = error;
             opMode.idle();
@@ -226,7 +224,7 @@ public class Drivetrain {
         double angleTo = deg;
         double error;
         double inte = 0;
-        double inteNoE;
+        double inteNoE = 0;
         double der;
 
         double currentAngle = sensor.getGyroYaw();
@@ -240,17 +238,14 @@ public class Drivetrain {
 
         while(Math.abs(currentAngle) < Math.abs(angleTo) - 2) {
             currentAngle = sensor.getGyroYaw();
-            opMode.telemetry.addData("Current Angle", currentAngle + "");
-            opMode.telemetry.update();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            opMode.telemetry.update();
-            power = (pow * (error) * .006) + .1;                      //update p values
-            inte = ((opMode.getRuntime() * 1000000) * error * .005);         //update inte value
-            inteNoE = ((opMode.getRuntime() * 1000000) * .005);
+            power = (pow * (error) * .005) + .1;                      //update p values
+            inte = ((opMode.getRuntime()) * error * .0020);         //update inte value
+            inteNoE = ((opMode.getRuntime()) * .007);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
-//            power += inte + der;
+            power = power + inteNoE + der;
 
             if(angleTo > 0)
                 power *= -1;

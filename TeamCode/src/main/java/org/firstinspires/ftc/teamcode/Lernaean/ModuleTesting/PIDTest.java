@@ -29,7 +29,7 @@ public class PIDTest extends LinearOpMode {
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
 
-        version = "1.14";
+        version = "1.21";
 
         telemetry.addData("version: ", version);
         telemetry.addData("init", "init fully finished");

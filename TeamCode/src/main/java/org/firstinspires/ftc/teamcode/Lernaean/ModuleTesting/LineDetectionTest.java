@@ -32,11 +32,12 @@ public class LineDetectionTest extends LinearOpMode {
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 2").getVoltage();
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
 
-        version = "1.35";
+        version = "1.59";
 
         telemetry.addData("version: ", version);
+        telemetry.addData("voltage", voltage);
         telemetry.addData("init", "init fully finished");
         telemetry.update();
 
@@ -49,7 +50,7 @@ public class LineDetectionTest extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.25, (int) (.25 * 1120));
+        drivetrain.moveForward(.25, (int) (.15 * 1120));
 
         drivetrain.stopMotors();
 
@@ -60,9 +61,9 @@ public class LineDetectionTest extends LinearOpMode {
 
         manipulator.activateShooter();
 
-        shooter.startShooter(-.3);
+        shooter.startShooter(-shooter.getNeededPower(voltage));
 
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         manipulator.runCollector(-1);
 
@@ -95,9 +96,14 @@ public class LineDetectionTest extends LinearOpMode {
 //
 //        drivetrain.moveBackward(-.5, -2000);
 
-        drivetrain.rotateP(.5, -34); /// 31 or so if going for first line
+        drivetrain.rotateP(.5, -50); /// 31 or so if going for first line
 
         drivetrain.stopMotors();
+
+        telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        Thread.sleep(1000);
 
         drivetrain.setNullValue();
 
@@ -106,6 +112,16 @@ public class LineDetectionTest extends LinearOpMode {
 
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
+
+        drivetrain.moveForward(.3, 1250);
+
+        drivetrain.stopMotors();
+
+        drivetrain.rotatePReset(.5, 30);
+
+        drivetrain.stopMotors();
+
+        drivetrain.setNullValue();
 
         Thread.sleep(1000);
 
@@ -153,6 +169,7 @@ public class LineDetectionTest extends LinearOpMode {
             drivetrain.startMotors(.25, .25);
             idle();
         }
+
 
         telemetry.addData("currentStep", "finished");
 

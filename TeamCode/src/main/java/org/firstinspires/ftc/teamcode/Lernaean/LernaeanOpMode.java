@@ -122,10 +122,6 @@ public abstract class LernaeanOpMode extends OpMode {
         manipulator = hardwareMap.dcMotor.get("mani");
         shooterR = hardwareMap.dcMotor.get("sR");
         shooterL = hardwareMap.dcMotor.get("sL");
-        shooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterL.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        shooterR.setMaxSpeed(750);
-        shooterL.setMaxSpeed(750);
         back = hardwareMap.servo.get("back");
         front = hardwareMap.servo.get("front");
         activate = hardwareMap.servo.get("active");
