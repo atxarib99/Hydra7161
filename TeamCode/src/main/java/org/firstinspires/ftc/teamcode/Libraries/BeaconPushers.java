@@ -36,7 +36,7 @@ public class BeaconPushers {
         opMode.telemetry.addData("color val", color.red());
         opMode.telemetry.update();
         Thread.sleep(2000);
-        return color.red() > 250;
+        return color.red() > 350;
     }
 
     public int getColorVal() {

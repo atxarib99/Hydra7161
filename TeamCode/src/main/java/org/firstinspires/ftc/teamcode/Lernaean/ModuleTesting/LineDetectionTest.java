@@ -18,13 +18,13 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 @Autonomous(name = "LineDetectionTest", group = "LinearOpMode")
 public class LineDetectionTest extends LinearOpMode {
 
-    Drivetrain drivetrain;
-    Manipulator manipulator;
-    Shooter shooter;
-    BeaconPushers beaconPushers;
-    double voltage;
+    private Drivetrain drivetrain;
+    private Manipulator manipulator;
+    private Shooter shooter;
+    private BeaconPushers beaconPushers;
+    private double voltage;
 
-    String version;
+    private String version;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,7 +34,7 @@ public class LineDetectionTest extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
 
-        version = "1.59";
+        version = "1.90";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -96,14 +96,14 @@ public class LineDetectionTest extends LinearOpMode {
 //
 //        drivetrain.moveBackward(-.5, -2000);
 
-        drivetrain.rotateP(.5, -50); /// 31 or so if going for first line
+        drivetrain.rotateP(.75, -42); /// 31 or so if going for first line
 
         drivetrain.stopMotors();
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        Thread.sleep(1000);
+        Thread.sleep(500);
 
         drivetrain.setNullValue();
 
@@ -113,63 +113,59 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.moveForward(.3, 1250);
+        drivetrain.moveForward(.25, 3800);
 
         drivetrain.stopMotors();
 
-        drivetrain.rotatePReset(.5, 30);
+        telemetry.addData("currentStep", "turning back");
+        telemetry.update();
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        Thread.sleep(500);
+
+        drivetrain.rotatePZero(.5);
 
         drivetrain.stopMotors();
+
+        telemetry.addData("currentStep", "movingForward");
+        telemetry.update();
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
 
         drivetrain.setNullValue();
 
-        Thread.sleep(1000);
+        Thread.sleep(500);
+
+        drivetrain.moveForward(.5, 500);
 
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
+
+        Thread.sleep(500);
 
 //        while(!drivetrain.sensor.isLeftLine()) {
 //            drivetrain.startMotors(.3, .3);
 //            idle();
 //        }
 
-        drivetrain.moveFowardToLine(.3, .3);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(.4, .2);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
-        telemetry.addData("currentStep", "finding the otherline");
-        telemetry.update();
+        Thread.sleep(250);
 
-        while(!drivetrain.sensor.isRightLine()) {
-            drivetrain.startMotors(.3, 0);
-            idle();
-        }
+        drivetrain.moveFowardToLine(-.2, -.2); //move back to be aligned with white line
 
         drivetrain.stopMotors();
 
-        telemetry.addData("currentStep", "finding the firstline again");
-        telemetry.update();
+        Thread.sleep(250);
 
-        while(!drivetrain.sensor.isLeftLine()) {
-            drivetrain.startMotors(0, -.3);
-            idle();
+        while((drivetrain.sensor.rightODS() < 2.75)) {
+            drivetrain.startMotors(.25, 0);
         }
-
-        drivetrain.stopMotors();
-
-        telemetry.addData("currentStep", "finding the otherline");
-        telemetry.update();
-
-        while(!drivetrain.sensor.isRightLine()) {
-            drivetrain.startMotors(.3, 0);
-            idle();
-        }
-
-        while(!drivetrain.sensor.isLeftLine()) {
-            drivetrain.startMotors(.25, .25);
-            idle();
-        }
-
 
         telemetry.addData("currentStep", "finished");
 
@@ -178,5 +174,15 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.update();
 
         drivetrain.stopMotors();
+
+        telemetry.addData("color", beaconPushers.getColorVal());
+        telemetry.update();
+
+        if (beaconPushers.isBackRed()){
+            beaconPushers.backPush();
+        }
+        else {
+            beaconPushers.frontPush();
+        }
     }
 }

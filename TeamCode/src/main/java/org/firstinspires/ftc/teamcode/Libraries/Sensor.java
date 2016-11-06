@@ -77,4 +77,5 @@ public class Sensor {
     public void updateValues() {
         angles = gyro.getAngularOrientation();
     }
+
 }
