@@ -27,10 +27,10 @@ public abstract class LernaeanOpMode extends OpMode {
     OpticalDistanceSensor left;
     OpticalDistanceSensor right;
 
-    private final double BACK_OUT = 1;
-    private final double BACK_IN = 0;
-    private final double FRONT_OUT = 1;
-    private final double FRONT_IN = 0;
+    private final double BACK_OUT = 0;
+    private final double BACK_IN = 1;
+    private final double FRONT_OUT = 0;
+    private final double FRONT_IN = 1;
     private boolean reversed;
 
     public double shooterPower;
@@ -136,8 +136,8 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void startMotors(double ri, double le) {
         if(reversed) {
-            motorL.setPower(le);
-            motorR.setPower(-ri);
+            motorL.setPower(ri);
+            motorR.setPower(-le);
         } else {
             motorL.setPower(-le);
             motorR.setPower(ri);

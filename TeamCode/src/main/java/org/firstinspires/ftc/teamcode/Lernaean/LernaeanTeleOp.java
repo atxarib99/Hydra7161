@@ -6,16 +6,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class LernaeanTeleOp extends LernaeanOpMode {
     boolean isbackOut = false;
     boolean isfrontOut = false;
-    double flyRPM;
-    double oldFly;
-    double calculatedRPM = 0;
-    double pastCalculatedRPM = 0;
+    //double flyRPM;
+    //double oldFly;
+    //double calculatedRPM = 0;
+    //double pastCalculatedRPM = 0;
 
-    double[] flyArray = new double[100];
-    int flyTicks = 0;
+    //double[] flyArray = new double[100];
+    //int flyTicks = 0;
 
     @Override
-    public void loop(){
+    public void loop()
+    {
 
         if(gamepad2.right_bumper) {
             startShooter();
@@ -45,16 +46,20 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         if(gamepad2.a){
             if (!isbackOut) {
                 backOut();
+                isbackOut = true;
             } else {
                 backIn();
+                isbackOut = false;
             }
         }
 
         if(gamepad2.x){
             if(!isfrontOut){
                 frontOut();
+                isfrontOut = true;
             } else {
                 frontIn();
+                isfrontOut = false;
             }
         }
 
@@ -75,35 +80,35 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             while(gamepad1.a);
             reverse();
         }
-
-        flyRPM = (((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2) - oldFly) / getRuntime();
-
-        oldFly = ((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2);
-
-        if(flyTicks > 99) {
-            double sum = 0;
-            for(int i = 0; i < 100; i++) {
-                sum += flyArray[i];
-            }
-            calculatedRPM = (pastCalculatedRPM * .7) + ((sum / 100) * .3);
-            pastCalculatedRPM = calculatedRPM;
-            telemetry.addData("Sum", sum);
-            telemetry.update();
-            flyTicks /= 100;
-        } else {
-            flyArray[flyTicks] = flyRPM;
-            flyTicks++;
-            telemetry.addData("ticks", flyTicks);
-        }
-
-        try {
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        resetStartTime();
-        telemetry.addData("encoderVals", "Right: " + shooterR.getCurrentPosition() + "Left: " + shooterL.getCurrentPosition());
-        telemetry.addData("RPM", calculatedRPM);
-        telemetry.update();
+//
+//        flyRPM = (((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2) - oldFly) / getRuntime();
+//
+//        oldFly = ((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2);
+//
+//        if(flyTicks > 99) {
+//            double sum = 0;
+//            for(int i = 0; i < 100; i++) {
+//                sum += flyArray[i];
+//            }
+//            calculatedRPM = (pastCalculatedRPM * .7) + ((sum / 100) * .3);
+//            pastCalculatedRPM = calculatedRPM;
+//            telemetry.addData("Sum", sum);
+//            telemetry.update();
+//            flyTicks /= 100;
+//        } else {
+//            flyArray[flyTicks] = flyRPM;
+//            flyTicks++;
+//            telemetry.addData("ticks", flyTicks);
+//        }
+//
+//        try {
+//            Thread.sleep(10);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        resetStartTime();
+//        telemetry.addData("encoderVals", "Right: " + shooterR.getCurrentPosition() + "Left: " + shooterL.getCurrentPosition());
+//        telemetry.addData("RPM", calculatedRPM);
+//        telemetry.update();
     }
 }
