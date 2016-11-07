@@ -34,7 +34,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
 
-        version = "1.00";
+        version = "1.03";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -96,7 +96,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
 //
 //        drivetrain.moveBackward(-.5, -2000);
 
-        drivetrain.rotateP(.75, 138); /// 31 or so if going for first line
+        drivetrain.rotateP(.25, -138); /// 31 or so if going for first line
 
         drivetrain.stopMotors();
 
@@ -113,7 +113,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.moveForward(-.25, 3800);
+        drivetrain.moveBackward(-.5, 3800);
 
         drivetrain.stopMotors();
 
@@ -151,13 +151,13 @@ public class LineDetectionTestBlue extends LinearOpMode {
 //            idle();
 //        }
 
-        drivetrain.moveFowardToLine(-.3, -.2);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(-.22, -.2);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(.25, .2); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(.2, .2); //move back to be aligned with white line
 
         drivetrain.stopMotors();
 

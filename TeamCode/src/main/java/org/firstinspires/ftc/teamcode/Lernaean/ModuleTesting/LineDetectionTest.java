@@ -151,7 +151,7 @@ public class LineDetectionTest extends LinearOpMode {
 //            idle();
 //        }
 
-        drivetrain.moveFowardToLine(.4, .2);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(.22, .2);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
@@ -164,7 +164,7 @@ public class LineDetectionTest extends LinearOpMode {
         Thread.sleep(250);
 
         while((drivetrain.sensor.rightODS() < 2.75)) {
-            drivetrain.startMotors(.25, 0);
+            drivetrain.startMotors(.22, 0);
         }
 
         telemetry.addData("currentStep", "finished");

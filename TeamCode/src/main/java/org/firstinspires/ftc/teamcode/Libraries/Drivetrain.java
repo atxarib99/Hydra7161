@@ -80,7 +80,7 @@ public class Drivetrain {
     }
 
     public int getEncoderAvg() {
-        return  ((Math.abs(motorR.getCurrentPosition())) + Math.abs(motorL.getCurrentPosition())) / 2;
+        return ((Math.abs(motorR.getCurrentPosition())) + Math.abs(motorL.getCurrentPosition())) / 2;
     }
 
     public void moveForward(double pow, int encoderVal) throws InterruptedException {
@@ -93,6 +93,18 @@ public class Drivetrain {
         double power;
         setNullValue();
 
+        motorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
+        motorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
+
+        motorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
+        motorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
+
+        nullValue = 0;
+
         int currentEncoder = getEncoderAvg() - nullValue;
         while(encoderVal > currentEncoder) {
             opMode.telemetry.update();
@@ -102,13 +114,20 @@ public class Drivetrain {
 
             error = (double) (encoderVal - currentEncoder) / encoderVal;
 
-            power = (pow * error) + .2;
+            power = pow;
+
+            if(pow < 0)
+                power = (pow * error) - .2;
+
+            if(pow > 0)
+                power = (pow * error) + .2;
 
             Range.clip(power, -1, 1);
 
             opMode.telemetry.addData("Power", power);
             opMode.telemetry.addData("LeftPower", motorL.getPower());
             opMode.telemetry.addData("RightPower", motorR.getPower());
+            opMode.telemetry.addData("error", error);
             opMode.telemetry.update();
 
             if(angle < startAngle - 2) {
@@ -144,7 +163,7 @@ public class Drivetrain {
 
             error = (double) (encoderVal - currentEncoder) / encoderVal;
 
-            power = (pow * error) + .25;
+            power = (pow * error) - .25;
 
             Range.clip(power, -1, 1);
 
