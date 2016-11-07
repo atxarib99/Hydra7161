@@ -34,7 +34,7 @@ public class LineDetectionTest extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
 
-        version = "1.90";
+        version = "1.94";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -96,7 +96,7 @@ public class LineDetectionTest extends LinearOpMode {
 //
 //        drivetrain.moveBackward(-.5, -2000);
 
-        drivetrain.rotateP(.75, -42); /// 31 or so if going for first line
+        drivetrain.rotateP(.85, -42); /// 31 or so if going for first line
 
         drivetrain.stopMotors();
 
@@ -113,7 +113,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.moveForward(.25, 3800);
+        drivetrain.moveForward(.45, 3800);
 
         drivetrain.stopMotors();
 
@@ -125,7 +125,7 @@ public class LineDetectionTest extends LinearOpMode {
 
         Thread.sleep(500);
 
-        drivetrain.rotatePZero(.5);
+        drivetrain.rotatePZero(.65);
 
         drivetrain.stopMotors();
 

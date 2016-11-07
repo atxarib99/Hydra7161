@@ -93,18 +93,6 @@ public class Drivetrain {
         double power;
         setNullValue();
 
-        motorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-
-        motorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-
-        nullValue = 0;
-
         int currentEncoder = getEncoderAvg() - nullValue;
         while(encoderVal > currentEncoder) {
             opMode.telemetry.update();
@@ -114,13 +102,7 @@ public class Drivetrain {
 
             error = (double) (encoderVal - currentEncoder) / encoderVal;
 
-            power = pow;
-
-            if(pow < 0)
-                power = (pow * error) - .2;
-
-            if(pow > 0)
-                power = (pow * error) + .2;
+            power = (pow * error) + .2;
 
             Range.clip(power, -1, 1);
 
@@ -153,6 +135,18 @@ public class Drivetrain {
         double error;
         double power;
         setNullValue();
+
+        motorL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
+        motorR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        opMode.idle();
+
+        motorL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
+        motorR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        opMode.idle();
+
+        nullValue = 0;
 
         int currentEncoder = getEncoderAvg() - nullValue;
         while(encoderVal < currentEncoder) {
@@ -264,7 +258,7 @@ public class Drivetrain {
             opMode.telemetry.addData("error", error);
             power = (pow * (error) * .008) + .1;                      //update p values
             inte = ((opMode.getRuntime()) * error * .0020);         //update inte value
-            inteNoE = ((opMode.getRuntime()) * .025);
+            inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
             power = power + inteNoE + der;
