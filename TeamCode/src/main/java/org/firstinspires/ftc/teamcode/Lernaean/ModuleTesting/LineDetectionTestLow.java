@@ -47,7 +47,7 @@ public class LineDetectionTestLow extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.25, (int) (.25 * 1120));
+//        drivetrain.moveForward(.25, (int) (.25 * 1120));
 
         drivetrain.stopMotors();
 
@@ -102,7 +102,7 @@ public class LineDetectionTestLow extends LinearOpMode {
         telemetry.addData("currentStep", "moving forward");
         telemetry.update();
 
-        drivetrain.moveForward(.5, (int) (1.5 * 1120));
+//        drivetrain.moveForward(.5, (int) (1.5 * 1120));
 
         drivetrain.setNullValue();
 
