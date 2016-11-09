@@ -26,7 +26,7 @@ public class LerneaenRedBeaconAuto extends LinearOpMode {
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
 
-        drivetrain.moveForward(-.5, (int) (.477 * 1120));
+//        drivetrain.moveForward(-.5, (int) (.477 * 1120));
 
         drivetrain.setNullValue();
 
@@ -34,7 +34,7 @@ public class LerneaenRedBeaconAuto extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(-.8, (int) (4.77 * 1120)); //4.77
+//        drivetrain.moveForward(-.8, (int) (4.77 * 1120)); //4.77
 
         while(!drivetrain.sensor.isLeftLine())
             drivetrain.startMotors(-.4, -.4);
@@ -56,7 +56,7 @@ public class LerneaenRedBeaconAuto extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(-.8, (int) (3.1 * 1120));
+//        drivetrain.moveForward(-.8, (int) (3.1 * 1120));
 
         drivetrain.stopMotors();
 
