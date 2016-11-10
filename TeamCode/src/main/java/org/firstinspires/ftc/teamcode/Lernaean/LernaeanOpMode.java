@@ -178,7 +178,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void reverseMani() {
-        manipulator.setPower(-1);
+        manipulator.setPower(-.5);
     }
 
     public void startShooter() {
