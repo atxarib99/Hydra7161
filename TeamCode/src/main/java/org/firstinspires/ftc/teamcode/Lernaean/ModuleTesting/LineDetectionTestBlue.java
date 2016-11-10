@@ -34,7 +34,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
 
-        version = "1.03";
+        version = "1.05";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -81,108 +81,124 @@ public class LineDetectionTestBlue extends LinearOpMode {
         shooter.stopShooter();
 
         manipulator.runCollector(0);
-////
-////        drivetrain.moveForward(.5, 2000);
-////
-////        drivetrain.stopMotors();
-////
-////        drivetrain.rotateP(1, -45);
-////
-////        Thread.sleep(250);
-////
-////        drivetrain.rotateP(.5, 0);
-////
-////        Thread.sleep(250);
-////
-////        drivetrain.moveBackward(-.5, -2000);
 //
-//        drivetrain.rotateP(.25, -138); /// 31 or so if going for first line
+//        drivetrain.moveForward(.5, 2000);
 //
 //        drivetrain.stopMotors();
 //
-//        telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
-//        telemetry.update();
-//
-//        Thread.sleep(500);
-//
-//        drivetrain.setNullValue();
-//
-//        telemetry.addData("currentStep", "movingForward");
-//        telemetry.update();
-//
-//        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-//        telemetry.update();
-//
-//        drivetrain.moveBackward(-.5, 3800);
-//
-//        drivetrain.stopMotors();
-//
-//        telemetry.addData("currentStep", "turning back");
-//        telemetry.update();
-//
-//        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-//        telemetry.update();
-//
-//        Thread.sleep(500);
-//
-//        drivetrain.rotatePZero(-.5);
-//
-//        drivetrain.stopMotors();
-//
-//        telemetry.addData("currentStep", "movingForward");
-//        telemetry.update();
-//
-//        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-//        telemetry.update();
-//
-//        drivetrain.setNullValue();
-//
-//        Thread.sleep(500);
-//
-//        drivetrain.moveForward(-.5, 500, 1000);
-//
-//        telemetry.addData("currentStep", "finding the whiteline");
-//        telemetry.update();
-//
-//        Thread.sleep(500);
-//
-////        while(!drivetrain.sensor.isLeftLine()) {
-////            drivetrain.startMotors(.3, .3);
-////            idle();
-////        }
-//
-//        drivetrain.moveFowardToLine(-.22, -.2);  //This one corrects for drift but we are accurate with it
-//
-//        drivetrain.stopMotors();
+//        drivetrain.rotateP(1, -45);
 //
 //        Thread.sleep(250);
 //
-//        drivetrain.moveFowardToLine(.2, .2); //move back to be aligned with white line
-//
-//        drivetrain.stopMotors();
+//        drivetrain.rotateP(.5, 0);
 //
 //        Thread.sleep(250);
 //
-//        while((drivetrain.sensor.rightODS() < 2.75)) {
-//            drivetrain.startMotors(-.22, 0);
+//        drivetrain.moveBackward(-.5, -2000);
+
+        drivetrain.rotatePB(.25, -138); /// 31 or so if going for first line
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        Thread.sleep(500);
+
+        drivetrain.setNullValue();
+
+        telemetry.addData("currentStep", "movingForward");
+        telemetry.update();
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        Thread.sleep(5000);
+
+        drivetrain.moveBackward(-.5, 3800);
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("currentStep", "turning back");
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        Thread.sleep(100);
+
+        drivetrain.rotatePZeroRevB(.5);
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("currentStep", "movingForward");
+        telemetry.update();
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        drivetrain.setNullValue();
+
+        Thread.sleep(500);
+
+        drivetrain.moveForward(-.5, 500, 1000);
+
+        telemetry.addData("currentStep", "finding the whiteline");
+        telemetry.update();
+
+        Thread.sleep(500);
+
+//        while(!drivetrain.sensor.isLeftLine()) {
+//            drivetrain.startMotors(.3, .3);
+//            idle();
 //        }
-//
-//        telemetry.addData("currentStep", "finished");
-//
-//        telemetry.addData("rightODS", drivetrain.sensor.rightODS());
-//        telemetry.addData("leftOdS", drivetrain.sensor.leftODS());
-//        telemetry.update();
-//
-//        drivetrain.stopMotors();
-//
-//        telemetry.addData("color", beaconPushers.getColorVal());
-//        telemetry.update();
-//
-//        if (beaconPushers.isBackRed()){
-//            beaconPushers.frontPush();
-//        }
-//        else {
-//            beaconPushers.backPush();
-//        }
+
+        drivetrain.moveFowardToLine(.2, .2);
+
+        if (beaconPushers.isBackRed()){
+            beaconPushers.backPush();
+        }
+        else {
+            beaconPushers.frontPush();
+        }
+
+        drivetrain.rotatePZeroB(.5);
+
+        drivetrain.setNullValue();
+
+        drivetrain.moveForward(-.5, 100, 500);
+
+        drivetrain.moveFowardToLine(-.2, -.24);  //This one corrects for drift but we are accurate with it
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(250);
+
+        drivetrain.moveFowardToLine(.2, .2); //move back to be aligned with white line
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(250);
+
+        while((drivetrain.sensor.rightODS() < 2.75)) {
+            drivetrain.startMotors(-.25, 0);
+        }
+
+        telemetry.addData("currentStep", "finished");
+
+        telemetry.addData("rightODS", drivetrain.sensor.rightODS());
+        telemetry.addData("leftOdS", drivetrain.sensor.leftODS());
+        telemetry.update();
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("color", beaconPushers.getColorVal());
+        telemetry.update();
+
+        if (beaconPushers.isBackRed()){
+            beaconPushers.frontPush();
+        }
+        else {
+            beaconPushers.backPush();
+        }
     }
 }

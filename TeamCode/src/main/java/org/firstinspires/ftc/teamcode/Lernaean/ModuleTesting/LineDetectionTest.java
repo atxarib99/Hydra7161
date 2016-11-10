@@ -34,7 +34,7 @@ public class LineDetectionTest extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
 
-        version = "1.96";
+        version = "1.105";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -112,7 +112,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.moveForward(.25, 3750, 5000);
+        drivetrain.moveForward(.25, 3700, 5000);
 
         drivetrain.stopMotors();
 
@@ -120,7 +120,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        Thread.sleep(500);
+        Thread.sleep(100);
 
         drivetrain.rotatePZero(.5);
 
@@ -150,7 +150,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
-        Thread.sleep(2000);
+        Thread.sleep(100);
 
 //        while(!drivetrain.sensor.isLeftLine()) {
 //            drivetrain.startMotors(.3, .3);
@@ -167,17 +167,19 @@ public class LineDetectionTest extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        drivetrain.moveFowardToLine(.27, .2);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveForward(.25, 100, 500);
+
+        drivetrain.moveFowardToLine(.22, .2);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
-        Thread.sleep(250);
+        Thread.sleep(100);
 
         drivetrain.moveFowardToLine(-.2, -.2); //move back to be aligned with white line
 
         drivetrain.stopMotors();
 
-        Thread.sleep(250);
+        Thread.sleep(100);
 
         drivetrain.rotatePZero(.5);
 
