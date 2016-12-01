@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Libraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.I2cAddr;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -66,13 +67,13 @@ public class BeaconPushers {
 
     public void backPush() throws InterruptedException {
         backOut(true);
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         backOut(false);
     }
 
     public void frontPush() throws InterruptedException {
         frontOut(true);
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         frontOut(false);
     }
 

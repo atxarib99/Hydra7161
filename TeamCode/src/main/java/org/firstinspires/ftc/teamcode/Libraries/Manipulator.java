@@ -28,4 +28,11 @@ public class Manipulator {
     public void activateShooter() {
         activate.setPosition(0);
     }
+
+    public void activateShooter(boolean active) {
+        if(active)
+            activate.setPosition(.25);
+        else
+            activate.setPosition(0);
+    }
 }

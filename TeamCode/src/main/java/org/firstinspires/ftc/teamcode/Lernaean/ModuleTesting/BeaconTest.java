@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "BeaconTest", group = "LinearOpMode")
+@Autonomous(name = "BeaconTest", group = "Testing")
 public class BeaconTest extends LinearOpMode {
 
     Drivetrain drivetrain;

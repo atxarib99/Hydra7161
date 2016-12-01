@@ -14,8 +14,10 @@ import org.firstinspires.ftc.robotcore.external.Func;
  * Created by Arib on 9/11/2016.
  */
 public abstract class LernaeanOpMode extends OpMode {
-    DcMotor motorL;
-    DcMotor motorR;
+    DcMotor motorBL;
+    DcMotor motorBR;
+    DcMotor motorFL;
+    DcMotor motorFR;
     DcMotor manipulator;
     DcMotor shooterR;
     DcMotor shooterL;
@@ -35,90 +37,15 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public double shooterPower;
 
-    Runnable startMotorsR = new Runnable() {
-        @Override
-        public void run() {
-            if(reversed) {
-                motorL.setPower(gamepad1.left_stick_y);
-                motorR.setPower(-gamepad1.right_stick_y);
-            } else {
-                motorL.setPower(-gamepad1.left_stick_y);
-                motorR.setPower(gamepad1.right_stick_y);
-            }
-        }
-    };
-
-    Runnable stopMotorR = new Runnable() {
-        @Override
-        public void run() {
-            motorL.setPower(0);
-            motorR.setPower(0);
-        }
-    };
-
-    Runnable startManiR = new Runnable() {
-        @Override
-        public void run() {
-            manipulator.setPower(1);
-        }
-    };
-
-    Runnable stopManiR = new Runnable() {
-        @Override
-        public void run() {
-            manipulator.setPower(0);
-        }
-    };
-
-    Runnable reverseManiR = new Runnable() {
-        @Override
-        public void run() {
-            manipulator.setPower(-1);
-        }
-    };
-
-    Runnable frontOutR = new Runnable() {
-        @Override
-        public void run() {
-            frontOut();
-        }
-    };
-
-    Runnable frontInR = new Runnable() {
-        @Override
-        public void run() {
-            frontIn();
-        }
-    };
-
-    Runnable backOutR = new Runnable() {
-        @Override
-        public void run() {
-            backOut();
-        }
-    };
-
-    Runnable backInR = new Runnable() {
-        @Override
-        public void run() {
-            backIn();
-        }
-    };
-
-
-    Thread driveThread = new Thread(stopMotorR);
-    Thread maniThread = new Thread(stopManiR);
-    Thread beaconThread;
-    Thread sensorThread;
-    Thread rpmStabilization;
-
     @Override
     public void init() {
         shooterPower = 1;
         reversed = false;
         composeTelemetry();
-        motorL = hardwareMap.dcMotor.get("L");
-        motorR = hardwareMap.dcMotor.get("R");
+        motorBL = hardwareMap.dcMotor.get("BL");
+        motorBR = hardwareMap.dcMotor.get("BR");
+        motorFR = hardwareMap.dcMotor.get("FR");
+        motorFL = hardwareMap.dcMotor.get("FL");
         manipulator = hardwareMap.dcMotor.get("mani");
         shooterR = hardwareMap.dcMotor.get("sR");
         shooterL = hardwareMap.dcMotor.get("sL");
@@ -136,17 +63,23 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void startMotors(double ri, double le) {
         if(reversed) {
-            motorL.setPower(ri);
-            motorR.setPower(-le);
+            motorBL.setPower(le*.75);
+            motorFL.setPower(le*.75);
+            motorBR.setPower(-ri*.75);
+            motorFR.setPower(-ri*.75);
         } else {
-            motorL.setPower(-le);
-            motorR.setPower(ri);
+            motorBL.setPower(-ri*.75);
+            motorFL.setPower(-ri*.75);
+            motorBR.setPower(le*.75);
+            motorFR.setPower(le*.75);
         }
     }
 
     public void stopMotors() {
-        motorL.setPower(0);
-        motorR.setPower(0);
+        motorBL.setPower(0);
+        motorBR.setPower(0);
+        motorFL.setPower(0);
+        motorFR.setPower(0);
     }
 
     public void frontOut() {
@@ -198,9 +131,9 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void activateShooter(boolean active) {
         if(active)
-            activate.setPosition(.45);
-        else
             activate.setPosition(1);
+        else
+            activate.setPosition(0);
     }
 
     public double getRightODS() {
@@ -220,7 +153,8 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public int getEncoderAvg() {
-        return (Math.abs(motorR.getCurrentPosition()) + Math.abs(motorL.getCurrentPosition())) / 2;
+        return (Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorBL.getCurrentPosition()) +
+                Math.abs(motorFR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition())) / 4;
     }
 
     public int getRed() {
@@ -236,41 +170,37 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void composeTelemetry() {
-
-        telemetry.addLine()
-                .addData("rightODS", new Func<String>() {
-                    @Override public String value() {
-                        return "Right: Raw: " + getRawRightODS() + " Normal: " + getRightODS() + "";
-                    }
-                });
-
-        telemetry.addLine()
-                .addData("leftODS", new Func<String>() {
-                    @Override public String value() {
-                        return "Left: Raw: " + getRawLeftODS() + " Normal: " + getLeftODS() + "";
-                    }
-                });
-
-        telemetry.addLine()
-                .addData("encoder", new Func<String>() {
-                    @Override public String value() {
-                        return getEncoderAvg() + "";
-                    }
-                });
-        telemetry.addLine()
-                .addData("Color", new Func<String>() {
-                    @Override public String value() {
-                        return "Red: " + getRed() + " Blue: " + getBlue();
-                    }
-                });
         telemetry.addLine()
                 .addData("ShooterPower", new Func<String>() {
                     @Override public String value() {
                         return "ShooterPower: " + getShooterPower();
                     }
                 });
-
-
+        telemetry.addLine()
+                .addData("BL", new Func<String>() {
+                    @Override public String value() {
+                        return "BL: " + motorBL.getCurrentPosition();
+                    }
+                });
+        telemetry.addLine()
+                .addData("BR", new Func<String>() {
+                    @Override public String value() {
+                        return "BR: " + motorBR.getCurrentPosition();
+                    }
+                });
+        telemetry.addLine()
+                .addData("FL", new Func<String>() {
+                    @Override public String value() {
+                        return "FL: " + motorFL.getCurrentPosition();
+                    }
+                });
+        telemetry.addLine()
+                .addData("FR", new Func<String>() {
+                    @Override public String value() {
+                        return "FR: " + motorFR.getCurrentPosition();
+                    }
+                });
+//hacked
     }
 
 

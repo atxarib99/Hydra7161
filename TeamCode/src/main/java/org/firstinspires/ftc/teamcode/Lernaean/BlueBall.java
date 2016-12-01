@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
  * Created by Arib on 9/21/2016.
  */
 @Autonomous(name="BlueBall", group="Linear Opmode")
+@Disabled
 public class BlueBall extends LernaeanAutoMode {
 
     @Override

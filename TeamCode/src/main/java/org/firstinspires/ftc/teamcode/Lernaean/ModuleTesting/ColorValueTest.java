@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/31/2016.
  */
-@Autonomous(name = "colortest", group = "LinearOpMode")
+@Autonomous(name = "colortest", group = "Testing")
 public class ColorValueTest extends LinearOpMode {
 
     Drivetrain drivetrain;

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 import android.widget.ThemedSpinnerAdapter;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
  * Created by Arib on 10/20/2016.
  */
 @Autonomous(name = "LineDetectionTestLow", group = "LinearOpMode")
+@Disabled
 public class LineDetectionTestLow extends LinearOpMode {
 
     Drivetrain drivetrain;

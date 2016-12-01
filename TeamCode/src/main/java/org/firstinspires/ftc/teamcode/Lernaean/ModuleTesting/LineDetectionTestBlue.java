@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "LineDetectionTestBlue", group = "LinearOpMode")
+@Autonomous(name = "Blue Autonomous", group = "LinearOpMode")
 public class LineDetectionTestBlue extends LinearOpMode {
 
     private Drivetrain drivetrain;
@@ -32,14 +32,16 @@ public class LineDetectionTestBlue extends LinearOpMode {
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
-        version = "1.05";
+        version = "1.31";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
         telemetry.addData("init", "init fully finished");
         telemetry.update();
+
+        drivetrain.resetEncoders();
 
         waitForStart();
 
@@ -50,37 +52,13 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.25, (int) (.15 * 1120), 1000);
+        drivetrain.moveBackward(-.25, (int) (.15 * 1120), 5000);
 
         drivetrain.stopMotors();
 
         drivetrain.setNullValue();
 
-        telemetry.addData("currentStep", "shooting");
-        telemetry.update();
 
-        manipulator.activateShooter();
-
-        shooter.startShooter(-shooter.getNeededPower(voltage));
-
-        Thread.sleep(1000);
-
-        manipulator.runCollector(-1);
-
-        Thread.sleep(3000);
-
-        idle();
-        beaconPushers.backOut(false);
-        idle();
-        beaconPushers.frontOut(false);
-        idle();
-
-        telemetry.addData("currentStep", "rotating");
-        telemetry.update();
-
-        shooter.stopShooter();
-
-        manipulator.runCollector(0);
 //
 //        drivetrain.moveForward(.5, 2000);
 //
@@ -96,14 +74,16 @@ public class LineDetectionTestBlue extends LinearOpMode {
 //
 //        drivetrain.moveBackward(-.5, -2000);
 
-        drivetrain.rotatePB(.25, -138); /// 31 or so if going for first line
+        Thread.sleep(100);
+
+        drivetrain.rotatePB(.75, 39);
 
         drivetrain.stopMotors();
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        Thread.sleep(500);
+        Thread.sleep(250);
 
         drivetrain.setNullValue();
 
@@ -113,9 +93,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        Thread.sleep(5000);
-
-        drivetrain.moveBackward(-.5, 3800);
+        drivetrain.moveBackward(-.35, 4700, 5000);
 
         drivetrain.stopMotors();
 
@@ -126,62 +104,67 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(100);
 
-        drivetrain.rotatePZeroRevB(.5);
+        drivetrain.rotatePZeroRevB(.45);
 
         drivetrain.stopMotors();
 
-        telemetry.addData("currentStep", "movingForward");
-        telemetry.update();
+        Thread.sleep(100);
+
+        drivetrain.stopMotors();
 
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
         drivetrain.setNullValue();
 
-        Thread.sleep(500);
-
-        drivetrain.moveForward(-.5, 500, 1000);
+//        drivetrain.moveForward(-.5, 500, 1000);
 
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
-
-        Thread.sleep(500);
 
 //        while(!drivetrain.sensor.isLeftLine()) {
 //            drivetrain.startMotors(.3, .3);
 //            idle();
 //        }
 
-        drivetrain.moveFowardToLine(.2, .2);
+        drivetrain.moveFowardToLine(.2, .2, 3000);
 
-        if (beaconPushers.isBackRed()){
+        drivetrain.stopMotors();
+
+        Thread.sleep(100);
+
+        drivetrain.moveFowardToLine(-.15, -.15, 3000);
+
+        drivetrain.stopMotors();
+
+        if (!beaconPushers.isBackRed()){
             beaconPushers.backPush();
         }
         else {
             beaconPushers.frontPush();
         }
 
-        drivetrain.rotatePZeroB(.5);
-
         drivetrain.setNullValue();
 
         drivetrain.moveForward(-.5, 100, 500);
 
-        drivetrain.moveFowardToLine(-.2, -.24);  //This one corrects for drift but we are accurate with it
+        Thread.sleep(100);
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(.2, .2); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(-.2, -.21);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        while((drivetrain.sensor.rightODS() < 2.75)) {
-            drivetrain.startMotors(-.25, 0);
-        }
+        drivetrain.moveFowardToLine(.15, .15, 4000); //move back to be aligned with white line
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(250);
 
         telemetry.addData("currentStep", "finished");
 
@@ -200,5 +183,37 @@ public class LineDetectionTestBlue extends LinearOpMode {
         else {
             beaconPushers.backPush();
         }
+
+        drivetrain.rotatePB(1, 35);
+
+        drivetrain.setNullValue();
+
+        drivetrain.moveForward(.5, 1000, 3000);
+
+        telemetry.addData("currentStep", "shooting");
+        telemetry.update();
+
+        manipulator.activateShooter();
+
+        shooter.startShooter(-shooter.getNeededPower(voltage));
+
+        Thread.sleep(1000);
+
+        manipulator.runCollector(-.5);
+
+        Thread.sleep(3000);
+
+        idle();
+        beaconPushers.backOut(false);
+        idle();
+        beaconPushers.frontOut(false);
+        idle();
+
+        telemetry.addData("currentStep", "rotating");
+        telemetry.update();
+
+        shooter.stopShooter();
+
+        manipulator.runCollector(0);
     }
 }

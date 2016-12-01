@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/28/2016.
  */
-@Autonomous(name = "PIDTest", group = "LinearOpMode")
+@Autonomous(name = "PIDTest", group = "Testing")
 public class PIDTest extends LinearOpMode {
 
     Drivetrain drivetrain;

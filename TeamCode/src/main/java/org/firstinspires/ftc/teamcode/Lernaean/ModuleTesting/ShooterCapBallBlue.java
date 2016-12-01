@@ -32,7 +32,7 @@ public class ShooterCapBallBlue extends LinearOpMode {
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 4").getVoltage();
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
         version = "1.000";
 
@@ -50,7 +50,7 @@ public class ShooterCapBallBlue extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.25, (int) (.15 * 1120), 2000);
+        drivetrain.moveForward(.25, (int) (.5 * 1120), 2000);
 
         drivetrain.stopMotors();
 
@@ -81,11 +81,5 @@ public class ShooterCapBallBlue extends LinearOpMode {
         shooter.stopShooter();
 
         manipulator.runCollector(0);
-
-        drivetrain.moveForward(.5, 3000, 5000);
-
-        drivetrain.stopMotors();
-
-        drivetrain.rotateP(.5, -60);
     }
 }

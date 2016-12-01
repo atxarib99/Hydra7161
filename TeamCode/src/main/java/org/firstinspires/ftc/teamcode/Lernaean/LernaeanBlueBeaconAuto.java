@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
  * Created by TechMaster on 9/21/2016.
  */
 @Autonomous(name="BlueBeaconAuto", group="Linear Opmode")
+@Disabled
 public class LernaeanBlueBeaconAuto extends LinearOpMode {
 
     Drivetrain drivetrain;

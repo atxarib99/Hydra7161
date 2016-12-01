@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,6 +11,7 @@ import com.qualcomm.robotcore.hardware.Servo;
  */
 
 @TeleOp(name = "snakebytetele", group = "teleop")
+@Disabled
 public class Teleopsnake extends OpMode {
 
     DcMotor motorBL;
