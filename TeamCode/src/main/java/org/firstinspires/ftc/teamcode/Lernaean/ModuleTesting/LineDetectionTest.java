@@ -46,7 +46,7 @@ public class LineDetectionTest extends LinearOpMode {
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
-        version = "1.120";
+        version = "1.126";
 
         //display the voltage and version for testing
         telemetry.addData("version: ", version);
@@ -106,7 +106,7 @@ public class LineDetectionTest extends LinearOpMode {
         manipulator.runCollector(0);
 
         //rotate 42 degrees to the left
-        drivetrain.rotateP(.8, -39); /// 31 or so if going for first line
+        drivetrain.rotateP(.8, -37); /// 31 or so if going for first line
 
         //stop after the rotation
         drivetrain.stopMotors();
@@ -118,7 +118,7 @@ public class LineDetectionTest extends LinearOpMode {
         //wait a bit for the momentum to stop moving the robot
         Thread.sleep(50);
 
-        //reset the encoders
+        //reset the encoder
         drivetrain.setNullValue();
 
         //display that we are going to move forward
@@ -127,7 +127,7 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForward(.25, 5000, 5000);
+        drivetrain.moveForwardToWall(.75, 5000);
 
         //safety stop
         drivetrain.stopMotors();
@@ -141,7 +141,7 @@ public class LineDetectionTest extends LinearOpMode {
         Thread.sleep(100);
 
         //reset back to 0 to be parallel
-        drivetrain.rotatePZero(.5);
+        drivetrain.moveForwardUntilZero(.5, 3500);
 
         //saftey stop
         drivetrain.stopMotors();
@@ -157,6 +157,12 @@ public class LineDetectionTest extends LinearOpMode {
 
         //move backwards until we touch the line
         drivetrain.moveFowardToLine(-.2, -.2, 4000);
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(100);
+
+        drivetrain.moveFowardToLine(.15, .15, 4000);
 
         //check the color and push the right color
         if (beaconPushers.isBackRed()){
@@ -189,13 +195,14 @@ public class LineDetectionTest extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        drivetrain.rotatePZeroRev(.5);
+        if(Math.abs(drivetrain.sensor.getGyroYaw()) > 2)
+           drivetrain.rotatePZeroRev(.35);
 
         drivetrain.stopMotors();
 
         drivetrain.moveForward(.25, 100, 500);
 
-        drivetrain.moveFowardToLine(.2, .2);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(.2, .21);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 

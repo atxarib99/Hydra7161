@@ -34,7 +34,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
-        version = "1.31";
+        version = "1.33";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -76,7 +76,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(100);
 
-        drivetrain.rotatePB(.75, 39);
+        drivetrain.rotatePB(.75, 37);
 
         drivetrain.stopMotors();
 
@@ -93,7 +93,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.moveBackward(-.35, 4700, 5000);
+        drivetrain.moveForwardToWall(-.35, 5000);
 
         drivetrain.stopMotors();
 
@@ -127,13 +127,13 @@ public class LineDetectionTestBlue extends LinearOpMode {
 //            idle();
 //        }
 
-        drivetrain.moveFowardToLine(.2, .2, 3000);
+        drivetrain.moveFowardToLine(.2, .4);
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
-        drivetrain.moveFowardToLine(-.15, -.15, 3000);
+        drivetrain.moveFowardToLine(-.15, -.2, 3000);
 
         drivetrain.stopMotors();
 
@@ -150,17 +150,22 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(100);
 
+        if(Math.abs(drivetrain.sensor.getGyroYaw()) > 2)
+            drivetrain.rotatePZeroRevB(.45);
+
+        Thread.sleep(100);
+
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(-.2, -.21);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(-.2, -.25);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(.15, .15, 4000); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(.15, .2, 4000); //move back to be aligned with white line
 
         drivetrain.stopMotors();
 
@@ -184,11 +189,13 @@ public class LineDetectionTestBlue extends LinearOpMode {
             beaconPushers.backPush();
         }
 
-        drivetrain.rotatePB(1, 35);
+        drivetrain.rotatePB(1, 45);
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.5, 1000, 3000);
+        Thread.sleep(100);
+
+        drivetrain.moveForward(.5, 1250, 3000);
 
         telemetry.addData("currentStep", "shooting");
         telemetry.update();
