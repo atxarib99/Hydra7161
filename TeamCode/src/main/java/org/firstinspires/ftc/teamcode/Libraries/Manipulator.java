@@ -22,16 +22,16 @@ public class Manipulator {
     }
 
     public void runCollector(double pow){
-        manip.setPower(pow * -1);
+        manip.setPower(pow);
     }
 
     public void activateShooter() {
-        activate.setPosition(0);
+        activate.setPosition(1);
     }
 
     public void activateShooter(boolean active) {
         if(active)
-            activate.setPosition(.25);
+            activate.setPosition(1);
         else
             activate.setPosition(0);
     }

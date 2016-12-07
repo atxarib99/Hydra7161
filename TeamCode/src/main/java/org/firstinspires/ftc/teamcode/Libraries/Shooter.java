@@ -19,6 +19,8 @@ public class Shooter {
         this.opMode = opMode;
         shooterL = this.opMode.hardwareMap.dcMotor.get("sR");
         shooterR = this.opMode.hardwareMap.dcMotor.get("sL");
+        shooterL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooterR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         this.opMode.telemetry.addData(LOG_TAG + "init", "finished drivetrain init");
         this.opMode.telemetry.update();
     }
@@ -65,17 +67,17 @@ public class Shooter {
 
     public double getNeededPower(double voltage) {
         if(voltage > 14.1)
-            return .3;
-        if(voltage > 14 && voltage < 14.1)
             return .31;
-        if(voltage < 14 && voltage > 13.5)
+        if(voltage > 14 && voltage < 14.1)
             return .32;
+        if(voltage < 14 && voltage > 13.5)
+            return .365;
         if(voltage < 13.5 && voltage > 13)
-            return .355;
+            return .385;
         if(voltage < 13 && voltage > 12)
-            return .370;
-        if(voltage < 12)
             return .4;
+        if(voltage < 12)
+            return .45;
 
         return 0;
     }
