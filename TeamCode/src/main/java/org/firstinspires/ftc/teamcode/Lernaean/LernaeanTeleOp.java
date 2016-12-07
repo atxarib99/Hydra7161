@@ -43,8 +43,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         if(gamepad2.left_bumper)
             stopShooter();
 
-        if(gamepad1.x){
-            while(gamepad1.x);
+        if(gamepad1.right_bumper){
+            while(gamepad1.right_bumper);
             if (!isbackOut) {
                 backOut();
                 isbackOut = true;
@@ -54,8 +54,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
         }
 
-        if(gamepad1.y){
-            while(gamepad1.y);
+        if(gamepad1.left_bumper){
+            while(gamepad1.left_bumper);
             if(!isfrontOut){
                 frontOut();
                 isfrontOut = true;

@@ -49,6 +49,8 @@ public abstract class LernaeanOpMode extends OpMode {
         manipulator = hardwareMap.dcMotor.get("mani");
         shooterR = hardwareMap.dcMotor.get("sR");
         shooterL = hardwareMap.dcMotor.get("sL");
+        shooterL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        shooterR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         back = hardwareMap.servo.get("back");
         front = hardwareMap.servo.get("front");
         activate = hardwareMap.servo.get("active");
@@ -63,15 +65,15 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void startMotors(double ri, double le) {
         if(reversed) {
-            motorBL.setPower(le*.75);
-            motorFL.setPower(le*.75);
-            motorBR.setPower(-ri*.75);
-            motorFR.setPower(-ri*.75);
+            motorBL.setPower(-le*.75);
+            motorFL.setPower(-le*.75);
+            motorBR.setPower(ri*.75);
+            motorFR.setPower(ri*.75);
         } else {
-            motorBL.setPower(-ri*.75);
-            motorFL.setPower(-ri*.75);
-            motorBR.setPower(le*.75);
-            motorFR.setPower(le*.75);
+            motorBL.setPower(ri*.75);
+            motorFL.setPower(ri*.75);
+            motorBR.setPower(-le*.75);
+            motorFR.setPower(-le*.75);
         }
     }
 
@@ -103,7 +105,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void startMani() {
-        manipulator.setPower(1);
+        manipulator.setPower(-1);
     }
 
     public void stopMani() {
@@ -111,7 +113,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void reverseMani() {
-        manipulator.setPower(-.5);
+        manipulator.setPower(.5);
     }
 
     public void startShooter() {
