@@ -36,7 +36,7 @@ public class BeaconPushers {
     public boolean isBackRed() throws InterruptedException {
         opMode.telemetry.addData("color val", color.red());
         opMode.telemetry.update();
-        Thread.sleep(2000);
+        Thread.sleep(1000);
         return color.red() > 350;
     }
 
