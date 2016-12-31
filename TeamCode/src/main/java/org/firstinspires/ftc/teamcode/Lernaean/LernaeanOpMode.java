@@ -24,15 +24,23 @@ public abstract class LernaeanOpMode extends OpMode {
     Servo front;
     Servo back;
     Servo activate;
+    Servo armRight;
+    Servo armLeft;
+    Servo liftRelease;
     DeviceInterfaceModule cdim;
     ColorSensor color;
     OpticalDistanceSensor left;
-    OpticalDistanceSensor right;
+    OpticalDistanceSensor right
 
     private final double BACK_OUT = 0;
     private final double BACK_IN = 1;
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
+    private final double ARM_CLOSE = 0;
+    private final double ARM_OPEN = .25;
+    private final double ARM_DROP = .4;
+    private final double UNACTIVATED = 0;
+    private final double ACTIVATED = .2;
     private boolean reversed;
 
     public double shooterPower;
@@ -58,6 +66,9 @@ public abstract class LernaeanOpMode extends OpMode {
         color = hardwareMap.colorSensor.get("color");
         left = hardwareMap.opticalDistanceSensor.get("odsL");
         right = hardwareMap.opticalDistanceSensor.get("odsR");
+        armLeft = hardwareMap.servo.get("aL");
+        armRight = hardwareMap.servo.get("aR");
+        liftRelease = hardwareMap.servo.get("release");
         shooterPower = .3;
         frontIn();
         backIn();
@@ -167,11 +178,34 @@ public abstract class LernaeanOpMode extends OpMode {
         return color.blue();
     }
 
-    public double getShooterPower() {
+    private double getShooterPower() {
         return shooterPower;
     }
 
-    public void composeTelemetry() {
+    public void closeArms() {
+        armLeft.setPosition(ARM_CLOSE);
+        armRight.setPosition(1 - ARM_CLOSE);
+    }
+
+    public void openArms() {
+        armLeft.setPosition(ARM_OPEN);
+        armRight.setPosition(1 - ARM_OPEN);
+    }
+
+    public void dropArms() {
+        armLeft.setPosition(ARM_DROP);
+        armRight.setPosition(1 - ARM_DROP);
+    }
+
+    public void activateLift() {
+        liftRelease.setPosition(ACTIVATED);
+    }
+
+    public void unactivateLift() {
+        liftRelease.setPosition(UNACTIVATED);
+    }
+
+    private void composeTelemetry() {
         telemetry.addLine()
                 .addData("ShooterPower", new Func<String>() {
                     @Override public String value() {

@@ -30,13 +30,13 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             activateShooter(false);
         }
 
-        if(gamepad2.dpad_up) {
-            while(gamepad2.dpad_up);
+        if(gamepad2.right_stick_y > .05) {
+            while(gamepad2.right_stick_y > .05);
             shooterPower += .05;
         }
 
-        if(gamepad2.dpad_down) {
-            while(gamepad2.dpad_down);
+        if(gamepad2.right_stick_y < -.05) {
+            while(gamepad2.right_stick_y < -.05);
             shooterPower -= .05;
         }
 
@@ -82,35 +82,22 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             while(gamepad1.a);
             reverse();
         }
-//
-//        flyRPM = (((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2) - oldFly) / getRuntime();
-//
-//        oldFly = ((shooterL.getCurrentPosition() + shooterR.getCurrentPosition()) / 2);
-//
-//        if(flyTicks > 99) {
-//            double sum = 0;
-//            for(int i = 0; i < 100; i++) {
-//                sum += flyArray[i];
-//            }
-//            calculatedRPM = (pastCalculatedRPM * .7) + ((sum / 100) * .3);
-//            pastCalculatedRPM = calculatedRPM;
-//            telemetry.addData("Sum", sum);
-//            telemetry.update();
-//            flyTicks /= 100;
-//        } else {
-//            flyArray[flyTicks] = flyRPM;
-//            flyTicks++;
-//            telemetry.addData("ticks", flyTicks);
-//        }
-//
-//        try {
-//            Thread.sleep(10);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        resetStartTime();
-//        telemetry.addData("encoderVals", "Right: " + shooterR.getCurrentPosition() + "Left: " + shooterL.getCurrentPosition());
-//        telemetry.addData("RPM", calculatedRPM);
-//        telemetry.update();
+
+        if(gamepad2.a) {
+            if(liftRelease.getPosition() < .1)
+                activateLift();
+            else
+                unactivateLift();
+        }
+
+        if(gamepad2.dpad_up)
+            closeArms();
+
+        if(gamepad2.dpad_left)
+            openArms();
+
+        if(gamepad2.dpad_down)
+            dropArms();
+
     }
 }
