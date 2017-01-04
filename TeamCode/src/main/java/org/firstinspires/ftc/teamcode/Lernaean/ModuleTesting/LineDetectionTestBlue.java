@@ -9,6 +9,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
 import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import org.firstinspires.ftc.teamcode.Libraries.Lift;
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+import org.firstinspires.ftc.teamcode.Libraries.Lift;
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+import org.firstinspires.ftc.teamcode.Libraries.Lift;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
@@ -22,6 +37,21 @@ public class LineDetectionTestBlue extends LinearOpMode {
     private Manipulator manipulator;
     private Shooter shooter;
     private BeaconPushers beaconPushers;
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    private Lift lift;
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+    private Lift lift;
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+    private Lift lift;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     private double voltage;
 
     private String version;
@@ -32,9 +62,35 @@ public class LineDetectionTestBlue extends LinearOpMode {
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
+<<<<<<< Updated upstream
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
         version = "1.34";
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+        version = "1.34";
+=======
+=======
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+        lift = new Lift(this);
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+        version = "1.37";
+<<<<<<< HEAD
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        lift = new Lift(this);
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+        version = "1.37";
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -110,7 +166,23 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
+<<<<<<< Updated upstream
         drivetrain.moveBackwardToWall(-.35, 4000);
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveBackwardToWall(-.35, 4000);
+=======
+        drivetrain.moveBackwardToWall(-.6, 4000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveBackwardToWall(-.6, 4000);
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveBackwardToWall(-.6, 4000);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         drivetrain.stopMotors();
 
@@ -121,7 +193,23 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(100);
 
+<<<<<<< Updated upstream
         drivetrain.rotatePZeroRevB(.35);
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.rotatePZeroRevB(.35);
+=======
+        drivetrain.rotatePZeroRevB(.6);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.rotatePZeroRevB(.6);
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.rotatePZeroRevB(.6);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         drivetrain.stopMotors();
 
@@ -144,13 +232,45 @@ public class LineDetectionTestBlue extends LinearOpMode {
 //            idle();
 //        }
 
+<<<<<<< Updated upstream
         drivetrain.moveFowardToLine(-.15, -.3);
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveFowardToLine(-.15, -.3);
+=======
+        drivetrain.moveFowardToLine(-.2, -.5);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveFowardToLine(-.2, -.5);
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveFowardToLine(-.2, -.5);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
+<<<<<<< Updated upstream
         drivetrain.moveFowardToLine(.1, .13, 3000);
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveFowardToLine(.1, .13, 3000);
+=======
+        drivetrain.moveFowardToLine(.22, .27, 3000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveFowardToLine(.22, .27, 3000);
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveFowardToLine(.22, .27, 3000);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         drivetrain.stopMotors();
 
@@ -163,7 +283,23 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         drivetrain.setNullValue();
 
+<<<<<<< Updated upstream
         drivetrain.moveBackward(.5, 500, 500);
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveBackward(.5, 500, 500);
+=======
+        drivetrain.moveBackward(.7, 500, 500);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveBackward(.7, 500, 500);
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveBackward(.7, 500, 500);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         Thread.sleep(100);
 
@@ -171,13 +307,45 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(250);
 
+<<<<<<< Updated upstream
         drivetrain.moveFowardToLine(.17, .25, 5000);  //This one corrects for drift but we are accurate with it
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveFowardToLine(.17, .25, 5000);  //This one corrects for drift but we are accurate with it
+=======
+        drivetrain.moveFowardToLine(.25, .37, 5000);  //This one corrects for drift but we are accurate with it
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveFowardToLine(.25, .37, 5000);  //This one corrects for drift but we are accurate with it
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveFowardToLine(.25, .37, 5000);  //This one corrects for drift but we are accurate with it
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
+<<<<<<< Updated upstream
         drivetrain.moveFowardToLine(-.12, -.17, 3000); //move back to be aligned with white line
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveFowardToLine(-.12, -.17, 3000); //move back to be aligned with white line
+=======
+        drivetrain.moveFowardToLine(-.15, -.20, 3000); //move back to be aligned with white line
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveFowardToLine(-.15, -.20, 3000); //move back to be aligned with white line
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveFowardToLine(-.15, -.20, 3000); //move back to be aligned with white line
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         drivetrain.stopMotors();
 
@@ -203,14 +371,46 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         drivetrain.stopMotors();
 
+<<<<<<< Updated upstream
         drivetrain.moveForward(-.35, 1000, 1000);
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveForward(-.35, 1000, 1000);
+=======
+        drivetrain.moveForward(-.6, 1000, 1000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveForward(-.6, 1000, 1000);
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveForward(-.6, 1000, 1000);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         while(Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
             drivetrain.startMotors(-.75, 0);
         }
         drivetrain.stopMotors();
 
+<<<<<<< Updated upstream
         drivetrain.moveBackward(-.75, 3000, 5000);
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+        drivetrain.moveBackward(-.75, 3000, 5000);
+=======
+        drivetrain.moveBackward(-1, 3000, 5000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+        drivetrain.moveBackward(-1, 3000, 5000);
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+        drivetrain.moveBackward(-1, 3000, 5000);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
 
         drivetrain.stopMotors();
     }

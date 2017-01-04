@@ -71,11 +71,39 @@ public class Shooter {
         if(voltage > 14 && voltage < 14.1)
             return .375;
         if(voltage < 14 && voltage > 13.5)
+<<<<<<< Updated upstream
+=======
+<<<<<<< Updated upstream
+<<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> Stashed changes
             return .395;
         if(voltage < 13.5 && voltage > 13)
             return .42;
         if(voltage < 13 && voltage > 12)
             return .48;
+<<<<<<< Updated upstream
+=======
+=======
+=======
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+            return .385;
+        if(voltage < 13.5 && voltage > 13)
+            return .42;
+        if(voltage < 13 && voltage > 12)
+            return .455;
+<<<<<<< HEAD
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
+=======
+>>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
+=======
+            return .385;
+        if(voltage < 13.5 && voltage > 13)
+            return .42;
+        if(voltage < 13 && voltage > 12)
+            return .455;
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         if(voltage < 12)
             return .43;
 

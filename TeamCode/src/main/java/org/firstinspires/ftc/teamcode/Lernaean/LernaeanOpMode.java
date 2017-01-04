@@ -290,7 +290,6 @@ public abstract class LernaeanOpMode extends OpMode {
                         return "FR: " + motorFR.getCurrentPosition();
                     }
                 });
-//hacked
     }
 
 
