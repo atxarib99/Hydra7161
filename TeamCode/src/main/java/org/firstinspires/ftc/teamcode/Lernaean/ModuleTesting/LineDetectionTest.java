@@ -9,6 +9,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
 import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
+<<<<<<< HEAD
+=======
+import org.firstinspires.ftc.teamcode.Libraries.Lift;
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
@@ -24,8 +28,15 @@ public class LineDetectionTest extends LinearOpMode {
     private Manipulator manipulator;
     private Shooter shooter;
     private BeaconPushers beaconPushers;
+<<<<<<< HEAD
 
     //create local variables
+=======
+    private Lift lift;
+
+    //create local variables
+
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
     private double voltage;
     private String version;
 
@@ -37,6 +48,10 @@ public class LineDetectionTest extends LinearOpMode {
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
+<<<<<<< HEAD
+=======
+        lift = new Lift(this);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         //calculate the voltage
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
@@ -114,7 +129,11 @@ public class LineDetectionTest extends LinearOpMode {
         manipulator.runCollector(0);
 
         //rotate 42 degrees to the left
+<<<<<<< HEAD
         drivetrain.rotateP(.8, -32); /// 31 or so if going for first line
+=======
+        drivetrain.rotateP(.8, -33); /// 31 or so if going for first line
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         //stop after the rotation
         drivetrain.stopMotors();
@@ -135,7 +154,11 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
+<<<<<<< HEAD
         drivetrain.moveForwardToWall(.4, 4000);
+=======
+        drivetrain.moveForwardToWall(.5, 4000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         //safety stop
         drivetrain.stopMotors();
@@ -150,7 +173,11 @@ public class LineDetectionTest extends LinearOpMode {
 
         //reset back to 0 to be parallel
 
+<<<<<<< HEAD
         drivetrain.rotatePZero(.35);
+=======
+        drivetrain.rotatePZero(.4);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         //saftey stop
         drivetrain.stopMotors();
@@ -165,13 +192,21 @@ public class LineDetectionTest extends LinearOpMode {
         drivetrain.setNullValue();
 
         //move backwards until we touch the line
+<<<<<<< HEAD
         drivetrain.moveFowardToLine(.17, .35, 6000);
+=======
+        drivetrain.moveFowardToLine(.15, .35, 6000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
+<<<<<<< HEAD
         drivetrain.moveFowardToLine(-.12, -.17, 4000);
+=======
+        drivetrain.moveFowardToLine(-.15, -.2, 4000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         //check the color and push the right color
         if (beaconPushers.isBackRed()){
@@ -206,13 +241,21 @@ public class LineDetectionTest extends LinearOpMode {
 
         drivetrain.moveBackward(-.25, 100, 500);
 
+<<<<<<< HEAD
         drivetrain.moveFowardToLine(-.2, -.28);  //This one corrects for drift but we are accurate with it
+=======
+        drivetrain.moveFowardToLine(-.15, -.35);  //This one corrects for drift but we are accurate with it
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
+<<<<<<< HEAD
         drivetrain.moveFowardToLine(.12, .16, 3000); //move back to be aligned with white line
+=======
+        drivetrain.moveFowardToLine(.13, .18, 3000); //move back to be aligned with white line
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         drivetrain.stopMotors();
 
@@ -236,14 +279,22 @@ public class LineDetectionTest extends LinearOpMode {
             beaconPushers.frontPush();
         }
 
+<<<<<<< HEAD
         drivetrain.moveForward(.35, 750, 1000);
+=======
+        drivetrain.moveForward(.6, 750, 1000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         while(drivetrain.sensor.getGyroYaw() < 95) {
             drivetrain.startMotors(.75, 0);
         }
         drivetrain.stopMotors();
 
+<<<<<<< HEAD
         drivetrain.moveBackward(.75, 5500, 5000);
+=======
+        drivetrain.moveBackward(1, 5500, 5000);
+>>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
 
         drivetrain.stopMotors();
     }
