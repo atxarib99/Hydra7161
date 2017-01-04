@@ -27,21 +27,30 @@ public abstract class LernaeanOpMode extends OpMode {
     Servo armRight;
     Servo armLeft;
     Servo liftRelease;
+    Servo armRelease;
+    Servo topGrabber;
     DeviceInterfaceModule cdim;
     ColorSensor color;
     OpticalDistanceSensor left;
-    OpticalDistanceSensor right
+    OpticalDistanceSensor right;
 
     private final double BACK_OUT = 0;
     private final double BACK_IN = 1;
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
+    private final double ARM_GRAB = 1;
+    private final double ARM_OPEN = .33;
+    private final double ARM_DROP = .66;
     private final double ARM_CLOSE = 0;
-    private final double ARM_OPEN = .25;
-    private final double ARM_DROP = .4;
-    private final double UNACTIVATED = 0;
-    private final double ACTIVATED = .2;
+    private final double LIFT_UNACTIVATED = 0;
+    private final double LIFT_ACTIVATED = 1;
+    private final double ARM_RELEASER_RELEASED = 1;
+    private final double ARM_RELEASER_CLOSED = 0;
+    private final double TOP_GRAB = .75;
+    private final double TOP_UNGRAB = 1;
+
     private boolean reversed;
+
 
     public double shooterPower;
 
@@ -54,6 +63,10 @@ public abstract class LernaeanOpMode extends OpMode {
         motorBR = hardwareMap.dcMotor.get("BR");
         motorFR = hardwareMap.dcMotor.get("FR");
         motorFL = hardwareMap.dcMotor.get("FL");
+        motorFL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorBL.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorBR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        motorFR.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         manipulator = hardwareMap.dcMotor.get("mani");
         shooterR = hardwareMap.dcMotor.get("sR");
         shooterL = hardwareMap.dcMotor.get("sL");
@@ -68,23 +81,31 @@ public abstract class LernaeanOpMode extends OpMode {
         right = hardwareMap.opticalDistanceSensor.get("odsR");
         armLeft = hardwareMap.servo.get("aL");
         armRight = hardwareMap.servo.get("aR");
-        liftRelease = hardwareMap.servo.get("release");
+        liftRelease = hardwareMap.servo.get("lrelease");
+        armRelease = hardwareMap.servo.get("arelease");
+        topGrabber = hardwareMap.servo.get("topGrabber");
         shooterPower = .3;
         frontIn();
         backIn();
+        grabArms();
+        activateShooter(false);
+        unactivateLift();
+        armBlocked();
+        topGrab();
+
     }
 
     public void startMotors(double ri, double le) {
         if(reversed) {
-            motorBL.setPower(-le*.75);
-            motorFL.setPower(-le*.75);
-            motorBR.setPower(ri*.75);
-            motorFR.setPower(ri*.75);
+            motorBL.setPower(-le);
+            motorFL.setPower(-le);
+            motorBR.setPower(ri);
+            motorFR.setPower(ri);
         } else {
-            motorBL.setPower(ri*.75);
-            motorFL.setPower(ri*.75);
-            motorBR.setPower(-le*.75);
-            motorFR.setPower(-le*.75);
+            motorBL.setPower(ri);
+            motorFL.setPower(ri);
+            motorBR.setPower(-le);
+            motorFR.setPower(-le);
         }
     }
 
@@ -182,9 +203,9 @@ public abstract class LernaeanOpMode extends OpMode {
         return shooterPower;
     }
 
-    public void closeArms() {
-        armLeft.setPosition(ARM_CLOSE);
-        armRight.setPosition(1 - ARM_CLOSE);
+    public void grabArms() {
+        armLeft.setPosition(ARM_GRAB);
+        armRight.setPosition(1 - ARM_GRAB);
     }
 
     public void openArms() {
@@ -197,12 +218,45 @@ public abstract class LernaeanOpMode extends OpMode {
         armRight.setPosition(1 - ARM_DROP);
     }
 
+    public void closeArms() {
+        armLeft.setPosition(ARM_CLOSE);
+        armRight.setPosition(1 - ARM_CLOSE);
+    }
+
+    public void armRelease() {
+        armRelease.setPosition(ARM_RELEASER_RELEASED);
+    }
+
+    public void armBlocked() {
+        armRelease.setPosition(ARM_RELEASER_CLOSED);
+    }
+
+    public void topGrab() {
+        topGrabber.setPosition(TOP_GRAB);
+    }
+
+    public void topUngrab() {
+        topGrabber.setPosition(TOP_UNGRAB);
+    }
+
+    public void prepareLift() {
+        dropArms();
+        armRelease();
+        topUngrab();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        openArms();
+    }
+
     public void activateLift() {
-        liftRelease.setPosition(ACTIVATED);
+        liftRelease.setPosition(LIFT_ACTIVATED);
     }
 
     public void unactivateLift() {
-        liftRelease.setPosition(UNACTIVATED);
+        liftRelease.setPosition(LIFT_UNACTIVATED);
     }
 
     private void composeTelemetry() {
