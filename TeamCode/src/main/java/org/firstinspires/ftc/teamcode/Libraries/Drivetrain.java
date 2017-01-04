@@ -481,33 +481,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-            power = (pow * (error) * .007) + .12;                      //update p values
-=======
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-<<<<<<< HEAD
-            power = (pow * (error) * .007) + .12;                      //update p values
-=======
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-            power = (pow * (error) * .007) + .12;                      //update p values
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
             power = (pow * (error) * .01) + .12;                      //update p values
->>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
-=======
-            power = (pow * (error) * .01) + .12;                      //update p values
->>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
-<<<<<<< HEAD
-=======
-            power = (pow * (error) * .01) + .12;                      //update p values
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
             inte = ((opMode.getRuntime()) * error * .0020);         //update inte value
             inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
@@ -551,50 +525,11 @@ public class Drivetrain {
 
         opMode.resetStartTime();
 
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> Stashed changes
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
-        while(Math.abs(currentAngle) > 6) {
-            currentAngle = sensor.getGyroYaw();
-            error = Math.abs(Math.abs(angleTo) - Math.abs(currentAngle));
-            opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .0075) + .13;                      //update p values
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
-=======
-=======
->>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
         while(Math.abs(currentAngle) > 10) {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(Math.abs(angleTo) - Math.abs(currentAngle));
             opMode.telemetry.addData("error", error);
             power = (pow * (error) * .015) + .13;                      //update p values
-<<<<<<< HEAD
->>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
-=======
->>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
-<<<<<<< HEAD
-=======
-        while(Math.abs(currentAngle) > 10) {
-            currentAngle = sensor.getGyroYaw();
-            error = Math.abs(Math.abs(angleTo) - Math.abs(currentAngle));
-            opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .015) + .13;                      //update p values
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
             inte = ((opMode.getRuntime()) * error * .0020);         //update inte value
             inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
@@ -735,33 +670,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(Math.abs(angleTo) - Math.abs(currentAngle));
             opMode.telemetry.addData("error", error);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-            power = (pow * (error) * .005) + .1;                      //update p values
-=======
-<<<<<<< Updated upstream
-<<<<<<< HEAD
-<<<<<<< HEAD
-            power = (pow * (error) * .005) + .1;                      //update p values
-=======
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-            power = (pow * (error) * .005) + .1;                      //update p values
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
             power = (pow * (error) * .01) + .1;                      //update p values
->>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
-=======
-            power = (pow * (error) * .01) + .1;                      //update p values
->>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
-<<<<<<< HEAD
-=======
-            power = (pow * (error) * .01) + .1;                      //update p values
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
             inte = ((opMode.getRuntime()) * error * .0015);         //update inte value
             inteNoE = ((opMode.getRuntime()) * .05);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
@@ -810,29 +719,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-            power = (pow * (error) * .0025) + .1;                   //update p values
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
-<<<<<<< HEAD
-<<<<<<< HEAD
-            power = (pow * (error) * .0025) + .1;                   //update p values
-=======
             power = (pow * (error) * .005) + .1;                   //update p values
->>>>>>> Added all the lift functionality to the Autonomous. Edited values of autonomous to compensate for the lifts weight. Values still in testing.
-=======
-            power = (pow * (error) * .005) + .1;                   //update p values
->>>>>>> b9bc9ea238cbf8e12a36b483e13136c2771ad3ef
-<<<<<<< HEAD
-=======
-            power = (pow * (error) * .005) + .1;                   //update p values
->>>>>>> Stashed changes
->>>>>>> Stashed changes
-=======
->>>>>>> 792ac9858ffc800a2104ba90be3a5003fe15265c
             inte = ((opMode.getRuntime()) * error * .005);          //update inte value
             inteNoE = ((opMode.getRuntime()) * .05);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
