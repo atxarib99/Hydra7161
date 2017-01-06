@@ -37,7 +37,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         lift = new Lift(this);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
-        version = "1.37";
+        version = "1.38";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -96,7 +96,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(100);
 
-        drivetrain.rotatePB(.5, -137);
+        drivetrain.rotatePB(.5, -138);
 
         drivetrain.stopMotors();
 
@@ -113,7 +113,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.moveBackwardToWall(-.6, 4000);
+        drivetrain.moveBackwardToWall(-.5, 4000);
 
         drivetrain.stopMotors();
 
@@ -147,13 +147,13 @@ public class LineDetectionTestBlue extends LinearOpMode {
 //            idle();
 //        }
 
-        drivetrain.moveFowardToLine(-.2, -.5);
+        drivetrain.moveFowardToLine(-.18, -.32, 4000);
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
-        drivetrain.moveFowardToLine(.22, .27, 3000);
+        drivetrain.moveFowardToLine(.15, .2, 3000);
 
         drivetrain.stopMotors();
 
@@ -174,13 +174,13 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(.25, .37, 5000);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(.15, .35, 3000);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(-.15, -.20, 3000); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(-.15, -.2, 3000); //move back to be aligned with white line
 
         drivetrain.stopMotors();
 

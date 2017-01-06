@@ -525,11 +525,11 @@ public class Drivetrain {
 
         opMode.resetStartTime();
 
-        while(Math.abs(currentAngle) > 10) {
+        while(Math.abs(currentAngle) > 9) {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(Math.abs(angleTo) - Math.abs(currentAngle));
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .015) + .13;                      //update p values
+            power = (pow * (error) * .012) + .13;                      //update p values
             inte = ((opMode.getRuntime()) * error * .0020);         //update inte value
             inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
