@@ -16,8 +16,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "RedAutonomous", group = "LinearOpMode")
-public class LineDetectionTest extends LinearOpMode {
+@Autonomous(name = "RedAutonomousNoBall", group = "LinearOpMode")
+public class RedAutoNoBall extends LinearOpMode {
     //Create robot objects
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -48,7 +48,7 @@ public class LineDetectionTest extends LinearOpMode {
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
-        version = "1.134";
+        version = "1.133";
 
         //display the voltage and version for testing
         telemetry.addData("version: ", version);
@@ -167,20 +167,20 @@ public class LineDetectionTest extends LinearOpMode {
         drivetrain.setNullValue();
 
         //move backwards until we touch the line
-        drivetrain.moveFowardToLine(.17, .3, 6000);
+        drivetrain.moveFowardToLine(.2, .3, 6000);
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
-        drivetrain.moveFowardToLine(-.13, -.18, 4000);
+        drivetrain.moveFowardToLine(-.15, -.2, 4000);
 
         //check the color and push the right color
         if (beaconPushers.isBackRed()){
-                beaconPushers.backPush();
+            beaconPushers.backPush();
         }
         else {
-                beaconPushers.frontPush();
+            beaconPushers.frontPush();
         }
 
         //display we are moving forwards
@@ -232,20 +232,20 @@ public class LineDetectionTest extends LinearOpMode {
         telemetry.update();
 
         if (beaconPushers.isBackRed()){
-                beaconPushers.backPush();
+            beaconPushers.backPush();
         }
         else {
-                beaconPushers.frontPush();
+            beaconPushers.frontPush();
         }
 
         drivetrain.moveForward(.6, 750, 1000);
 
-        while(drivetrain.sensor.getGyroYaw() < 100) {
-                drivetrain.startMotors(.75, 0);
+        while(drivetrain.sensor.getGyroYaw() < 95) {
+            drivetrain.startMotors(.75, 0);
         }
         drivetrain.stopMotors();
 
-        drivetrain.moveBackward(1, 5250, 5000);
+        drivetrain.moveBackward(1, 5500, 5000);
 
         drivetrain.stopMotors();
     }
