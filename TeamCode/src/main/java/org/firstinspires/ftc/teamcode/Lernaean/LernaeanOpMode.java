@@ -91,7 +91,7 @@ public abstract class LernaeanOpMode extends OpMode {
         activateShooter(false);
         unactivateLift();
         armBlocked();
-        topGrab();
+        topGrabber.setPosition(.5);
 
     }
 
