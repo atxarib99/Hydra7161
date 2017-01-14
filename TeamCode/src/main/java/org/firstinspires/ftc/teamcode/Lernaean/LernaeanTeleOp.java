@@ -1,16 +1,43 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name = "LTeleOp", group = "opMode")
 public class LernaeanTeleOp extends LernaeanOpMode {
-    boolean isbackOut = false;
-    boolean isfrontOut = false;
-    boolean shootMode = true;
+    private boolean isbackOut = false;
+    private boolean isfrontOut = false;
+    private boolean shootMode = true;
+    private boolean movingForward = true;
+    private double currentTime = 0;
+    private double currentEncoder = 0;
+    private double lastTime = 0;
+    private double lastEncoder = 0;
+    private double velocity = 0.0;
 
     @Override
     public void loop()
     {
+        powerR = gamepad1.right_stick_y;
+        powerL = gamepad1.left_stick_y;
+//        currentTime = time.milliseconds();
+//        currentEncoder = getEncoderAvg();
+//        velocity = (currentEncoder - lastEncoder) / (currentTime - lastTime);
+//        telemetry.addData("Velocity", velocity);
+//        telemetry.update();
+//        lastTime = currentTime;
+//        lastEncoder = currentEncoder;
+        currentTime = System.currentTimeMillis();
+        currentEncoder = getShooterEncoderAvg();
+        velocity = (currentEncoder - lastEncoder) / (currentTime - lastTime);
+        telemetry.addData("time", currentTime);
+        telemetry.addData("Velocity", velocity);
+        telemetry.addData("Encoder", currentEncoder);
+        telemetry.addData("shooting mode: ", shootMode + "");
+        telemetry.update();
+        lastTime = currentTime;
+        lastEncoder = currentEncoder;
+
         if(shootMode) {
 
             if(gamepad2.back) {
@@ -40,8 +67,32 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 }
             }
 
-            if (Math.abs(gamepad1.right_stick_y) > .05 || (Math.abs(gamepad1.left_stick_y) > .05)){
-                startMotors(gamepad1.right_stick_y, gamepad1.left_stick_y);
+            if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)) {
+//                if(powerR > .05 || powerL > .05) {
+//                    if(motorBL.getPower() < .05 || motorBR.getPower() < .05) {
+//                        try {
+//                            pulseStop();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    else {
+//                        startMotors(powerR, powerL);
+//                    }
+//                }
+//                if(powerR < .05 || powerL < .05) {
+//                    if(motorBL.getPower() > .05 || motorBL.getPower() > .05) {
+//                        try {
+//                            pulseStop();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                    else {
+//                        startMotors(powerR, powerL);
+//                    }
+//                }
+                startMotors(powerR, powerL);
             } else {
                 stopMotors();
             }
@@ -111,8 +162,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 }
             }
 
-            if (Math.abs(gamepad1.right_stick_y) > .05 || (Math.abs(gamepad1.left_stick_y) > .05)){
-                startMotors((gamepad1.right_stick_y), (gamepad1.left_stick_y));
+            if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)){
+                startMotors((powerR), (powerL));
             } else {
                 stopMotors();
             }
@@ -162,10 +213,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 prepareLift();
             }
 
+
+
         }
-
-        telemetry.addData("shooting mode: ", shootMode + "");
-        telemetry.update();
-
     }
 }

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 
@@ -31,8 +32,10 @@ public abstract class LernaeanOpMode extends OpMode {
     Servo topGrabber;
     DeviceInterfaceModule cdim;
     ColorSensor color;
+    ColorSensor color2;
     OpticalDistanceSensor left;
     OpticalDistanceSensor right;
+
 
     private final double BACK_OUT = 0;
     private final double BACK_IN = 1;
@@ -49,7 +52,12 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double TOP_GRAB = .75;
     private final double TOP_UNGRAB = 1;
 
+    private final int SLEEP_CYCLE = 50;
+
     private boolean reversed;
+
+    public double powerL;
+    public double powerR;
 
 
     public double shooterPower;
@@ -76,7 +84,8 @@ public abstract class LernaeanOpMode extends OpMode {
         front = hardwareMap.servo.get("front");
         activate = hardwareMap.servo.get("active");
         cdim = hardwareMap.deviceInterfaceModule.get("dim");
-        color = hardwareMap.colorSensor.get("color");
+        color = hardwareMap.colorSensor.get("colorL");
+        color2 = hardwareMap.colorSensor.get("colorR");
         left = hardwareMap.opticalDistanceSensor.get("odsL");
         right = hardwareMap.opticalDistanceSensor.get("odsR");
         armLeft = hardwareMap.servo.get("aL");
@@ -92,20 +101,19 @@ public abstract class LernaeanOpMode extends OpMode {
         unactivateLift();
         armBlocked();
         topGrabber.setPosition(.5);
-
     }
 
     public void startMotors(double ri, double le) {
         if(reversed) {
-            motorBL.setPower(-le);
-            motorFL.setPower(-le);
-            motorBR.setPower(ri);
-            motorFR.setPower(ri);
+            motorBL.setPower(-le*.75);
+            motorFL.setPower(-le*.75);
+            motorBR.setPower(ri*.75);
+            motorFR.setPower(ri*.75);
         } else {
-            motorBL.setPower(ri);
-            motorFL.setPower(ri);
-            motorBR.setPower(-le);
-            motorFR.setPower(-le);
+            motorBL.setPower(ri*.75);
+            motorFL.setPower(ri*.75);
+            motorBR.setPower(-le*.75);
+            motorFR.setPower(-le*.75);
         }
     }
 
@@ -115,6 +123,17 @@ public abstract class LernaeanOpMode extends OpMode {
         motorFL.setPower(0);
         motorFR.setPower(0);
     }
+
+//    public void pulseStop() throws InterruptedException {
+//        while(powerL > .25 || powerR > .25) {
+//            powerL /= 2;
+//            powerR /= 2;
+//            startMotors(powerR, powerL);
+//            Thread.sleep(SLEEP_CYCLE);
+//            stopMotors();
+//            Thread.sleep(SLEEP_CYCLE * 2);
+//        }
+//    }
 
     public void frontOut() {
         front.setPosition(FRONT_OUT);
@@ -145,7 +164,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void reverseMani() {
-        manipulator.setPower(.5);
+        manipulator.setPower(1);
     }
 
     public void startShooter() {
@@ -167,7 +186,7 @@ public abstract class LernaeanOpMode extends OpMode {
         if(active)
             activate.setPosition(1);
         else
-            activate.setPosition(0);
+            activate.setPosition(.25);
     }
 
     public double getRightODS() {
@@ -189,6 +208,14 @@ public abstract class LernaeanOpMode extends OpMode {
     public int getEncoderAvg() {
         return (Math.abs(motorBR.getCurrentPosition()) + Math.abs(motorBL.getCurrentPosition()) +
                 Math.abs(motorFR.getCurrentPosition()) + Math.abs(motorFL.getCurrentPosition())) / 4;
+    }
+
+    public int getRightEncoderAvg() {
+        return (Math.abs(motorFR.getCurrentPosition()) + Math.abs(motorBR.getCurrentPosition())) / 2;
+    }
+
+    public int getLeftEncoderAvg() {
+        return (Math.abs(motorFL.getCurrentPosition()) + Math.abs(motorBL.getCurrentPosition())) / 2;
     }
 
     public int getRed() {
@@ -251,6 +278,10 @@ public abstract class LernaeanOpMode extends OpMode {
         openArms();
     }
 
+    public int getShooterEncoderAvg() {
+        return ((Math.abs(manipulator.getCurrentPosition())) + Math.abs(shooterR.getCurrentPosition())) / 2;
+    }
+
     public void activateLift() {
         liftRelease.setPosition(LIFT_ACTIVATED);
     }
@@ -291,7 +322,4 @@ public abstract class LernaeanOpMode extends OpMode {
                     }
                 });
     }
-
-
-
 }
