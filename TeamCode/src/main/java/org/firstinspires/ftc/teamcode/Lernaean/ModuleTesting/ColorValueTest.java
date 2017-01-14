@@ -37,9 +37,7 @@ public class ColorValueTest extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
-            int value = beaconPushers.getColorVal();
-
-            telemetry.addData("Colors", value);
+            telemetry.addData("Colors", beaconPushers.getColorVal());
             telemetry.update();
         }
     }
