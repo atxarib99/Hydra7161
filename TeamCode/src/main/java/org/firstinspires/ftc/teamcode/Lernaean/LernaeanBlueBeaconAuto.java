@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
 import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
 import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
-import org.firstinspires.ftc.teamcode.Libraries.Sensor;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
@@ -49,7 +48,7 @@ public class LernaeanBlueBeaconAuto extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        boolean moveBack = beaconPushers.isBackRed();
+        boolean moveBack = beaconPushers.isBackBlue();
 
         if(!moveBack) {
             beaconPushers.backPush();
@@ -73,7 +72,7 @@ public class LernaeanBlueBeaconAuto extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        moveBack = beaconPushers.isBackRed();
+        moveBack = beaconPushers.isBackBlue();
 
         if(!moveBack) {
             beaconPushers.backPush();

@@ -48,7 +48,7 @@ public class LerneaenRedBeaconAuto extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        boolean moveBack = beaconPushers.isBackRed();
+        boolean moveBack = beaconPushers.isBackBlue();
 
         if(moveBack) {
             beaconPushers.backPush();
@@ -72,7 +72,7 @@ public class LerneaenRedBeaconAuto extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        moveBack = beaconPushers.isBackRed();
+        moveBack = beaconPushers.isBackBlue();
 
         if(moveBack) {
             beaconPushers.backPush();

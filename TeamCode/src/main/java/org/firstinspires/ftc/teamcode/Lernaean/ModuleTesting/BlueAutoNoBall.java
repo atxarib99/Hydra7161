@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 
-import android.widget.ThemedSpinnerAdapter;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -157,7 +155,7 @@ public class BlueAutoNoBall extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        if (!beaconPushers.isBackRed()){
+        if (!beaconPushers.isBackBlue()){
             beaconPushers.backPush();
         }
         else {
@@ -197,7 +195,7 @@ public class BlueAutoNoBall extends LinearOpMode {
         telemetry.addData("color", beaconPushers.getColorVal());
         telemetry.update();
 
-        if (beaconPushers.isBackRed()){
+        if (beaconPushers.isBackBlue()){
             beaconPushers.frontPush();
         }
         else {
