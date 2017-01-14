@@ -36,7 +36,7 @@ public class BeaconTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            boolean backRed = beaconPushers.isBackRed();
+            boolean backRed = beaconPushers.isBackBlue();
             telemetry.addData("color", beaconPushers);
             String toTele;
             if(backRed) {

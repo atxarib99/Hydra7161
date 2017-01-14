@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
@@ -14,8 +15,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "RedAutonomousNoBall", group = "LinearOpMode")
-public class RedAutoNoBall extends LinearOpMode {
+@Autonomous(name = "RedAutonomous", group = "LinearOpMode")
+public class RedAutonomous extends LinearOpMode {
     //Create robot objects
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -38,6 +39,8 @@ public class RedAutoNoBall extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         lift = new Lift(this);
 
+        composeTelemetry();
+
         //calculate the voltage
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
@@ -46,7 +49,7 @@ public class RedAutoNoBall extends LinearOpMode {
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
-        version = "1.133";
+        version = "1.135";
 
         //display the voltage and version for testing
         telemetry.addData("version: ", version);
@@ -55,7 +58,8 @@ public class RedAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         //wait for autonmous to actually start
-        waitForStart();
+        while(!opModeIsActive())
+            telemetry.update();
 
         //start the acceleration calculation for the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -114,7 +118,7 @@ public class RedAutoNoBall extends LinearOpMode {
         manipulator.runCollector(0);
 
         //rotate 42 degrees to the left
-        drivetrain.rotateP(.8, -33); /// 31 or so if going for first line
+        drivetrain.rotateP(.5, -25); /// 31 or so if going for first line
 
         //stop after the rotation
         drivetrain.stopMotors();
@@ -135,7 +139,11 @@ public class RedAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.4, 4500);
+        drivetrain.moveForwardToWall(.3, 5500);
+
+        drivetrain.moveForward(.25, 1000, 1000);
+
+        drivetrain.moveForward(-.25, 500, 1000);
 
         //safety stop
         drivetrain.stopMotors();
@@ -165,20 +173,23 @@ public class RedAutoNoBall extends LinearOpMode {
         drivetrain.setNullValue();
 
         //move backwards until we touch the line
-        drivetrain.moveFowardToLine(.2, .3, 6000);
+
+        Thread.sleep(100);
+
+        drivetrain.moveFowardToLine(-.11, -.15, 5000);
+
+        Thread.sleep(100);
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
-        drivetrain.moveFowardToLine(-.15, -.2, 4000);
-
         //check the color and push the right color
         if (beaconPushers.isBackBlue()){
-            beaconPushers.backPush();
+                beaconPushers.frontPush();
         }
         else {
-            beaconPushers.frontPush();
+                beaconPushers.backPush();
         }
 
         //display we are moving forwards
@@ -200,21 +211,9 @@ public class RedAutoNoBall extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-//        drivetrain.moveForward(.25, 250);
+        drivetrain.moveForward(-.3, 1250, 1000);
 
-        drivetrain.stopMotors();
-
-        drivetrain.moveBackward(-.25, 100, 500);
-
-        drivetrain.moveFowardToLine(-.15, -.35);  //This one corrects for drift but we are accurate with it
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(250);
-
-        drivetrain.moveFowardToLine(.13, .18, 3000); //move back to be aligned with white line
-
-        drivetrain.stopMotors();
+        drivetrain.moveFowardToLine(-.11, -.13, 5000); //move back to be aligned with white line
 
         Thread.sleep(100);
 
@@ -230,21 +229,60 @@ public class RedAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         if (beaconPushers.isBackBlue()){
-            beaconPushers.backPush();
+                beaconPushers.frontPush();
         }
         else {
-            beaconPushers.frontPush();
+                beaconPushers.backPush();
         }
 
         drivetrain.moveForward(.6, 750, 1000);
 
-        while(drivetrain.sensor.getGyroYaw() < 95) {
-            drivetrain.startMotors(.75, 0);
+        while(drivetrain.sensor.getGyroYaw() < 100) {
+                drivetrain.startMotors(.75, 0);
         }
         drivetrain.stopMotors();
 
-        drivetrain.moveBackward(1, 5500, 5000);
+        drivetrain.moveBackward(1, 5250, 5000);
 
         drivetrain.stopMotors();
+    }
+
+    private void composeTelemetry() {
+        telemetry.addLine()
+                .addData("AVg", new Func<String>() {
+                    @Override public String value() {
+                        return "avg: " + drivetrain.getEncoderAvg();
+                    }
+                });
+        telemetry.addLine()
+                .addData("ods", new Func<String>() {
+                    @Override public String value() {
+                        return "ods: " + drivetrain.sensor.leftODS() + " " + drivetrain.sensor.rightODS();
+                    }
+                });
+        telemetry.addLine()
+                .addData("gyro", new Func<String>() {
+                    @Override public String value() {
+                        return "gyro: " + drivetrain.sensor.getGyroYaw();
+                    }
+                });
+        telemetry.addLine()
+                .addData("motorLPower", new Func<String>() {
+                    @Override public String value() {
+                        return "leftPower: " + drivetrain.motorBL.getPower();
+                    }
+                });
+        telemetry.addLine()
+                .addData("motorRPower", new Func<String>() {
+                    @Override public String value() {
+                        return "rightPower: " + drivetrain.motorBR.getPower();
+                    }
+                });
+        telemetry.addLine()
+                .addData("Color", new Func<String>() {
+                    @Override public String value() {
+                        return "Color: " + beaconPushers.getColorVal();
+                    }
+                });
     }
 }

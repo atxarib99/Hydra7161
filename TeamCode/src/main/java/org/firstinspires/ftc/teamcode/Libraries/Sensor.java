@@ -59,7 +59,7 @@ public class Sensor {
     }
 
     public boolean isLeftLine() throws InterruptedException {
-        return left.getRawLightDetected() > 2;
+        return left.getRawLightDetected() > 1;
     }
 
     public double rightODS() {
