@@ -9,6 +9,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
     private boolean isfrontOut = false;
     private boolean shootMode = true;
     private boolean movingForward = true;
+    private boolean bPressed = false;
+    private boolean xPressed = false;
     private double currentTime = 0;
     private double currentEncoder = 0;
     private double lastTime = 0;
@@ -93,13 +95,31 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 //                    }
 //                }
                 startMotors(powerR, powerL);
-            } else {
+            } else if (!bPressed&&!xPressed){
                 stopMotors();
             }
 
             if(gamepad1.a) {
                 while(gamepad1.a);
                 reverse();
+            }
+
+            if(gamepad1.b) {
+                //while(gamepad1.b);
+                bPressed = true;
+                startMotors(-0.25, -0.9s);
+            }
+            else {
+                bPressed = false;
+            }
+
+            if(gamepad1.x) {
+                //while(gamepad1.b);
+                xPressed = true;
+                startMotors(0.25, 0.9);
+            }
+            else {
+                xPressed = false;
             }
 
             if(gamepad2.right_bumper)
