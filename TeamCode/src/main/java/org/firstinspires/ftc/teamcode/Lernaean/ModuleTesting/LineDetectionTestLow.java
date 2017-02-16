@@ -1,166 +1,198 @@
 package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 
-import android.widget.ThemedSpinnerAdapter;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.robotcore.external.navigation.Velocity;
 import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
 import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
+import org.firstinspires.ftc.teamcode.Libraries.Lift;
 import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "LineDetectionTestLow", group = "LinearOpMode")
-@Disabled
+@Autonomous(name = "RedAutonomousLow", group = "LinearOpMode")
 public class LineDetectionTestLow extends LinearOpMode {
+    //Create robot objects
+    private Drivetrain drivetrain;
+    private Manipulator manipulator;
+    private Shooter shooter;
+    private BeaconPushers beaconPushers;
+    private Lift lift;
 
-    Drivetrain drivetrain;
-    Manipulator manipulator;
-    Shooter shooter;
-    BeaconPushers beaconPushers;
+    //create local variables
 
-    String version;
+    private double voltage;
+    private String version;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        //initialize the robot
         drivetrain = new Drivetrain(this);
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
+        lift = new Lift(this);
 
-        version = "1.35";
+        composeTelemetry();
 
+        //calculate the voltage
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+        /* This is the version number of the current iteration
+        this is because sometimes the compiling process build the app but then installs
+        the old version instead of applying updates. This version numbers is displayed over
+        telemetry to ensure the autonomous is running the current version.
+         */
+        version = "1.136";
+
+        //display the voltage and version for testing
         telemetry.addData("version: ", version);
+        telemetry.addData("voltage", voltage);
         telemetry.addData("init", "init fully finished");
         telemetry.update();
 
-        waitForStart();
+        //wait for autonmous to actually start
+        while(!opModeIsActive())
+            telemetry.update();
 
+        //start the acceleration calculation for the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        //display that we are moving off the wall
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
+        //soft reset the encoders
         drivetrain.setNullValue();
 
-//        drivetrain.moveForward(.25, (int) (.25 * 1120));
+        drivetrain.moveForward(.35, (int) (.3 * 1120), 5000);
 
+        //run a saftey stop command. the previous method has one but this ensures it
         drivetrain.stopMotors();
 
+        //soft reset the encoders
         drivetrain.setNullValue();
 
+        //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
         telemetry.update();
 
+        //turn the safe off
         manipulator.activateShooter();
 
-        shooter.startShooter(-.4);
+        //start the shooter at the calculated power from the voltage value saved
+        shooter.startShooter(-shooter.getNeededPower(voltage));
 
+        //wait one second for the shooter to spin-up
+        Thread.sleep(1000);
+
+        //start moving the collecter
+        manipulator.runCollector(-1);
+
+        //let the shooter run for 3 seconds
         Thread.sleep(500);
+
+        manipulator.runCollector(0);
+
+        Thread.sleep(400);
 
         manipulator.runCollector(-1);
 
-        Thread.sleep(3000);
+        Thread.sleep(1500);
 
-        idle();
-        beaconPushers.backOut(false);
-        idle();
-        beaconPushers.frontOut(false);
-        idle();
-
+        //display that we are gonna start our rotation
         telemetry.addData("currentStep", "rotating");
         telemetry.update();
 
+        //stop the shooter
         shooter.stopShooter();
 
+        //stop the collector
         manipulator.runCollector(0);
-//
-//        drivetrain.moveForward(.5, 2000);
-//
-//        drivetrain.stopMotors();
-//
-//        drivetrain.rotateP(1, -45);
-//
-//        Thread.sleep(250);
-//
-//        drivetrain.rotateP(.5, 0);
-//
-//        Thread.sleep(250);
-//
-//        drivetrain.moveBackward(-.5, -2000);
 
-        drivetrain.rotateP(.5, -90); /// 31 or so if going for first line
+        drivetrain.moveForward(-.35, (int) (.3 * 1120), 5000);
 
+        //move forward .15 rotations this is enough off the wall
+        drivetrain.moveForward(.35, (int) (.15 * 1120), 5000);
+
+        //rotate 42 degrees to the left
+        drivetrain.rotateP(.4, -25); /// 31 or so if going for first line
+
+        //stop after the rotation
         drivetrain.stopMotors();
-
-        drivetrain.setNullValue();
-
-        telemetry.addData("currentStep", "moving forward");
-        telemetry.update();
-
-//        drivetrain.moveForward(.5, (int) (1.5 * 1120));
-
-        drivetrain.setNullValue();
-
-        drivetrain.rotateP(.5, 75);
-
-        drivetrain.setNullValue();
-
-        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-        telemetry.update();
 
         Thread.sleep(1000);
 
+        //show the current angle for testing purposes
+        telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        //wait a bit for the momentum to stop moving the robot
+        Thread.sleep(100);
+
+        //reset the encoder
+        drivetrain.setNullValue();
+
+        //display that we are going to move forward
+        telemetry.addData("currentStep", "movingForward");
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        //move forward to the wall
+//        drivetrain.moveBackwardToWall(.3, 5500, 25);
+
+        drivetrain.moveForward(.25, .4, 1000, 1000);
+
+        Thread.sleep(100);
+
+        drivetrain.moveForward(-.1, -.4, 750, 1000);
+
+        drivetrain.moveFowardToLine(-.13, -.15, 5000);
+
+        Thread.sleep(100);
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(100);
+
+        //check the color and push the right color
+        if (beaconPushers.isBackBlue()){
+            beaconPushers.frontPush();
+        }
+        else {
+            beaconPushers.backPush();
+        }
+
+        //display we are moving forwards
+        telemetry.addData("currentStep", "movingForward");
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        drivetrain.setNullValue();
+
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
+
+        Thread.sleep(100);
 
 //        while(!drivetrain.sensor.isLeftLine()) {
 //            drivetrain.startMotors(.3, .3);
 //            idle();
 //        }
 
-        drivetrain.moveFowardToLine(.3, .3);  //This one corrects for drift but we are accurate with it
+        drivetrain.setNullValue();
 
-        drivetrain.stopMotors();
+        drivetrain.moveForward(-.3, -.4, 1100, 1000);
 
-        telemetry.addData("currentStep", "finding the otherline");
-        telemetry.update();
+        drivetrain.moveFowardToLine(-.13, -.15, 5000); //move back to be aligned with white line
 
-        while(!drivetrain.sensor.isRightLine()) {
-            drivetrain.startMotors(.3, 0);
-            idle();
-        }
-
-        drivetrain.stopMotors();
-
-        telemetry.addData("currentStep", "finding the firstline again");
-        telemetry.update();
-
-        while(!drivetrain.sensor.isLeftLine()) {
-            drivetrain.startMotors(0, -.3);
-            idle();
-        }
-
-        drivetrain.stopMotors();
-
-        telemetry.addData("currentStep", "finding the otherline");
-        telemetry.update();
-
-        while(!drivetrain.sensor.isRightLine()) {
-            drivetrain.startMotors(.3, 0);
-            idle();
-        }
-
-        while(!drivetrain.sensor.isLeftLine()) {
-            drivetrain.startMotors(.25, .25);
-            idle();
-        }
+        Thread.sleep(200);
 
         telemetry.addData("currentStep", "finished");
 
@@ -169,5 +201,72 @@ public class LineDetectionTestLow extends LinearOpMode {
         telemetry.update();
 
         drivetrain.stopMotors();
+
+        telemetry.addData("color", beaconPushers.getColorVal());
+        telemetry.update();
+
+        if (beaconPushers.isBackBlue()){
+            beaconPushers.frontPush();
+        }
+        else {
+            beaconPushers.backPush();
+        }
+
+        drivetrain.moveForward(.6, 750, 1000);
+
+        try {
+            while(drivetrain.sensor.getGyroYaw() < 90) {
+                drivetrain.startMotors(.7, 0);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        drivetrain.stopMotors();
+
+        drivetrain.setNullValue();
+
+        drivetrain.moveBackward(.5, 3000, 5000);
+
+        drivetrain.stopMotors();
+    }
+
+    private void composeTelemetry() {
+        telemetry.addLine()
+                .addData("AVg", new Func<String>() {
+                    @Override public String value() {
+                        return "avg: " + drivetrain.getEncoderAvg();
+                    }
+                });
+        telemetry.addLine()
+                .addData("ods", new Func<String>() {
+                    @Override public String value() {
+                        return "ods: " + drivetrain.sensor.leftODS() + " " + drivetrain.sensor.rightODS();
+                    }
+                });
+        telemetry.addLine()
+                .addData("gyro", new Func<String>() {
+                    @Override public String value() {
+                        return "gyro: " + drivetrain.sensor.getGyroYaw();
+                    }
+                });
+        telemetry.addLine()
+                .addData("motorLPower", new Func<String>() {
+                    @Override public String value() {
+                        return "leftPower: " + drivetrain.motorBL.getPower();
+                    }
+                });
+        telemetry.addLine()
+                .addData("motorRPower", new Func<String>() {
+                    @Override public String value() {
+                        return "rightPower: " + drivetrain.motorBR.getPower();
+                    }
+                });
+        telemetry.addLine()
+                .addData("Color", new Func<String>() {
+                    @Override public String value() {
+                        return "Color: " + beaconPushers.getColorVal();
+                    }
+                });
     }
 }
