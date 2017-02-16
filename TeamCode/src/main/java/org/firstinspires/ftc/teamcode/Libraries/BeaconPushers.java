@@ -20,11 +20,10 @@ public class BeaconPushers {
     ColorSensor colorL; //0x3c
 
     LinearOpMode opMode;
-    private final double BACK_IN = .7;
+    private final double BACK_IN = .85;
     private final double BACK_OUT = 0;
-    private final double FRONT_IN = .4;
+    private final double FRONT_IN = .8;
     private final int FRONT_OUT = 0;
-    private double BEACON_BLUE = 0.0;
 
     private final String LOG_TAG = "BeaconPushers";
     public BeaconPushers(LinearOpMode opMode) throws InterruptedException {
@@ -45,6 +44,7 @@ public class BeaconPushers {
     }
 
     public boolean isBackBlue() throws InterruptedException {
+        double blueBeacon = 0;
         opMode.telemetry.addData("colorR val", colorR.red());
         opMode.telemetry.addData("colorL val", colorL.red());
         opMode.telemetry.update();
@@ -55,10 +55,10 @@ public class BeaconPushers {
         double redbeaconL = colorL.red();
         double redbeaconR = colorR.red();
         
-        BEACON_BLUE += bluebeaconR - bluebeaconL;
-        BEACON_BLUE += redbeaconL - redbeaconR;
+        blueBeacon += bluebeaconR - bluebeaconL;
+        blueBeacon += redbeaconL - redbeaconR;
 
-        return BEACON_BLUE >= 0.0;
+        return blueBeacon >= 0.0;
     }
 
     public String getColorVal() {

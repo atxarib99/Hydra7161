@@ -49,7 +49,7 @@ public class RedAutonomous extends LinearOpMode {
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
-        version = "1.135";
+        version = "1.136";
 
         //display the voltage and version for testing
         telemetry.addData("version: ", version);
@@ -58,8 +58,10 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //wait for autonmous to actually start
-        while(!opModeIsActive())
+        while(!opModeIsActive()) {
             telemetry.update();
+            idle();
+        }
 
         //start the acceleration calculation for the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -71,11 +73,7 @@ public class RedAutonomous extends LinearOpMode {
         //soft reset the encoders
         drivetrain.setNullValue();
 
-        //move forward .15 rotations this is enough off the wall
-        drivetrain.moveForward(.35, (int) (.15 * 1120), 5000);
-
-        //run a saftey stop command. the previous method has one but this ensures it
-        drivetrain.stopMotors();
+        drivetrain.moveBackward(.35, 2000, 5000);
 
         //soft reset the encoders
         drivetrain.setNullValue();
@@ -87,6 +85,10 @@ public class RedAutonomous extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
+        lift.topGrab();
+
+        lift.openArms();
+
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -97,7 +99,7 @@ public class RedAutonomous extends LinearOpMode {
         manipulator.runCollector(-1);
 
         //let the shooter run for 3 seconds
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
         manipulator.runCollector(0);
 
@@ -117,18 +119,26 @@ public class RedAutonomous extends LinearOpMode {
         //stop the collector
         manipulator.runCollector(0);
 
+        lift.topUngrab();
+
+        lift.grabArms();
+
+        drivetrain.moveBackward(-.15, 1000, 5000);
+
         //rotate 42 degrees to the left
-        drivetrain.rotateP(.5, -25); /// 31 or so if going for first line
+        drivetrain.rotateP(.6, -30); /// 31 or so if going for first line
 
         //stop after the rotation
         drivetrain.stopMotors();
+
+        Thread.sleep(500);
 
         //show the current angle for testing purposes
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
         //wait a bit for the momentum to stop moving the robot
-        Thread.sleep(1000);
+        Thread.sleep(100);
 
         //reset the encoder
         drivetrain.setNullValue();
@@ -139,48 +149,13 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.3, 5500);
+        drivetrain.moveForwardToWall(1, .3, 12000, 10000, 30);
 
-        drivetrain.moveForward(.25, 1000, 1000);
+        drivetrain.moveFowardToLine(.15, .2, 4500);
 
-        drivetrain.moveForward(-.25, 500, 1000);
+        Thread.sleep(250);
 
-        //safety stop
-        drivetrain.stopMotors();
-
-        //display that we are going to even out with the wall
-        telemetry.addData("currentStep", "turning back");
-        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-        telemetry.update();
-
-        //wait a bit for momentum
-        Thread.sleep(100);
-
-        //reset back to 0 to be parallel
-
-        drivetrain.rotatePZero(.4);
-
-        //saftey stop
-        drivetrain.stopMotors();
-
-        //this ensures we are off the line
-//        drivetrain.moveForward(.25, 100, 1000);
-
-        //safety stop
-//        drivetrain.stopMotors();
-
-        //reset the encoders
-        drivetrain.setNullValue();
-
-        //move backwards until we touch the line
-
-        Thread.sleep(100);
-
-        drivetrain.moveFowardToLine(-.11, -.15, 5000);
-
-        Thread.sleep(100);
-
-        drivetrain.stopMotors();
+        drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
         Thread.sleep(100);
 
@@ -211,11 +186,11 @@ public class RedAutonomous extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(-.3, 1250, 1000);
+        drivetrain.moveForward(-.5, -.7, 6000, 5000);
 
-        drivetrain.moveFowardToLine(-.11, -.13, 5000); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
-        Thread.sleep(100);
+        Thread.sleep(200);
 
         telemetry.addData("currentStep", "finished");
 
@@ -229,20 +204,27 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         if (beaconPushers.isBackBlue()){
-                beaconPushers.frontPush();
+            beaconPushers.frontPush();
         }
         else {
-                beaconPushers.backPush();
+            beaconPushers.backPush();
         }
 
-        drivetrain.moveForward(.6, 750, 1000);
+        drivetrain.moveForward(.6, 2000, 1000);
 
-        while(drivetrain.sensor.getGyroYaw() < 100) {
-                drivetrain.startMotors(.75, 0);
+        try {
+            while(drivetrain.sensor.getGyroYaw() < 100) {
+                drivetrain.startMotors(.6, 0);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
         drivetrain.stopMotors();
 
-        drivetrain.moveBackward(1, 5250, 5000);
+        drivetrain.setNullValue();
+
+        drivetrain.moveForward(.5, 6000, 5000);
 
         drivetrain.stopMotors();
     }

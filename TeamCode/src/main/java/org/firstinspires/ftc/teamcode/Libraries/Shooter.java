@@ -67,15 +67,17 @@ public class Shooter {
 
     public double getNeededPower(double voltage) {
         if(voltage > 14.1)
-            return .35;
+            return .31;
         if(voltage > 14 && voltage < 14.1)
-            return .375;
-        if(voltage < 14 && voltage > 13.5)
-            return .385;
+            return .32;
+        if(voltage < 14 && voltage > 13.75)
+            return .32;
+        if(voltage < 13.75 && voltage > 13.5)
+            return .33;
         if(voltage < 13.5 && voltage > 13)
-            return .42;
+            return .35;
         if(voltage < 13 && voltage > 12)
-            return .455;
+            return .4;
         if(voltage < 12)
             return .43;
 

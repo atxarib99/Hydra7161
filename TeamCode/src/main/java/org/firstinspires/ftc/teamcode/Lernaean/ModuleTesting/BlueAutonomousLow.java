@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -13,10 +14,10 @@ import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
-* Created by Arib on 10/20/2016.
-*/
-@Autonomous(name = "Blue Autonomous", group = "LinearOpMode")
-public class LineDetectionTestBlue extends LinearOpMode {
+ * Created by Arib on 10/20/2016.
+ */
+@Autonomous(name = "Blue Autonomous Low", group = "LinearOpMode")
+public class BlueAutonomousLow extends LinearOpMode {
 
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -57,13 +58,20 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
+        //soft reset the encoders
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.35, (int) (.15 * 1120), 5000);
+        drivetrain.moveForward(.35, (int) (.3 * 1120), 5000);
 
+        //run a saftey stop command. the previous method has one but this ensures it
         drivetrain.stopMotors();
 
+        //soft reset the encoders
         drivetrain.setNullValue();
+
+        //display that we are going to shoot
+        telemetry.addData("currentStep", "shooting");
+        telemetry.update();
 
         //turn the safe off
         manipulator.activateShooter();
@@ -82,7 +90,7 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         manipulator.runCollector(0);
 
-        Thread.sleep(500);
+        Thread.sleep(400);
 
         manipulator.runCollector(-1);
 
@@ -98,9 +106,14 @@ public class LineDetectionTestBlue extends LinearOpMode {
         //stop the collector
         manipulator.runCollector(0);
 
+        drivetrain.moveForward(-.35, (int) (.3 * 1120), 5000);
+
+        //move forward .15 rotations this is enough off the wall
+        drivetrain.moveForward(.35, (int) (.15 * 1120), 5000);
+
         Thread.sleep(100);
 
-        drivetrain.rotatePB(.5, -147);
+        drivetrain.rotatePB(.5, -150);
 
         drivetrain.stopMotors();
 
@@ -117,7 +130,13 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.moveBackwardToWall(-.3, 5000);
+        manipulator.activateShooter(false);
+
+        manipulator.runCollector(.5);
+
+//        drivetrain.moveBackwardToWall(-.3, 5000, 152);
+
+        manipulator.runCollector(0);
 
         drivetrain.stopMotors();
 
@@ -153,46 +172,40 @@ public class LineDetectionTestBlue extends LinearOpMode {
 
         Thread.sleep(250);
 
-        drivetrain.moveForward(-.25, 500, 1000);
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(250);
-
-        drivetrain.moveFowardToLine(.17, .29, 1500);
+        drivetrain.moveForward(-.25, -.4, 500, 1000);
 
         drivetrain.stopMotors();
 
         Thread.sleep(100);
 
-        drivetrain.moveFowardToLine(-.11, -.13, 3000);
+        drivetrain.moveFowardToLine(.14, .26, 1500);
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(250);
+
+        drivetrain.moveFowardToLine(-.13, -.15, 3000);
 
         drivetrain.stopMotors();
 
         if (beaconPushers.isBackBlue()){
-                beaconPushers.backPush();
+            beaconPushers.backPush();
         }
         else {
-                beaconPushers.frontPush();
+            beaconPushers.frontPush();
         }
 
         drivetrain.setNullValue();
 
-        drivetrain.moveBackward(.3, 500, 500);
+        drivetrain.moveBackward(.3, 1750, 1000);
 
-        Thread.sleep(100);
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(250);
-
-        drivetrain.moveFowardToLine(.17, .27, 2000);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(.17, .27, 1000);  //This one corrects for drift but we are accurate with it
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(-.11, -.13, 3000); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(-.13, -.15, 3000); //move back to be aligned with white line
 
         drivetrain.stopMotors();
 
@@ -210,10 +223,10 @@ public class LineDetectionTestBlue extends LinearOpMode {
         telemetry.update();
 
         if (beaconPushers.isBackBlue()){
-                beaconPushers.backPush();
+            beaconPushers.backPush();
         }
         else {
-                beaconPushers.frontPush();
+            beaconPushers.frontPush();
         }
 
         drivetrain.stopMotors();
@@ -221,15 +234,12 @@ public class LineDetectionTestBlue extends LinearOpMode {
         drivetrain.moveForward(-.6, 1000, 1000);
 
         while(Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
-            if(voltage > 14)
-                drivetrain.startMotors(-.65, 0);
-            else
-                drivetrain.startMotors(-.75, 0);
+            drivetrain.startMotors(-.65, 0);
             idle();
         }
         drivetrain.stopMotors();
 
-        drivetrain.moveBackward(-.75, 3000, 5000);
+        drivetrain.moveBackward(-.5, 3000, 5000);
 
         drivetrain.stopMotors();
     }

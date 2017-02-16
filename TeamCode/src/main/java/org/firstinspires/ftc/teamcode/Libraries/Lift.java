@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Libraries;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
@@ -10,48 +11,45 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Lift {
     Servo armLeft;
     Servo armRight;
-    Servo liftRelease;
+    DcMotor liftRelease;
     Servo armRelease;
     Servo topGrabber;
 
     LinearOpMode opMode;
 
-    private final double BACK_OUT = 0;
-    private final double BACK_IN = 1;
-    private final double FRONT_OUT = 0;
-    private final double FRONT_IN = 1;
     private final double ARM_GRAB = 1;
-    private final double ARM_OPEN = .33;
+    private final double ARM_OPEN = .4;
     private final double ARM_DROP = .66;
     private final double ARM_CLOSE = 0;
     private final double LIFT_UNACTIVATED = 0;
     private final double LIFT_ACTIVATED = 1;
     private final double ARM_RELEASER_RELEASED = 1;
     private final double ARM_RELEASER_CLOSED = 0;
-    private final double TOP_GRAB = .75;
-    private final double TOP_UNGRAB = 1;
+    private final double TOP_GRAB = 1;
+    private final double TOP_UNGRAB = 0;
+    private final double TOP_IDLE = .6;
 
     public Lift(LinearOpMode opMode) {
         this.opMode = opMode;
         armLeft = opMode.hardwareMap.servo.get("aL");
         armRight = opMode.hardwareMap.servo.get("aR");
-        liftRelease = opMode.hardwareMap.servo.get("lrelease");
+        liftRelease = opMode.hardwareMap.dcMotor.get("lrelease");
         armRelease = opMode.hardwareMap.servo.get("arelease");
         topGrabber = opMode.hardwareMap.servo.get("topGrabber");
-        closeArms();
+        grabArms();
         unactivateLift();
         armBlocked();
-        topGrab();
+        topUngrab();
     }
 
     public void grabArms() {
-        armLeft.setPosition(ARM_GRAB);
-        armRight.setPosition(1 - ARM_GRAB);
+        armLeft.setPosition(1 - ARM_GRAB);
+        armRight.setPosition(ARM_GRAB - .1);
     }
 
     public void openArms() {
         armLeft.setPosition(ARM_OPEN);
-        armRight.setPosition(1 - ARM_OPEN);
+        armRight.setPosition(1 - ARM_OPEN - .05);
     }
 
     public void dropArms() {
@@ -93,11 +91,11 @@ public class Lift {
     }
 
     public void activateLift() {
-        liftRelease.setPosition(LIFT_ACTIVATED);
+        liftRelease.setPower(.15);
     }
 
     public void unactivateLift() {
-        liftRelease.setPosition(LIFT_UNACTIVATED);
+        liftRelease.setPower(0);
     }
 
 }

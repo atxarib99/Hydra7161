@@ -135,7 +135,7 @@ public class RedAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.4, 4500);
+//        drivetrain.moveForwardToWall(.4, 4500);
 
         //safety stop
         drivetrain.stopMotors();
