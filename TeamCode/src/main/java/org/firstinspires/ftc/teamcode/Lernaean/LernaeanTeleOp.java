@@ -97,8 +97,11 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
         if(!shootMode) {
 
-            if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)){
-                startMotors((powerR * .25), (powerL* .25));
+            if((Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)) && armLeft.getPosition() == .1) {
+                startMotors((powerR * .375), (powerL * .375));
+            }
+            else if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)){
+                startMotors((powerR * .75), (powerL * .75));
             } else if(!xPressed && !bPressed) {
                 stopMotors();
             }
