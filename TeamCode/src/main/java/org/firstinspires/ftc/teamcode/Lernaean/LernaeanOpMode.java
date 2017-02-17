@@ -377,7 +377,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void activateLift() {
-        liftRelease.setPower(.15);
+        liftRelease.setPower(.175);
     }
 
     public void unactivateLift() {
