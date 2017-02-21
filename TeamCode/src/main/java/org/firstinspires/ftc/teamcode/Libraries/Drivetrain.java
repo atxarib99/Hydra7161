@@ -232,9 +232,9 @@ public class Drivetrain {
             angle = Math.abs(sensor.getGyroYaw());
 
             if(angle < startAngle - 2) {
-                startMotors((increaseTick * .75), (increaseTick));
+                startMotors((increaseTick), (increaseTick * .65));
             } else if(angle > startAngle + 2) {
-                startMotors((increaseTick), (increaseTick * .75));
+                startMotors((increaseTick * .65), (increaseTick));
             } else {
                 startMotors(increaseTick, increaseTick);
             }
@@ -946,7 +946,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .008) + .025;                   //update p values
+            power = (pow * (error) * .0092) + .02;                   //update p values
             inte = ((opMode.getRuntime()) * error * .005);          //update inte value
             inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value

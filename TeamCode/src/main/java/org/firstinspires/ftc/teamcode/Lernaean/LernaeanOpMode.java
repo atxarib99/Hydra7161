@@ -318,17 +318,17 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void armsIn() {
         armLeft.setPosition(1 - ARM_IN);
-        armRight.setPosition(ARM_IN - .1);
+        armRight.setPosition(ARM_IN);
     }
 
     public void grabArms() {
         armLeft.setPosition(1 - ARM_GRAB);
-        armRight.setPosition(ARM_GRAB - .1);
+        armRight.setPosition(ARM_GRAB);
     }
 
     public void openArms() {
         armLeft.setPosition(1- ARM_OPEN);
-        armRight.setPosition(ARM_OPEN - .21);
+        armRight.setPosition(ARM_OPEN);
     }
 
     public void dropArms() {
@@ -377,7 +377,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void activateLift() {
-        liftRelease.setPower(.175);
+        liftRelease.setPower(1);
     }
 
     public void unactivateLift() {

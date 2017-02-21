@@ -61,6 +61,14 @@ public class BeaconPushers {
         return blueBeacon >= 0.0;
     }
 
+    public boolean areBothBlue() {
+        return colorL.red() < 2 && colorR.red() < 2;
+    }
+
+    public boolean areBothRed() {
+        return colorR.blue() < 2 && colorL.blue() < 2;
+    }
+
     public String getColorVal() {
 
         String redR = "RightRed: " + colorR.red() + " ";
