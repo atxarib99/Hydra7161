@@ -20,27 +20,21 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 @Autonomous(name = "Judging", group = "LinearOpMode")
 public class Judging extends LinearOpMode {
-    private Drivetrain drivetrain;
-    private Manipulator manipulator;
-    private Shooter shooter;
-    private BeaconPushers beaconPushers;
     private Lift lift;
-    private double voltage;
 
     @Override
     public void runOpMode() throws InterruptedException {
         lift = new Lift(this);
-        lift.prepareLift();
+
+        lift.openArms();
+
+        lift.armRelease();
 
         waitForStart();
 
-        lift.grabArms();
+        lift.armsIn();
 
-        Thread.sleep(2000);
-
-        lift.activateLift();
-
-        Thread.sleep(3000);
+        Thread.sleep(1000);
 
         lift.unactivateLift();
 

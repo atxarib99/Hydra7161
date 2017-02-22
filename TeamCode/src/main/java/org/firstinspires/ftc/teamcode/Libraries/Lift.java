@@ -17,8 +17,8 @@ public class Lift {
 
     LinearOpMode opMode;
 
-    private final double ARM_GRAB = 1;
-    private final double ARM_OPEN = .4;
+    private final double ARM_GRAB = .65;
+    private final double ARM_OPEN = .425;
     private final double ARM_DROP = .66;
     private final double ARM_CLOSE = 0;
     private final double LIFT_UNACTIVATED = 0;
@@ -46,6 +46,11 @@ public class Lift {
     public void grabArms() {
         armLeft.setPosition(1 - ARM_IN);
         armRight.setPosition(ARM_IN - .05);
+    }
+
+    public void armsIn() {
+        armLeft.setPosition(1 - ARM_GRAB - .05);
+        armRight.setPosition(ARM_GRAB);
     }
 
     public void openArms() {
