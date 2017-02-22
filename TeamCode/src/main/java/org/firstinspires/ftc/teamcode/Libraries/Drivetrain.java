@@ -70,7 +70,6 @@ public class Drivetrain {
         time.startTime();
 
         while(!sensor.isRightLine() && time.milliseconds() < timeout) {
-            angle = Math.abs(sensor.getGyroYaw());
 
             opMode.telemetry.addData("LeftPower", motorBL.getPower());
             opMode.telemetry.addData("RightPower", motorBR.getPower());
@@ -112,7 +111,7 @@ public class Drivetrain {
 
         ElapsedTime time = new ElapsedTime();
         time.startTime();
-        int targetTime = 1000;
+        int targetTime = 2000;
         int currentEncoder = 0;
 
         double increaseTick;
@@ -222,7 +221,7 @@ public class Drivetrain {
         ElapsedTime time = new ElapsedTime();
         time.reset();
         time.startTime();
-        int targetTime = 1000;
+        int targetTime = 2000;
         int currentEncoder = 0;
 
         double increaseTick;
@@ -256,10 +255,10 @@ public class Drivetrain {
             opMode.telemetry.update();
 
             if(angle < startAngle - 2) {
-                startMotors((power), (power * .75));
+                startMotors((power), (power * .6));
             } else if(angle > startAngle + 2) {
-                startMotors((power * .75), (power));
-            } else {
+                startMotors((power * .6), (power));
+            }  else {
                 startMotors(power, power);
             }
 
@@ -946,7 +945,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .0092) + .02;                   //update p values
+            power = (pow * (error) * .0092) + .025;                   //update p values
             inte = ((opMode.getRuntime()) * error * .005);          //update inte value
             inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value

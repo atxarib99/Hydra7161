@@ -92,7 +92,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(-1);
 
         //let the shooter run for 3 seconds
-        Thread.sleep(1000);
+        Thread.sleep(900);
 
         manipulator.runCollector(0);
 
@@ -170,23 +170,36 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
-        //added comment
-
         drivetrain.moveForward(-.2, -.35, 4000, 5000);
 
-        drivetrain.moveFowardToLine(-.09, -.13, 4000);
+        drivetrain.moveFowardToLine(-.09, -.12, 4000);
+
+        Thread.sleep(100);
 
         drivetrain.stopMotors();
 
-        if (beaconPushers.isBackBlue()){
+        int count = 0;
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 3) {
+                drivetrain.moveForward(.08, .11, 100, 500);
+            }
+            if (beaconPushers.isBackBlue()){
                 beaconPushers.backPush();
-        }
-        else {
+            }
+            else {
                 beaconPushers.frontPush();
+            }
+            if(count == 3)
+                break;
+            count++;
         }
 
-        int count = 0;
-        while()
+        if(beaconPushers.areBothRed()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
+        }
+
 
         drivetrain.setNullValue();
 
@@ -215,11 +228,25 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.addData("color", beaconPushers.getColorVal());
         telemetry.update();
 
-        if (beaconPushers.isBackBlue()){
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 3) {
+                drivetrain.moveForward(.08, .11, 100, 500);
+            }
+            if (beaconPushers.isBackBlue()){
                 beaconPushers.backPush();
-        }
-        else {
+            }
+            else {
                 beaconPushers.frontPush();
+            }
+            if(count == 3)
+                break;
+            count++;
+        }
+
+        if(beaconPushers.areBothRed()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
         }
 
         drivetrain.stopMotors();

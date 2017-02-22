@@ -23,6 +23,7 @@ public class Lift {
     private final double ARM_CLOSE = 0;
     private final double LIFT_UNACTIVATED = 0;
     private final double LIFT_ACTIVATED = 1;
+    private final double ARM_IN = .85;
     private final double ARM_RELEASER_RELEASED = 1;
     private final double ARM_RELEASER_CLOSED = 0;
     private final double TOP_GRAB = 1;
@@ -43,8 +44,8 @@ public class Lift {
     }
 
     public void grabArms() {
-        armLeft.setPosition(1 - ARM_GRAB);
-        armRight.setPosition(ARM_GRAB - .1);
+        armLeft.setPosition(1 - ARM_IN);
+        armRight.setPosition(ARM_IN - .05);
     }
 
     public void openArms() {
@@ -91,7 +92,7 @@ public class Lift {
     }
 
     public void activateLift() {
-        liftRelease.setPower(.15);
+        liftRelease.setPower(1);
     }
 
     public void unactivateLift() {

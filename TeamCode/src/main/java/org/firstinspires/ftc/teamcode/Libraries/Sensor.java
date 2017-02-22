@@ -55,7 +55,7 @@ public class Sensor {
     }
 
     public boolean isRightLine() throws InterruptedException {
-        return right.getRawLightDetected() > 1.75;
+        return right.getRawLightDetected() > 2;
     }
 
     public boolean isLeftLine() throws InterruptedException {

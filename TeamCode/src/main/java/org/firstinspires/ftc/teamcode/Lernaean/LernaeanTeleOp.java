@@ -4,8 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name = "LTeleOp", group = "opMode")
 public class LernaeanTeleOp extends LernaeanOpMode {
-    private boolean isbackOut = false;
-    private boolean isfrontOut = false;
+    private boolean shootMode = true;
     private boolean bPressed = false;
     private boolean xPressed = false;
 
@@ -95,17 +94,22 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 stopMani();
         }
 
+        //if we are shooting
         if(!shootMode) {
 
             if((Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)) && armLeft.getPosition() == .1) {
                 startMotors((powerR * .375), (powerL * .375));
             }
+            //if in lift mode but ball is dropped slow to 75% power
             else if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)){
                 startMotors((powerR * .75), (powerL * .75));
-            } else if(!xPressed && !bPressed) {
+            }
+            //if we are not moving stop the motors
+            else if(!xPressed && !bPressed) {
                 stopMotors();
             }
 
+            //glide against the walls
             if(gamepad1.b) {
                 bPressed = true;
                 startMotors(-0.4, -0.125);
@@ -184,10 +188,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         if(gamepad1.right_bumper){
             if (back.getPosition() != 0) {
                 backOut();
-                isbackOut = true;
             } else {
                 backIn();
-                isbackOut = false;
             }
             while(gamepad1.right_bumper);
         }
@@ -195,10 +197,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         if(gamepad1.left_bumper){
             if(front.getPosition() != 0) {
                 frontOut();
-                isfrontOut = true;
             } else {
                 frontIn();
-                isfrontOut = false;
             }
             while(gamepad1.left_bumper);
         }
@@ -208,33 +208,32 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             while (gamepad2.back);
         }
 
-        currentTime = System.currentTimeMillis();
-        currentEncoder = getShooterEncoderAvg();
-        velocity = (currentEncoder - lastEncoder) / (currentTime - lastTime);
-        velocity *= 1000;
-        telemetry.addData("time", currentTime);
-        telemetry.addData("Encoder", currentEncoder + "--" + shooterL.getCurrentPosition() + "--" + shooterR.getCurrentPosition());
-        if(velocity > 0) {
-            velocityAvg[currentTick++] = velocity;
-        }
-        if(currentTick == 89) {
-            lastAvg = avg;
-            avg = 0;
-            for(int i = 0; i < 90; i++) {
-                avg += velocityAvg[i];
-            }
-            avg /= 90;
-            currentTick = 0;
-        }
-        telemetry.addData("Velocity", avg);
-        telemetry.update();
-        lastTime = currentTime;
-        lastEncoder = currentEncoder;
+        //calculate velocity of shooter
+//        currentTime = System.nanoTime();
+//        currentEncoder = getShooterEncoderAvg();
+//        velocity = (currentEncoder - lastEncoder) / ((currentTime - lastTime) * 1000000000);
+//        telemetry.addData("time", currentTime);
+//        telemetry.addData("Encoder", currentEncoder + "--" + shooterL.getCurrentPosition() + "--" + shooterR.getCurrentPosition());
+//        if(velocity > 0) {
+//            velocityAvg[currentTick++] = velocity;
+//        }
+//        if(currentTick == 200) {
+//            lastAvg = avg;
+//            avg = 0;
+//            for (double aVelocityAvg : velocityAvg) {
+//                avg += aVelocityAvg;
+//            }
+//            avg /= 200;
+//            currentTick = 0;
+//        }
+//        telemetry.addData("Velocity", avg);
+//        telemetry.update();
+//        lastTime = currentTime;
+//        lastEncoder = currentEncoder;
 //        try{
-//            Thread.sleep(1);
+//            Thread.sleep(0, 1);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-
     }
 }

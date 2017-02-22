@@ -151,20 +151,32 @@ public class RedAutonomous extends LinearOpMode {
         //move forward to the wall
         drivetrain.moveForwardToWall(1, .3, 12000, 10000, 30);
 
-        drivetrain.moveFowardToLine(.15, .2, 4500);
+        drivetrain.moveFowardToLine(.13, .18, 3000);
 
         Thread.sleep(250);
 
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
-        Thread.sleep(100);
-
-        //check the color and push the right color
-        if (beaconPushers.isBackBlue()){
+        int count = 0;
+        while (!beaconPushers.areBothRed()) {
+            if(count == 3) {
+                drivetrain.moveForward(.08, .11, 250, 500);
+            }
+            if (beaconPushers.isBackBlue()){
                 beaconPushers.frontPush();
-        }
-        else {
+            }
+            else {
                 beaconPushers.backPush();
+            }
+            if(count == 3)
+                break;
+            count++;
+        }
+
+        if(beaconPushers.areBothBlue()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
         }
 
         //display we are moving forwards
@@ -186,7 +198,7 @@ public class RedAutonomous extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(-.5, -.7, 6000, 5000);
+        drivetrain.moveForward(-.3, -.7, 6000, 5000);
 
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
@@ -203,11 +215,26 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.addData("color", beaconPushers.getColorVal());
         telemetry.update();
 
-        if (beaconPushers.isBackBlue()){
-            beaconPushers.frontPush();
+        count = 0;
+        while (!beaconPushers.areBothRed()) {
+            if(count == 3) {
+                drivetrain.moveForward(.08, .11, 250, 500);
+            }
+            if (beaconPushers.isBackBlue()){
+                beaconPushers.frontPush();
+            }
+            else {
+                beaconPushers.backPush();
+            }
+            if(count == 3)
+                break;
+            count++;
         }
-        else {
+
+        if(beaconPushers.areBothBlue()) {
+            Thread.sleep(5000);
             beaconPushers.backPush();
+            beaconPushers.frontPush();
         }
 
         drivetrain.moveForward(.6, 2000, 1000);

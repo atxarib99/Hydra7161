@@ -102,6 +102,10 @@ public class BeaconPushers {
 
     }
 
+    public boolean isBeaconNotPushed() {
+        return colorL.red() < 2 || colorR.red() < 2;
+    }
+
     public void backPush() throws InterruptedException {
         backOut(true);
         Thread.sleep(1000);

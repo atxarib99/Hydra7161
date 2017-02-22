@@ -25,29 +25,27 @@ public abstract class LernaeanOpMode extends OpMode {
     DcMotor liftRelease;
     Servo front;
     Servo back;
-    Servo activate;
-    Servo armRight;
+    private Servo activate;
+    private Servo armRight;
     Servo armLeft;
     Servo armRelease;
     Servo topGrabber;
     DeviceInterfaceModule cdim;
-    ColorSensor color;
-    ColorSensor color2;
-    OpticalDistanceSensor left;
-    OpticalDistanceSensor right;
+    private ColorSensor color;
+    private ColorSensor color2;
+    private OpticalDistanceSensor left;
+    private OpticalDistanceSensor right;
 
 
     private final double BACK_OUT = 0;
     private final double BACK_IN = 1;
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
-    private final double ARM_IN = 1;
-    private final double ARM_GRAB = .9;
-    private final double ARM_OPEN = .525;
+    private final double ARM_IN = .85;
+    private final double ARM_GRAB = .65;
+    private final double ARM_OPEN = .425;
     private final double ARM_DROP = .25;
     private final double ARM_CLOSE = 0;
-    private final double LIFT_UNACTIVATED = 0;
-    private final double LIFT_ACTIVATED = 1;
     private final double ARM_RELEASER_RELEASED = 1;
     private final double ARM_RELEASER_CLOSED = 0;
     private final double TOP_GRAB = 1;
@@ -56,34 +54,26 @@ public abstract class LernaeanOpMode extends OpMode {
 
     boolean shootMode = true;
 
-
     private final int SLEEP_CYCLE = 50;
 
     private boolean reversed;
 
-    double powerL;
-    double powerR;
-    double shooterPower;
-    double shooterIntegral;
-
-    long currentTime = 0;
-    protected double currentEncoder = 0;
-    long lastTime = 0;
-    double lastEncoder = 0;
-    protected double velocity = 0.0;
-
-
-    double[] velocityAvg = new double[90];
-    int currentTick;
-    double avg = 0;
-    double lastAvg = 0;
-
-    double voltage = 0.0;
-
     Runnable speedCounter = new Runnable() {
+
+
+
+        private double[] velocityAvg = new double[90];
+        private int currentTick;
+        private double avg = 0;
+        private double lastAvg = 0;
+
+        long lastTime = 0;
+        int lastEncoder = 0;
+        int currentEncoder;
+        double velocity;
         @Override
         public void run() {
-            currentTime = System.currentTimeMillis();
+            long currentTime = System.currentTimeMillis();
             currentEncoder = getShooterEncoderAvg();
             velocity = (currentEncoder - lastEncoder) / (currentTime - lastTime);
             telemetry.addData("time", currentTime * 1000);
@@ -115,7 +105,72 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     };
 
-    Thread speedThread;
+    double powerL;
+    double powerR;
+    double shooterPower;
+    double shooterIntegral;
+
+    double voltage = 0.0;
+
+    private Runnable ABSright = new Runnable() {
+
+        double kP = .1;
+        double kI = .1;
+        double kD = .2;
+        double lastPower = 0;
+        private long lastTime = 0;
+        double ABSRightStartTime = System.currentTimeMillis();
+
+        @Override
+        public void run() {
+            double target = gamepad1.right_stick_y;
+            long currentTime = System.currentTimeMillis();
+
+            double error = target - motorBR.getPower();
+            double proportional = error * kP;
+            double integral = ((currentTime - ABSRightStartTime) * error * kI);
+            double derivative = ((motorBR.getPower() - lastPower) / (currentTime - lastTime)) * kD;
+
+            double power = proportional + integral - derivative;
+            lastPower = motorBR.getPower();
+            lastTime = currentTime;
+
+        }
+    };
+
+    private Runnable ABSleft = new Runnable() {
+
+        double kP = .1;
+        double kI = .01;
+        double kD = .2;
+        double lastPower = 0;
+        double lastTime = 0;
+
+        double ABSLeftStartTime = System.currentTimeMillis();
+
+        @Override
+        public void run() {
+            double targetRight = gamepad1.left_stick_y;
+            double errorRight = targetRight - motorBL.getPower();
+            double currentTime = System.currentTimeMillis();
+
+            while(Math.abs(errorRight) > .02) {
+                double proportional = errorRight * kP;
+                double integral = ((currentTime - ABSLeftStartTime) * errorRight * kI);
+                double derivative = ((motorBL.getPower() - lastPower) / (currentTime - lastTime)) * kD;
+
+                double power = proportional + integral - derivative;
+                startMotors(power, power);
+                lastPower = motorBL.getPower();
+                lastTime = currentTime;
+            }
+
+        }
+    };
+
+    private Thread ABSRightThread;
+    private Thread ABSLeftThread;
+    private Thread speedThread;
     @Override
     public void init() {
         reversed = false;
@@ -149,7 +204,8 @@ public abstract class LernaeanOpMode extends OpMode {
         shooterPower = .3;
         shooterIntegral = 0;
         speedThread = new Thread(speedCounter);
-        speedThread.start();
+        ABSLeftThread = new Thread(ABSleft);
+        ABSRightThread = new Thread(ABSright);
         frontIn();
         backIn();
         armsIn();
@@ -192,19 +248,19 @@ public abstract class LernaeanOpMode extends OpMode {
 //        }
 //    }
 
-    public void frontOut() {
+    void frontOut() {
         front.setPosition(FRONT_OUT);
     }
 
-    public void frontIn() {
+    void frontIn() {
         front.setPosition(FRONT_IN);
     }
 
-    public void backOut() {
+    void backOut() {
         back.setPosition(BACK_OUT);
     }
 
-    public void backIn() {
+    void backIn() {
         back.setPosition(BACK_IN);
     }
 
@@ -212,15 +268,15 @@ public abstract class LernaeanOpMode extends OpMode {
         reversed = !reversed;
     }
 
-    public void startMani() {
+    void startMani() {
         manipulator.setPower(-1);
     }
 
-    public void stopMani() {
+    void stopMani() {
         manipulator.setPower(0);
     }
 
-    public void reverseMani() {
+    void reverseMani() {
         manipulator.setPower(1);
     }
 
@@ -240,32 +296,12 @@ public abstract class LernaeanOpMode extends OpMode {
         shooterL.setPower(0);
         shooterR.setPower(0);
         shooterIntegral = 0;
-        avg = 0;
         armsIn();
         topUngrab();
     }
 
-    public double targetRPM(double pow) { //FILL THIS IN
+    private double targetRPM(double pow) {
         return 0.0;
-    }
-
-    void startPID(double avg, double lastTime) {
-        double kP = .001;
-        double kI = .015;
-        double kD = .0011;
-
-        double currentRPM = avg;
-        double currentTime = System.currentTimeMillis();
-
-        double error = targetRPM(getShooterPower()) - currentRPM;
-        double proportional = error * kP;
-        shooterIntegral += (currentTime * error * kI);
-        double derivative = (currentRPM - lastAvg) / (currentTime - lastTime);
-        shooterPower = proportional + shooterIntegral - derivative;
-
-        startShooter();
-
-
     }
 
     public void activateShooter(boolean active) {
@@ -275,7 +311,7 @@ public abstract class LernaeanOpMode extends OpMode {
             activate.setPosition(.2);
     }
 
-    double getShooterPower() {
+    private double getShooterPower() {
         return shooterPower;
     }
 
@@ -316,22 +352,22 @@ public abstract class LernaeanOpMode extends OpMode {
         return color.blue();
     }
 
-    public void armsIn() {
+    private void armsIn() {
         armLeft.setPosition(1 - ARM_IN);
-        armRight.setPosition(ARM_IN);
+        armRight.setPosition(ARM_IN - .05);
     }
 
-    public void grabArms() {
-        armLeft.setPosition(1 - ARM_GRAB);
+    void grabArms() {
+        armLeft.setPosition(1 - ARM_GRAB - .05);
         armRight.setPosition(ARM_GRAB);
     }
 
-    public void openArms() {
-        armLeft.setPosition(1- ARM_OPEN);
-        armRight.setPosition(ARM_OPEN);
+    void openArms() {
+        armLeft.setPosition(1 - ARM_OPEN);
+        armRight.setPosition(ARM_OPEN - .2);
     }
 
-    public void dropArms() {
+    private void dropArms() {
         armLeft.setPosition(ARM_DROP);
         armRight.setPosition(1 - ARM_DROP);
     }
@@ -341,19 +377,19 @@ public abstract class LernaeanOpMode extends OpMode {
         armRight.setPosition(1 - ARM_CLOSE);
     }
 
-    public void armRelease() {
+    void armRelease() {
         armRelease.setPosition(ARM_RELEASER_RELEASED);
     }
 
-    public void armBlocked() {
+    void armBlocked() {
         armRelease.setPosition(ARM_RELEASER_CLOSED);
     }
 
-    public void topGrab() {
+    void topGrab() {
         topGrabber.setPosition(TOP_GRAB);
     }
 
-    public void topUngrab() {
+    void topUngrab() {
         topGrabber.setPosition(TOP_UNGRAB);
     }
 
@@ -361,7 +397,7 @@ public abstract class LernaeanOpMode extends OpMode {
         topGrabber.setPosition(TOP_IDLE);
     }
 
-    public void prepareLift() {
+    void prepareLift() {
         dropArms();
         armRelease();
         try {
@@ -372,15 +408,15 @@ public abstract class LernaeanOpMode extends OpMode {
         openArms();
     }
 
-    public int getShooterEncoderAvg() {
+    private int getShooterEncoderAvg() {
         return (Math.abs(shooterL.getCurrentPosition()) + Math.abs(shooterR.getCurrentPosition())) / 2;
     }
 
-    public void activateLift() {
+    void activateLift() {
         liftRelease.setPower(1);
     }
 
-    public void unactivateLift() {
+    void unactivateLift() {
         liftRelease.setPower(0);
     }
 
@@ -389,6 +425,19 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     private void composeTelemetry() {
+
+        telemetry.addLine()
+                .addData("Shootermode", new Func<String>() {
+                    @Override public String value() {
+                        return "ShootMode: " + shootMode;
+                    }
+                });
+        telemetry.addLine()
+                .addData("voltage", new Func<String>() {
+                    @Override public String value() {
+                        return "voltage: " + voltage;
+                    }
+                });
         telemetry.addLine()
                 .addData("Shootermode", new Func<String>() {
                     @Override public String value() {

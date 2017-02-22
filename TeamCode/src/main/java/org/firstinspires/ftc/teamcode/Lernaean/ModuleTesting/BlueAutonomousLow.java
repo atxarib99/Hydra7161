@@ -39,7 +39,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         Thread.sleep(2000);
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
-        version = "1.39";
+        version = "1.43";
 
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -61,7 +61,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         //soft reset the encoders
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.35, (int) (.3 * 1120), 5000);
+        drivetrain.moveForward(.35, 2000, 5000);
 
         //run a saftey stop command. the previous method has one but this ensures it
         drivetrain.stopMotors();
@@ -76,6 +76,12 @@ public class BlueAutonomousLow extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
+        lift.openArms();
+
+        Thread.sleep(10);
+
+        lift.topGrab();
+
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -86,7 +92,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         manipulator.runCollector(-1);
 
         //let the shooter run for 3 seconds
-        Thread.sleep(500);
+        Thread.sleep(900);
 
         manipulator.runCollector(0);
 
@@ -94,7 +100,7 @@ public class BlueAutonomousLow extends LinearOpMode {
 
         manipulator.runCollector(-1);
 
-        Thread.sleep(1500);
+        Thread.sleep(1750);
 
         //display that we are gonna start our rotation
         telemetry.addData("currentStep", "rotating");
@@ -103,24 +109,25 @@ public class BlueAutonomousLow extends LinearOpMode {
         //stop the shooter
         shooter.stopShooter();
 
+        lift.topUngrab();
+
+        lift.grabArms();
+
         //stop the collector
         manipulator.runCollector(0);
 
-        drivetrain.moveForward(-.35, (int) (.3 * 1120), 5000);
-
-        //move forward .15 rotations this is enough off the wall
-        drivetrain.moveForward(.35, (int) (.15 * 1120), 5000);
+        drivetrain.moveForward(-.35, 1000, 5000);
 
         Thread.sleep(100);
 
-        drivetrain.rotatePB(.5, -150);
+        drivetrain.rotatePB(.4, -142);
 
         drivetrain.stopMotors();
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        Thread.sleep(100);
+        Thread.sleep(250);
 
         drivetrain.setNullValue();
 
@@ -134,7 +141,7 @@ public class BlueAutonomousLow extends LinearOpMode {
 
         manipulator.runCollector(.5);
 
-//        drivetrain.moveBackwardToWall(-.3, 5000, 152);
+        drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
 
         manipulator.runCollector(0);
 
@@ -146,8 +153,6 @@ public class BlueAutonomousLow extends LinearOpMode {
         telemetry.update();
 
         Thread.sleep(100);
-
-        drivetrain.rotatePZeroRevB(.35);
 
         drivetrain.stopMotors();
 
@@ -165,47 +170,47 @@ public class BlueAutonomousLow extends LinearOpMode {
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
-//        while(!drivetrain.sensor.isLeftLine()) {
-//            drivetrain.startMotors(.3, .3);
-//            idle();
-//        }
+        drivetrain.moveForward(-.2, -.35, 4000, 5000);
 
-        Thread.sleep(250);
-
-        drivetrain.moveForward(-.25, -.4, 500, 1000);
-
-        drivetrain.stopMotors();
+        drivetrain.moveFowardToLine(-.1, -.13, 4000);
 
         Thread.sleep(100);
 
-        drivetrain.moveFowardToLine(.14, .26, 1500);
-
         drivetrain.stopMotors();
 
-        Thread.sleep(250);
-
-        drivetrain.moveFowardToLine(-.13, -.15, 3000);
-
-        drivetrain.stopMotors();
-
-        if (beaconPushers.isBackBlue()){
-            beaconPushers.backPush();
+        int count = 0;
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 3) {
+                drivetrain.moveForward(.1, .12, 100, 500);
+            }
+            if (beaconPushers.isBackBlue()){
+                beaconPushers.backPush();
+            }
+            else {
+                beaconPushers.frontPush();
+            }
+            if(count == 3)
+                break;
+            count++;
         }
-        else {
+
+        if(beaconPushers.areBothRed()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
             beaconPushers.frontPush();
         }
 
         drivetrain.setNullValue();
 
-        drivetrain.moveBackward(.3, 1750, 1000);
+        drivetrain.moveForward(.6, .75, 5000, 5000);
 
-        drivetrain.moveFowardToLine(.17, .27, 1000);  //This one corrects for drift but we are accurate with it
+        drivetrain.moveFowardToLine(.14, .23, 2000);
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(-.13, -.15, 3000); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(-.11, -.13, 3000); //move back to be aligned with white line
 
         drivetrain.stopMotors();
 
@@ -222,16 +227,30 @@ public class BlueAutonomousLow extends LinearOpMode {
         telemetry.addData("color", beaconPushers.getColorVal());
         telemetry.update();
 
-        if (beaconPushers.isBackBlue()){
-            beaconPushers.backPush();
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 3) {
+                drivetrain.moveForward(.1, .12, 100, 500);
+            }
+            if (beaconPushers.isBackBlue()){
+                beaconPushers.backPush();
+            }
+            else {
+                beaconPushers.frontPush();
+            }
+            if(count == 3)
+                break;
+            count++;
         }
-        else {
+
+        if(beaconPushers.areBothRed()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
             beaconPushers.frontPush();
         }
 
         drivetrain.stopMotors();
 
-        drivetrain.moveForward(-.6, 1000, 1000);
+        drivetrain.moveForward(-.75, 1000, 1000);
 
         while(Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
             drivetrain.startMotors(-.65, 0);
@@ -239,7 +258,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         }
         drivetrain.stopMotors();
 
-        drivetrain.moveBackward(-.5, 3000, 5000);
+        drivetrain.moveBackward(-1, 6000, 5000);
 
         drivetrain.stopMotors();
     }
