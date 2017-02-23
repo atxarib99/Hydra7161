@@ -36,6 +36,10 @@ public class Judging extends LinearOpMode {
 
         Thread.sleep(1000);
 
+        lift.activateLift();
+
+        Thread.sleep(2000);
+
         lift.unactivateLift();
 
         while(opModeIsActive());

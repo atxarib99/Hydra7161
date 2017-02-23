@@ -54,8 +54,8 @@ public class Lift {
     }
 
     public void openArms() {
-        armLeft.setPosition(ARM_OPEN);
-        armRight.setPosition(1 - ARM_OPEN - .05);
+        armLeft.setPosition(1 - ARM_OPEN);
+        armRight.setPosition(ARM_OPEN - .2);
     }
 
     public void dropArms() {
