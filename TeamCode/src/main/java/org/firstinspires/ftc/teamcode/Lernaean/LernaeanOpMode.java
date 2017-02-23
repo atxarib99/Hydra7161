@@ -42,7 +42,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
     private final double ARM_IN = .85;
-    private final double ARM_GRAB = .65;
+    private final double ARM_GRAB = .68;
     private final double ARM_OPEN = .425;
     private final double ARM_DROP = .25;
     private final double ARM_CLOSE = 0;

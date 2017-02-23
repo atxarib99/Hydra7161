@@ -17,7 +17,7 @@ public class Lift {
 
     LinearOpMode opMode;
 
-    private final double ARM_GRAB = .65;
+    private final double ARM_GRAB = .68;
     private final double ARM_OPEN = .425;
     private final double ARM_DROP = .66;
     private final double ARM_CLOSE = 0;
