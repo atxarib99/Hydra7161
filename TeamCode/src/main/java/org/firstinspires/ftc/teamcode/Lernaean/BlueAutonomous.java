@@ -1,7 +1,8 @@
-package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
+package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -13,19 +14,19 @@ import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
- * Created by Arib on 10/20/2016.
- */
-@Autonomous(name = "RedAutonomous", group = "LinearOpMode")
-public class RedAutonomous extends LinearOpMode {
-    //Create robot objects
+* Created by Arib on 10/20/2016.
+*/
+@Autonomous(name = "Blue Autonomous", group = "LinearOpMode")
+public class BlueAutonomous extends LinearOpMode {
+
+    //create class variables
     private Drivetrain drivetrain;
     private Manipulator manipulator;
     private Shooter shooter;
     private BeaconPushers beaconPushers;
     private Lift lift;
 
-    //create local variables
-
+    //create class specific variables
     private double voltage;
     private String version;
 
@@ -39,7 +40,11 @@ public class RedAutonomous extends LinearOpMode {
         beaconPushers = new BeaconPushers(this);
         lift = new Lift(this);
 
+        //display the values
         composeTelemetry();
+
+        //wait 2 seconds to regain voltage dropped from init
+        Thread.sleep(2000);
 
         //calculate the voltage
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
@@ -49,34 +54,32 @@ public class RedAutonomous extends LinearOpMode {
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
-        version = "1.136";
+        version = "1.43";
 
-        //display the voltage and version for testing
+        //display the data for testing purposes
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
         telemetry.addData("init", "init fully finished");
         telemetry.update();
 
-        //wait for autonmous to actually start
+        //reset the encoders
+        drivetrain.resetEncoders();
+
+        //wait for the program to actually start and display data in the meantime
         while(!opModeIsActive()) {
             telemetry.update();
             idle();
         }
 
-        //start the acceleration calculation for the gyro
+        //start gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        //display that we are moving off the wall
+        //display current step
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
-        //soft reset the encoders
-        drivetrain.setNullValue();
-
-        drivetrain.moveBackward(.35, 2000, 5000);
-
-        //soft reset the encoders
-        drivetrain.setNullValue();
+        //move forward to get into shooting range
+        drivetrain.moveForward(.35, 2000, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -85,9 +88,13 @@ public class RedAutonomous extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        lift.topGrab();
-
+        //move the arms out of the way
         lift.openArms();
+
+        idle();
+
+        //move the top grabber mechanism out of the way
+        lift.topGrab();
 
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
@@ -98,16 +105,19 @@ public class RedAutonomous extends LinearOpMode {
         //start moving the collecter
         manipulator.runCollector(-1);
 
-        //let the shooter run for 3 seconds
-        Thread.sleep(1000);
+        //let the shooter run for 1 seconds
+        Thread.sleep(900);
 
+        //stop the balls from moving
         manipulator.runCollector(0);
 
+        //wait for spinup
         Thread.sleep(400);
 
+        //run the rest of the balls for the rest of the time
         manipulator.runCollector(-1);
 
-        Thread.sleep(1500);
+        Thread.sleep(1750);
 
         //display that we are gonna start our rotation
         telemetry.addData("currentStep", "rotating");
@@ -116,143 +126,140 @@ public class RedAutonomous extends LinearOpMode {
         //stop the shooter
         shooter.stopShooter();
 
+        //move the top grabber mechanism into its rest postion
+        lift.topUngrab();
+
+        //move the arms into their rest position
+        lift.grabArms();
+
         //stop the collector
         manipulator.runCollector(0);
 
-        lift.topUngrab();
+        //move away from shooting zone
+        drivetrain.moveForward(-.35, 1000, 5000);
 
-        lift.grabArms();
+        //wait for momentum
+        Thread.sleep(100);
 
-        drivetrain.moveBackward(-.15, 1000, 5000);
+        //turn PID
+        drivetrain.rotatePB(.4, -142);
 
-        //rotate 42 degrees to the left
-        drivetrain.rotateP(.6, -30); /// 31 or so if going for first line
-
-        //stop after the rotation
-        drivetrain.stopMotors();
-
-        Thread.sleep(500);
-
-        //show the current angle for testing purposes
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        //wait a bit for the momentum to stop moving the robot
-        Thread.sleep(100);
-
-        //reset the encoder
-        drivetrain.setNullValue();
-
-        //display that we are going to move forward
-        telemetry.addData("currentStep", "movingForward");
-        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-        telemetry.update();
-
-        //move forward to the wall
-        drivetrain.moveForwardToWall(1, .3, 12000, 10000, 30);
-
-        drivetrain.moveFowardToLine(.13, .18, 3000);
-
+        //wait for momentum
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(-.09, -.12, 5000);
+        drivetrain.setNullValue();
 
-        int count = 0;
-        while (!beaconPushers.areBothRed()) {
-            if(count == 3) {
-                drivetrain.moveForward(.08, .11, 250, 500);
-            }
-            if (beaconPushers.isBackBlue()){
-                beaconPushers.frontPush();
-            }
-            else {
-                beaconPushers.backPush();
-            }
-            if(count == 3)
-                break;
-            count++;
-        }
-
-        if(beaconPushers.areBothBlue()) {
-            Thread.sleep(5000);
-            beaconPushers.backPush();
-            beaconPushers.frontPush();
-        }
-
-        //display we are moving forwards
         telemetry.addData("currentStep", "movingForward");
+        telemetry.update();
+
         telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
-        drivetrain.setNullValue();
+        manipulator.activateShooter(false);
+
+        //run the collector in reverse to push balls out of the way
+        manipulator.runCollector(.5);
+
+        //
+        drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
+
+        //stop moving the collector
+        manipulator.runCollector(0);
+
+        telemetry.addData("currentStep", "turning back");
+        //wait for momentum
+        Thread.sleep(100);
 
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
+        //move towards the beacons at a high correction
+        drivetrain.moveForward(-.2, -.35, 4000, 5000);
+
+        //slow down and detect the line
+        drivetrain.moveFowardToLine(-.09, -.12, 4000);
+
+        //wait for momentum
         Thread.sleep(100);
 
-//        while(!drivetrain.sensor.isLeftLine()) {
-//            drivetrain.startMotors(.3, .3);
-//            idle();
-//        }
-
-        drivetrain.setNullValue();
-
-        drivetrain.moveForward(-.3, -.7, 6000, 5000);
-
-        drivetrain.moveFowardToLine(-.09, -.12, 5000);
-
-        Thread.sleep(200);
-
-        telemetry.addData("currentStep", "finished");
-
-        telemetry.addData("rightODS", drivetrain.sensor.rightODS());
-        telemetry.addData("leftOdS", drivetrain.sensor.leftODS());
-        telemetry.update();
-
-        drivetrain.stopMotors();
-
-        telemetry.addData("color", beaconPushers.getColorVal());
-        telemetry.update();
-
-        count = 0;
-        while (!beaconPushers.areBothRed()) {
-            if(count == 3) {
-                drivetrain.moveForward(.08, .11, 250, 500);
+        //Press the beacon 2 times and on the third time correct a bit before the last push
+        int count = 0;
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 2) {
+                drivetrain.moveForward(.08, .11, 100, 500);
             }
             if (beaconPushers.isBackBlue()){
-                beaconPushers.frontPush();
-            }
-            else {
                 beaconPushers.backPush();
             }
-            if(count == 3)
+            else {
+                beaconPushers.frontPush();
+            }
+            if(count == 2)
                 break;
             count++;
         }
 
-        if(beaconPushers.areBothBlue()) {
+        if(beaconPushers.areBothRed()) {
             Thread.sleep(5000);
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
 
-        drivetrain.moveForward(.6, 2000, 1000);
+        //move fast towards the next beacon
+        drivetrain.moveForward(.3, .7, 5000, 5000);
 
-        try {
-            while(drivetrain.sensor.getGyroYaw() < 100) {
-                drivetrain.startMotors(.6, 0);
+        //move towards the line at a high speed
+        drivetrain.moveFowardToLine(.14, .23, 2000);
+
+        //wait for momentum
+        Thread.sleep(250);
+
+        //correct to line
+        drivetrain.moveFowardToLine(-.09, -.11, 3000); //move back to be aligned with white line
+
+        //wait for momentum
+        Thread.sleep(250);
+
+        //Press the beacon 2 times and on the third time correct a bit before the last push
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 2) {
+                drivetrain.moveForward(.08, .11, 100, 500);
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            if (beaconPushers.isBackBlue()){
+                beaconPushers.backPush();
+            }
+            else {
+                beaconPushers.frontPush();
+            }
+            if(count == 2)
+                break;
+            count++;
         }
 
+        //make sure we did not hit the wrong color
+        if(beaconPushers.areBothRed()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
+        }
+
+        //move forward a bit
+        drivetrain.moveForward(-.75, 1000, 1000);
+
+        //turn away from the wall
+        while(opModeIsActive() && Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
+            drivetrain.startMotors(-.65, 0);
+            idle();
+        }
         drivetrain.stopMotors();
 
-        drivetrain.setNullValue();
+        //move to the center zone push and park
+        drivetrain.moveBackward(-1, 6000, 5000);
 
-        drivetrain.moveForward(.5, 6000, 5000);
-
+        //safety stop for program
         drivetrain.stopMotors();
     }
 

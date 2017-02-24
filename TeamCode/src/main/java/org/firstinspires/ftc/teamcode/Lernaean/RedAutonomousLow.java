@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
+package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;

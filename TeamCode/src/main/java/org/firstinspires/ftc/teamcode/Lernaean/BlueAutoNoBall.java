@@ -1,8 +1,7 @@
-package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
+package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -16,58 +15,70 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "Blue Autonomous Low", group = "LinearOpMode")
-public class BlueAutonomousLow extends LinearOpMode {
+@Autonomous(name = "Blue Autonomous No Ball", group = "LinearOpMode")
+public class BlueAutoNoBall extends LinearOpMode {
 
+    //create robot parts
     private Drivetrain drivetrain;
     private Manipulator manipulator;
     private Shooter shooter;
     private BeaconPushers beaconPushers;
     private Lift lift;
-    private double voltage;
 
+    //create class variables
+    private double voltage;
     private String version;
 
     @Override
     public void runOpMode() throws InterruptedException {
+
+        //initialize the robot
         drivetrain = new Drivetrain(this);
         manipulator = new Manipulator(this);
         shooter = new Shooter(this);
         beaconPushers = new BeaconPushers(this);
         lift = new Lift(this);
+
+        //display the values
         composeTelemetry();
+
+        //wait 2 seconds to regain voltage dropped from init
         Thread.sleep(2000);
+
+        //calculate the voltage
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
+        /* This is the version number of the current iteration
+        this is because sometimes the compiling process build the app but then installs
+        the old version instead of applying updates. This version numbers is displayed over
+        telemetry to ensure the autonomous is running the current version.
+         */
         version = "1.43";
 
+        //display the data for testing purposes
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
         telemetry.addData("init", "init fully finished");
         telemetry.update();
 
+        //reset the encoders
         drivetrain.resetEncoders();
 
+        //wait for the program to actually start and display data in the meantime
         while(!opModeIsActive()) {
             telemetry.update();
             idle();
         }
 
+        //start gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        //display current step
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
-        //soft reset the encoders
-        drivetrain.setNullValue();
-
+        //move forward to get into shooting range
         drivetrain.moveForward(.35, 2000, 5000);
-
-        //run a saftey stop command. the previous method has one but this ensures it
-        drivetrain.stopMotors();
-
-        //soft reset the encoders
-        drivetrain.setNullValue();
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -76,10 +87,12 @@ public class BlueAutonomousLow extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
+        //move the arms out of the way
         lift.openArms();
 
-        Thread.sleep(10);
+        idle();
 
+        //move the top grabber mechanism out of the way
         lift.topGrab();
 
         //start the shooter at the calculated power from the voltage value saved
@@ -91,13 +104,16 @@ public class BlueAutonomousLow extends LinearOpMode {
         //start moving the collecter
         manipulator.runCollector(-1);
 
-        //let the shooter run for 3 seconds
+        //let the shooter run for 1 seconds
         Thread.sleep(900);
 
+        //stop the balls from moving
         manipulator.runCollector(0);
 
+        //wait for spinup
         Thread.sleep(400);
 
+        //run the rest of the balls for the rest of the time
         manipulator.runCollector(-1);
 
         Thread.sleep(1750);
@@ -109,24 +125,28 @@ public class BlueAutonomousLow extends LinearOpMode {
         //stop the shooter
         shooter.stopShooter();
 
+        //move the top grabber mechanism into its rest postion
         lift.topUngrab();
 
+        //move the arms into their rest position
         lift.grabArms();
 
         //stop the collector
         manipulator.runCollector(0);
 
+        //move away from shooting zone
         drivetrain.moveForward(-.35, 1000, 5000);
 
+        //wait for momentum
         Thread.sleep(100);
 
+        //turn PID
         drivetrain.rotatePB(.4, -142);
-
-        drivetrain.stopMotors();
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
 
+        //wait for momentum
         Thread.sleep(250);
 
         drivetrain.setNullValue();
@@ -139,49 +159,36 @@ public class BlueAutonomousLow extends LinearOpMode {
 
         manipulator.activateShooter(false);
 
+        //run the collector in reverse to push balls out of the way
         manipulator.runCollector(.5);
 
+        //
         drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
 
+        //stop moving the collector
         manipulator.runCollector(0);
 
-        drivetrain.stopMotors();
-
         telemetry.addData("currentStep", "turning back");
-
-        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-        telemetry.update();
-
+        //wait for momentum
         Thread.sleep(100);
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(100);
-
-        drivetrain.stopMotors();
-
-        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
-        telemetry.update();
-
-        drivetrain.setNullValue();
-
-//        drivetrain.moveForward(-.5, 500, 1000);
 
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
+        //move towards the beacons at a high correction
         drivetrain.moveForward(-.2, -.35, 4000, 5000);
 
-        drivetrain.moveFowardToLine(-.1, -.13, 4000);
+        //slow down and detect the line
+        drivetrain.moveFowardToLine(-.09, -.12, 4000);
 
+        //wait for momentum
         Thread.sleep(100);
 
-        drivetrain.stopMotors();
-
+        //Press the beacon 2 times and on the third time correct a bit before the last push
         int count = 0;
         while (!beaconPushers.areBothBlue()) {
-            if(count == 3) {
-                drivetrain.moveForward(.1, .12, 100, 500);
+            if(count == 2) {
+                drivetrain.moveForward(.08, .11, 100, 500);
             }
             if (beaconPushers.isBackBlue()){
                 beaconPushers.backPush();
@@ -189,7 +196,7 @@ public class BlueAutonomousLow extends LinearOpMode {
             else {
                 beaconPushers.frontPush();
             }
-            if(count == 3)
+            if(count == 2)
                 break;
             count++;
         }
@@ -200,36 +207,25 @@ public class BlueAutonomousLow extends LinearOpMode {
             beaconPushers.frontPush();
         }
 
-        drivetrain.setNullValue();
+        //move fast towards the next beacon
+        drivetrain.moveForward(.3, .7, 5000, 5000);
 
-        drivetrain.moveForward(.6, .75, 5000, 5000);
-
+        //move towards the line at a high speed
         drivetrain.moveFowardToLine(.14, .23, 2000);
 
-        drivetrain.stopMotors();
-
+        //wait for momentum
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(-.11, -.13, 3000); //move back to be aligned with white line
+        //correct to line
+        drivetrain.moveFowardToLine(-.09, -.11, 3000); //move back to be aligned with white line
 
-        drivetrain.stopMotors();
-
+        //wait for momentum
         Thread.sleep(250);
 
-        telemetry.addData("currentStep", "finished");
-
-        telemetry.addData("rightODS", drivetrain.sensor.rightODS());
-        telemetry.addData("leftOdS", drivetrain.sensor.leftODS());
-        telemetry.update();
-
-        drivetrain.stopMotors();
-
-        telemetry.addData("color", beaconPushers.getColorVal());
-        telemetry.update();
-
+        //Press the beacon 2 times and on the third time correct a bit before the last push
         while (!beaconPushers.areBothBlue()) {
-            if(count == 3) {
-                drivetrain.moveForward(.1, .12, 100, 500);
+            if(count == 2) {
+                drivetrain.moveForward(.08, .11, 100, 500);
             }
             if (beaconPushers.isBackBlue()){
                 beaconPushers.backPush();
@@ -237,30 +233,17 @@ public class BlueAutonomousLow extends LinearOpMode {
             else {
                 beaconPushers.frontPush();
             }
-            if(count == 3)
+            if(count == 2)
                 break;
             count++;
         }
 
+        //make sure we did not hit the wrong color
         if(beaconPushers.areBothRed()) {
             Thread.sleep(5000);
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
-
-        drivetrain.stopMotors();
-
-        drivetrain.moveForward(-.75, 1000, 1000);
-
-        while(Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
-            drivetrain.startMotors(-.65, 0);
-            idle();
-        }
-        drivetrain.stopMotors();
-
-        drivetrain.moveBackward(-1, 6000, 5000);
-
-        drivetrain.stopMotors();
     }
 
     private void composeTelemetry() {

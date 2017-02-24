@@ -1,9 +1,8 @@
-package org.firstinspires.ftc.teamcode.Lernaean.ModuleTesting;
-
-import android.widget.ThemedSpinnerAdapter;
+package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -17,8 +16,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "ShootAndPush", group = "LinearOpMode")
-public class ShootAndPushBall extends LinearOpMode {
+@Autonomous(name = "Blue Autonomous Low", group = "LinearOpMode")
+public class BlueAutonomousLow extends LinearOpMode {
 
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -62,7 +61,7 @@ public class ShootAndPushBall extends LinearOpMode {
         //soft reset the encoders
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.35, 4000, 5000);
+        drivetrain.moveForward(.35, 2000, 5000);
 
         //run a saftey stop command. the previous method has one but this ensures it
         drivetrain.stopMotors();
@@ -114,12 +113,154 @@ public class ShootAndPushBall extends LinearOpMode {
 
         lift.grabArms();
 
-        Thread.sleep(10000);
+        //stop the collector
+        manipulator.runCollector(0);
 
-        drivetrain.moveBackward(.2, 5500, 5000);
+        drivetrain.moveForward(-.35, 1000, 5000);
+
+        Thread.sleep(100);
+
+        drivetrain.rotatePB(.4, -142);
 
         drivetrain.stopMotors();
 
+        telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        Thread.sleep(250);
+
+        drivetrain.setNullValue();
+
+        telemetry.addData("currentStep", "movingForward");
+        telemetry.update();
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        manipulator.activateShooter(false);
+
+        manipulator.runCollector(.5);
+
+        drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
+
+        manipulator.runCollector(0);
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("currentStep", "turning back");
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        Thread.sleep(100);
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(100);
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("currentAngle", drivetrain.sensor.getGyroYaw());
+        telemetry.update();
+
+        drivetrain.setNullValue();
+
+//        drivetrain.moveForward(-.5, 500, 1000);
+
+        telemetry.addData("currentStep", "finding the whiteline");
+        telemetry.update();
+
+        drivetrain.moveForward(-.2, -.35, 4000, 5000);
+
+        drivetrain.moveFowardToLine(-.1, -.13, 4000);
+
+        Thread.sleep(100);
+
+        drivetrain.stopMotors();
+
+        int count = 0;
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 3) {
+                drivetrain.moveForward(.1, .12, 100, 500);
+            }
+            if (beaconPushers.isBackBlue()){
+                beaconPushers.backPush();
+            }
+            else {
+                beaconPushers.frontPush();
+            }
+            if(count == 3)
+                break;
+            count++;
+        }
+
+        if(beaconPushers.areBothRed()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
+        }
+
+        drivetrain.setNullValue();
+
+        drivetrain.moveForward(.6, .75, 5000, 5000);
+
+        drivetrain.moveFowardToLine(.14, .23, 2000);
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(250);
+
+        drivetrain.moveFowardToLine(-.11, -.13, 3000); //move back to be aligned with white line
+
+        drivetrain.stopMotors();
+
+        Thread.sleep(250);
+
+        telemetry.addData("currentStep", "finished");
+
+        telemetry.addData("rightODS", drivetrain.sensor.rightODS());
+        telemetry.addData("leftOdS", drivetrain.sensor.leftODS());
+        telemetry.update();
+
+        drivetrain.stopMotors();
+
+        telemetry.addData("color", beaconPushers.getColorVal());
+        telemetry.update();
+
+        while (!beaconPushers.areBothBlue()) {
+            if(count == 3) {
+                drivetrain.moveForward(.1, .12, 100, 500);
+            }
+            if (beaconPushers.isBackBlue()){
+                beaconPushers.backPush();
+            }
+            else {
+                beaconPushers.frontPush();
+            }
+            if(count == 3)
+                break;
+            count++;
+        }
+
+        if(beaconPushers.areBothRed()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
+        }
+
+        drivetrain.stopMotors();
+
+        drivetrain.moveForward(-.75, 1000, 1000);
+
+        while(Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
+            drivetrain.startMotors(-.65, 0);
+            idle();
+        }
+        drivetrain.stopMotors();
+
+        drivetrain.moveBackward(-1, 6000, 5000);
+
+        drivetrain.stopMotors();
     }
 
     private void composeTelemetry() {

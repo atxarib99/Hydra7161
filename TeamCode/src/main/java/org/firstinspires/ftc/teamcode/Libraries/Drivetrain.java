@@ -61,14 +61,12 @@ public class Drivetrain {
     }
 
     public void moveFowardToLine(double ri, double le, int timeout) throws InterruptedException {
-        double angle;
-        double startAngle = Math.abs(sensor.getGyroYaw());
-        opMode.telemetry.update();
 
-        setNullValue();
+        //create time variable for timeout
         ElapsedTime time = new ElapsedTime();
         time.startTime();
 
+        //while we havent found the line keep moving at given powers
         while(!sensor.isRightLine() && time.milliseconds() < timeout) {
 
             opMode.telemetry.addData("LeftPower", motorBL.getPower());
@@ -84,52 +82,45 @@ public class Drivetrain {
     }
 
     public void moveForwardToWall(double pow, double powTwo, int encoderVal, int timeout, int angleTo) throws InterruptedException {
+        //get the current angle and where we start
         double angle = Math.abs(sensor.getGyroYaw());
         double startAngle = angle;
 
+        //set the power to the first powers movement
         double power = pow;
 
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
+        //reset the encoders
+        resetEncoders();
 
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-
+        //soft reset the encoders
         setNullValue();
 
+        //create a time variable
         ElapsedTime time = new ElapsedTime();
         time.startTime();
+
+        //set how long we want to accelerate
         int targetTime = 2000;
         int currentEncoder = 0;
 
         double increaseTick;
 
+        //accelerate for a target time increasing power by percentage
         while(time.milliseconds() < targetTime) {
             increaseTick = (time.milliseconds() / targetTime) / pow;
             angle = Math.abs(sensor.getGyroYaw());
 
             if(angle < startAngle - 2) {
-                startMotors((increaseTick * .75), (increaseTick));
+                startMotors((increaseTick * .6), (increaseTick));
             } else if(angle > startAngle + 2) {
-                startMotors((increaseTick), (increaseTick * .75));
+                startMotors((increaseTick), (increaseTick * .6));
             } else {
                 startMotors(increaseTick, increaseTick);
             }
             opMode.telemetry.update();
         }
 
+        //move the full distance at the first power
         while(currentEncoder < encoderVal && time.milliseconds() < timeout) {
             opMode.telemetry.update();
             angle = Math.abs(sensor.getGyroYaw());
@@ -139,24 +130,28 @@ public class Drivetrain {
             Range.clip(power, -1, 1);
 
             if(angle < startAngle - 2) {
-                startMotors((power * .75), (power));
+                startMotors((power * .6), (power));
             } else if(angle > startAngle + 2) {
-                startMotors((power), (power * .75));
+                startMotors((power), (power * .6));
             } else {
                 startMotors(power, power);
             }
             opMode.idle();
         }
 
+        //give into the wall a little
         while(angle > startAngle - 3) {
-            startMotors(.1, 0);
+            startMotors(.2, 0);
             angle = Math.abs(sensor.getGyroYaw());
         }
 
+        //set new values for correction
         startAngle = startAngle - 3;
         startMotors(power, power);
         power = powTwo;
         time.reset();
+
+        //run into the wall and detect
         while (Math.abs(startAngle - angle) < 10 && time.milliseconds() < timeout) {
             angle = Math.abs(sensor.getGyroYaw());
             opMode.telemetry.addData("LeftPower", motorBL.getPower());
@@ -164,19 +159,19 @@ public class Drivetrain {
             opMode.telemetry.update();
 
             if(power > 0) {
-                if (angle < Math.abs(startAngle) - 1) {
-                    startMotors((power * .75), (power));
-                } else if (angle > Math.abs(startAngle) + 1) {
-                    startMotors((power), (power * .75));
+                if (angle < Math.abs(startAngle) - 2) {
+                    startMotors((power * .6), (power));
+                } else if (angle > Math.abs(startAngle) + 2) {
+                    startMotors((power), (power * .6));
                 } else {
                     startMotors(power, power);
                 }
             }
             else if(power < 0) {
-                if (angle < Math.abs(startAngle) - 1) {
-                    startMotors((power), (power * .75));
-                } else if (angle > Math.abs(startAngle) + 1) {
-                    startMotors((power *.75), (power));
+                if (angle < Math.abs(startAngle) - 2) {
+                    startMotors(((power * .65)), power);
+                } else if (angle > Math.abs(startAngle) + 2) {
+                    startMotors((power), (power * .65));
                 } else {
                     startMotors(power, power);
                 }
@@ -198,34 +193,40 @@ public class Drivetrain {
 
         double power = pow;
 
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
 
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
+        resetEncoders();
+//        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        opMode.idle();
+//        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        opMode.idle();
+//        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        opMode.idle();
+//        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        opMode.idle();
+//
+//        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        opMode.idle();
+//        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        opMode.idle();
+//        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        opMode.idle();
+//        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        opMode.idle();
 
         setNullValue();
 
+        //create time object
         ElapsedTime time = new ElapsedTime();
         time.reset();
         time.startTime();
+
+        //declare acceleration time
         int targetTime = 2000;
         int currentEncoder = 0;
 
         double increaseTick;
 
+        //accelerate for the given time
         while(time.milliseconds() < targetTime) {
             increaseTick = (time.milliseconds() / targetTime) / pow;
             angle = Math.abs(sensor.getGyroYaw());
@@ -240,7 +241,7 @@ public class Drivetrain {
             opMode.telemetry.update();
         }
 
-        currentEncoder = getEncoderAvg() - nullValue;
+        //move for ethe set distance
         while(encoderVal > currentEncoder && time.milliseconds() < timeout) {
             opMode.telemetry.update();
             angle = Math.abs(sensor.getGyroYaw());
@@ -265,16 +266,19 @@ public class Drivetrain {
             opMode.idle();
         }
 
+        //give into the wall for a little bit
         while(angle < startAngle + 3) {
             startMotors(-.15, 0);
             angle = Math.abs(sensor.getGyroYaw());
         }
 
+        //reset variables
         startAngle = 137 + 3;
-
         power = powTwo;
         startMotors(power, power);
         time.reset();
+
+        //move until we detect the wall
         while (Math.abs(startAngle - angle) < 10 && time.milliseconds() < timeout) {
             angle = Math.abs(sensor.getGyroYaw());
             opMode.telemetry.addData("LeftPower", motorBL.getPower());
@@ -282,10 +286,10 @@ public class Drivetrain {
             opMode.telemetry.update();
 
             if(power > 0) {
-                if (angle < Math.abs(startAngle) - 1) {
-                    startMotors((power * .75), (power));
-                } else if (angle > Math.abs(startAngle) + 1) {
-                    startMotors((power), (power * .75));
+                if (angle < Math.abs(startAngle) - 2) {
+                    startMotors((power * .65), (power));
+                } else if (angle > Math.abs(startAngle) + 2) {
+                    startMotors((power), (power * .65));
                 } else {
                     startMotors(power, power);
                 }
@@ -430,23 +434,7 @@ public class Drivetrain {
         double error;
         double power;
 
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
+        resetEncoders();
 
         setNullValue();
 
@@ -707,7 +695,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .0105) + .08;                      //update p values
+            power = (pow * (error) * .009) + .08;                      //update p values
             inte = ((opMode.getRuntime()) * error * .0020);         //update inte value
             inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
