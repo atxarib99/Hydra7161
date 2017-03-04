@@ -90,19 +90,16 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 else {
                     activateShooter(false);
                 }
-            } else if(gamepad2.left_trigger > .05)
+            } else if(gamepad2.left_trigger > .05) {
                 stopMani();
+            }
         }
 
         //if we are shooting
         if(!shootMode) {
 
-            if((Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)) && armLeft.getPosition() == .1) {
+            if((Math.abs(powerR) > .05 || (Math.abs(powerL) > .05))) {
                 startMotors((powerR * .375), (powerL * .375));
-            }
-            //if in lift mode but ball is dropped slow to 75% power
-            else if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)){
-                startMotors((powerR * .75), (powerL * .75));
             }
             //if we are not moving stop the motors
             else if(!xPressed && !bPressed) {
@@ -135,18 +132,14 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
 
             if(gamepad2.right_bumper || gamepad2.left_bumper) {
-                grabArms();
                 topGrab();
-            }
-
-            if(gamepad2.right_trigger > .05) {
-                openArms();
+                topGrabRun();
+            } else if(gamepad2.right_trigger > .05 || gamepad2.left_trigger > .05) {
                 topUngrab();
-            }
-
-            if(gamepad2.left_trigger > .05) {
-                grabArms();
-                topUngrab();
+                topGrabReverse();
+            } else {
+                topGrabIdle();
+                topIdle();
             }
 
             if(gamepad2.x) {

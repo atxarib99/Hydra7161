@@ -146,7 +146,7 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .3, 11000, 10000, 38);
+        drivetrain.moveForwardToWall(1, .3, 11500, 10000, 38);
 
         //move forward into line
         drivetrain.moveFowardToLine(.13, .18, 4000);

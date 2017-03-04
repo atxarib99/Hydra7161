@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
-import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 
@@ -26,15 +24,15 @@ public abstract class LernaeanOpMode extends OpMode {
     Servo front;
     Servo back;
     private Servo activate;
-    private Servo armRight;
-    Servo armLeft;
     Servo armRelease;
     Servo topGrabber;
+    Servo topGrabberRunner;
     DeviceInterfaceModule cdim;
     private ColorSensor color;
     private ColorSensor color2;
     private OpticalDistanceSensor left;
     private OpticalDistanceSensor right;
+    LernaeanOpMode opMode;
 
 
     private final double BACK_OUT = 0;
@@ -60,9 +58,7 @@ public abstract class LernaeanOpMode extends OpMode {
 
     Runnable speedCounter = new Runnable() {
 
-
-
-        private double[] velocityAvg = new double[90];
+        private double[] velocityAvg = new double[400];
         private int currentTick;
         private double avg = 0;
         private double lastAvg = 0;
@@ -73,34 +69,38 @@ public abstract class LernaeanOpMode extends OpMode {
         double velocity;
         @Override
         public void run() {
-            long currentTime = System.currentTimeMillis();
-            currentEncoder = getShooterEncoderAvg();
-            velocity = (currentEncoder - lastEncoder) / (currentTime - lastTime);
-            telemetry.addData("time", currentTime * 1000);
-            telemetry.addData("Encoder", currentEncoder + "--" + shooterL.getCurrentPosition() + "--" + shooterR.getCurrentPosition());
-            if(velocity > 0) {
-                velocityAvg[currentTick++] = velocity;
-            }
-            if(currentTick == 39) {
-                lastAvg = avg;
-                avg = 0;
-                for(int i = 0; i < 40; i++) {
-                    avg += velocityAvg[i];
+            while (Thread.currentThread().isAlive()) {
+                long currentTime = System.nanoTime();
+                currentEncoder = getShooterEncoderAvg();
+                velocity = (currentEncoder - lastEncoder) / ((currentTime - lastTime) / 1000000);
+                opMode.telemetry.addData("velocity", velocity);
+                opMode.telemetry.addData("time", currentTime);
+                opMode.telemetry.addData("Encoder", currentEncoder + "--" + shooterL.getCurrentPosition() + "--" + shooterR.getCurrentPosition());
+                if (velocity > 0) {
+                    velocityAvg[currentTick++] = velocity;
                 }
-                avg /= 40;
-                if(getShooterPower() > .04) {
+                opMode.telemetry.addData("currentTick", currentTick);
+                if (currentTick == 399) {
+                    lastAvg = avg;
+                    avg = 0;
+                    for (int i = 0; i < 400; i++) {
+                        avg += velocityAvg[i];
+                    }
+                    avg /= 40;
+                    if (getShooterPower() > .04) {
 //                    startPID(avg, lastTime);
+                    }
+                    currentTick = 0;
                 }
-                currentTick = 0;
-            }
-            telemetry.addData("Velocity", avg);
-            telemetry.update();
-            lastTime = currentTime;
-            lastEncoder = currentEncoder;
-            try{
-                Thread.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+                opMode.telemetry.addData("avgVelocity", avg);
+                opMode.telemetry.update();
+                lastTime = currentTime;
+                lastEncoder = currentEncoder;
+                try {
+                    Thread.sleep(0, 10000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         }
     };
@@ -173,6 +173,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private Thread speedThread;
     @Override
     public void init() {
+        opMode = this;
         reversed = false;
         composeTelemetry();
         motorBL = hardwareMap.dcMotor.get("BL");
@@ -196,11 +197,10 @@ public abstract class LernaeanOpMode extends OpMode {
         color2 = hardwareMap.colorSensor.get("colorR");
         left = hardwareMap.opticalDistanceSensor.get("odsL");
         right = hardwareMap.opticalDistanceSensor.get("odsR");
-        armLeft = hardwareMap.servo.get("aL");
-        armRight = hardwareMap.servo.get("aR");
         liftRelease = hardwareMap.dcMotor.get("lrelease");
         armRelease = hardwareMap.servo.get("arelease");
         topGrabber = hardwareMap.servo.get("topGrabber");
+        topGrabberRunner = hardwareMap.servo.get("topGrabRun");
         shooterPower = .3;
         shooterIntegral = 0;
         speedThread = new Thread(speedCounter);
@@ -208,12 +208,23 @@ public abstract class LernaeanOpMode extends OpMode {
         ABSRightThread = new Thread(ABSright);
         frontIn();
         backIn();
-        armsIn();
+        topIdle();
+        topGrabIdle();
         activateShooter(false);
         unactivateLift();
         armBlocked();
-        topUngrab();
+        topIdle();
         resetStartTime();
+    }
+
+    @Override
+    public void stop() {
+//        speedThread.interrupt();
+    }
+
+    @Override
+    public void start() {
+//        speedThread.start();
     }
 
     public void startMotors(double ri, double le) {
@@ -237,16 +248,17 @@ public abstract class LernaeanOpMode extends OpMode {
         motorFR.setPower(0);
     }
 
-//    public void pulseStop() throws InterruptedException {
-//        while(powerL > .25 || powerR > .25) {
-//            powerL /= 2;
-//            powerR /= 2;
-//            startMotors(powerR, powerL);
-//            Thread.sleep(SLEEP_CYCLE);
-//            stopMotors();
-//            Thread.sleep(SLEEP_CYCLE * 2);
-//        }
-//    }
+    @Deprecated
+    public void pulseStop() throws InterruptedException {
+        while(powerL > .25 || powerR > .25) {
+            powerL /= 2;
+            powerR /= 2;
+            startMotors(powerR, powerL);
+            Thread.sleep(SLEEP_CYCLE);
+            stopMotors();
+            Thread.sleep(SLEEP_CYCLE * 2);
+        }
+    }
 
     void frontOut() {
         front.setPosition(FRONT_OUT);
@@ -281,7 +293,6 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void startShooter() {
-        openArms();
         topGrab();
         shooterL.setPower(shooterPower + shooterIntegral);
         shooterR.setPower(-shooterPower - shooterIntegral);
@@ -296,10 +307,10 @@ public abstract class LernaeanOpMode extends OpMode {
         shooterL.setPower(0);
         shooterR.setPower(0);
         shooterIntegral = 0;
-        armsIn();
         topUngrab();
     }
 
+    @Deprecated
     private double targetRPM(double pow) {
         return 0.0;
     }
@@ -352,31 +363,6 @@ public abstract class LernaeanOpMode extends OpMode {
         return color.blue();
     }
 
-    private void armsIn() {
-        armLeft.setPosition(1 - ARM_IN);
-        armRight.setPosition(ARM_IN - .05);
-    }
-
-    void grabArms() {
-        armLeft.setPosition(1 - ARM_GRAB - .05);
-        armRight.setPosition(ARM_GRAB);
-    }
-
-    void openArms() {
-        armLeft.setPosition(1 - ARM_OPEN);
-        armRight.setPosition(ARM_OPEN - .2);
-    }
-
-    private void dropArms() {
-        armLeft.setPosition(ARM_DROP);
-        armRight.setPosition(1 - ARM_DROP);
-    }
-
-    public void closeArms() {
-        armLeft.setPosition(ARM_CLOSE);
-        armRight.setPosition(1 - ARM_CLOSE);
-    }
-
     void armRelease() {
         armRelease.setPosition(ARM_RELEASER_RELEASED);
     }
@@ -386,26 +372,36 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void topGrab() {
-        topGrabber.setPosition(TOP_GRAB);
+        topGrabber.setPosition(1);
     }
 
     void topUngrab() {
-        topGrabber.setPosition(TOP_UNGRAB);
+        topGrabber.setPosition(-1);
     }
 
-    public void topIdle() {
-        topGrabber.setPosition(TOP_IDLE);
+    void topIdle() {
+        topGrabber.setPosition(.5);
+    }
+
+    void topGrabRun() {
+        topGrabberRunner.setPosition(-1);
+    }
+
+    void topGrabReverse() {
+        topGrabberRunner.setPosition(1);
+    }
+
+    void topGrabIdle() {
+        topGrabberRunner.setPosition(.5);
     }
 
     void prepareLift() {
-        dropArms();
         armRelease();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openArms();
     }
 
     private int getShooterEncoderAvg() {

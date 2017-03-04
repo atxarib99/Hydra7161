@@ -129,7 +129,7 @@ public class RedAutonomous extends LinearOpMode {
         drivetrain.moveBackward(-.15, 1000, 5000);
 
         //rotate 38 degrees to the left
-        drivetrain.rotateP(.4, -38);
+        drivetrain.rotateP(.5, -38);
 
         //stop after the rotation safety stop
         drivetrain.stopMotors();
@@ -143,7 +143,7 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .3, 11000, 10000, 38);
+        drivetrain.moveForwardToWall(1, .3, 11500, 10000, 38);
 
         //move forward into line
         drivetrain.moveFowardToLine(.13, .18, 4000);
