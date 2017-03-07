@@ -37,35 +37,30 @@ public class Lift {
         liftRelease = opMode.hardwareMap.dcMotor.get("lrelease");
         armRelease = opMode.hardwareMap.servo.get("arelease");
         topGrabber = opMode.hardwareMap.servo.get("topGrabber");
-        grabArms();
+        armsIn();
         unactivateLift();
         armBlocked();
         topUngrab();
     }
 
-    public void grabArms() {
-        armLeft.setPosition(1 - ARM_IN);
-        armRight.setPosition(ARM_IN - .05);
-    }
-
     public void armsIn() {
-        armLeft.setPosition(1 - ARM_GRAB - .05);
-        armRight.setPosition(ARM_GRAB);
+        armLeft.setPosition(.4);
+        armRight.setPosition(.6);
     }
 
-    public void openArms() {
-        armLeft.setPosition(1 - ARM_OPEN);
-        armRight.setPosition(ARM_OPEN - .2);
+    public void armsOut() {
+        armLeft.setPosition(.37);
+        armRight.setPosition(.63);
     }
 
-    public void dropArms() {
-        armLeft.setPosition(ARM_DROP);
-        armRight.setPosition(1 - ARM_DROP);
+    public void armsDrop() {
+        armLeft.setPosition(0);
+        armRight.setPosition(1);
     }
 
-    public void closeArms() {
-        armLeft.setPosition(1 - ARM_CLOSE);
-        armRight.setPosition(ARM_CLOSE);
+    public void armsGrab() {
+        armLeft.setPosition(.53);
+        armRight.setPosition(.47);
     }
 
     public void armRelease() {
@@ -85,7 +80,7 @@ public class Lift {
     }
 
     public void prepareLift() {
-        dropArms();
+        armsDrop();
         armRelease();
         topUngrab();
         try {
@@ -93,7 +88,7 @@ public class Lift {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        openArms();
+        armsOut();
     }
 
     public void activateLift() {

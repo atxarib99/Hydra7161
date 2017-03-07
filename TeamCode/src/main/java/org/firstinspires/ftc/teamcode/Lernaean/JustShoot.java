@@ -79,12 +79,6 @@ public class JustShoot extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        lift.openArms();
-
-        Thread.sleep(10);
-
-        lift.topGrab();
-
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -111,10 +105,6 @@ public class JustShoot extends LinearOpMode {
 
         //stop the shooter
         shooter.stopShooter();
-
-        lift.topUngrab();
-
-        lift.grabArms();
     }
 
     private void composeTelemetry() {

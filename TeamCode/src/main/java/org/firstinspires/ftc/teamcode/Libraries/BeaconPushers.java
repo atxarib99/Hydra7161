@@ -108,13 +108,13 @@ public class BeaconPushers {
 
     public void backPush() throws InterruptedException {
         backOut(true);
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         backOut(false);
     }
 
     public void frontPush() throws InterruptedException {
         frontOut(true);
-        Thread.sleep(1000);
+        Thread.sleep(1500);
         frontOut(false);
     }
 

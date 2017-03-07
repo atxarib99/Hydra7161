@@ -87,14 +87,6 @@ public class ShootAndPushBall extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        //move the arms out of they way of the wheels
-        lift.openArms();
-
-        Thread.sleep(10);
-
-        //move the top grabbing mechanism out of the way of the balls path
-        lift.topGrab();
-
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -119,12 +111,6 @@ public class ShootAndPushBall extends LinearOpMode {
 
         //stop the shooter
         shooter.stopShooter();
-
-        //put the top grabbing mechanism back into resting postion
-        lift.topUngrab();
-
-        //put the arms back into resting postion
-        lift.grabArms();
 
         //wait 10 seconds so that we dont run the cap ball into other teams
         Thread.sleep(10000);

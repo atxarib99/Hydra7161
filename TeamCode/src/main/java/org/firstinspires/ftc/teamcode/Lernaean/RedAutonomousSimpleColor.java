@@ -86,12 +86,6 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        //move the top grabber out of shooting path
-        lift.topGrab();
-
-        //move the arms away from the shooters
-        lift.openArms();
-
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -121,12 +115,6 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
 
         //stop the collector
         manipulator.runCollector(0);
-
-        //move the top grabbing mechanism back to rest position
-        lift.topUngrab();
-
-        //move the arms back to rest position
-        lift.grabArms();
 
         //move away from the shooting zone
         drivetrain.moveBackward(-.15, 1000, 5000);
