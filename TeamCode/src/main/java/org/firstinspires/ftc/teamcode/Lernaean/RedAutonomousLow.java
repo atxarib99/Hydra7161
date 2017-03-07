@@ -85,10 +85,6 @@ public class RedAutonomousLow extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        lift.topGrab();
-
-        lift.openArms();
-
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -118,10 +114,6 @@ public class RedAutonomousLow extends LinearOpMode {
 
         //stop the collector
         manipulator.runCollector(0);
-
-        lift.topUngrab();
-
-        lift.grabArms();
 
         drivetrain.moveBackward(-.15, 1000, 5000);
 

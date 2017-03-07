@@ -87,14 +87,6 @@ public class BlueAutoNoBall extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        //move the arms out of the way
-        lift.openArms();
-
-        idle();
-
-        //move the top grabber mechanism out of the way
-        lift.topGrab();
-
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -124,12 +116,6 @@ public class BlueAutoNoBall extends LinearOpMode {
 
         //stop the shooter
         shooter.stopShooter();
-
-        //move the top grabber mechanism into its rest postion
-        lift.topUngrab();
-
-        //move the arms into their rest position
-        lift.grabArms();
 
         //stop the collector
         manipulator.runCollector(0);

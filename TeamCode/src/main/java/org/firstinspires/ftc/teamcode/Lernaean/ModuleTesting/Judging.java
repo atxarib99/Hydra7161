@@ -26,13 +26,13 @@ public class Judging extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         lift = new Lift(this);
 
-        lift.openArms();
+        lift.armsOut();
 
         lift.armRelease();
 
         waitForStart();
 
-        lift.armsIn();
+        lift.armsGrab();
 
         Thread.sleep(1000);
 
@@ -44,7 +44,7 @@ public class Judging extends LinearOpMode {
 
         while(opModeIsActive());
 
-        lift.openArms();
+        lift.armsDrop();
 
         Thread.sleep(1500);
     }

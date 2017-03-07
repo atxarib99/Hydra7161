@@ -83,12 +83,6 @@ public class RedAutonomous extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        //move the top grabber out of shooting path
-        lift.topGrab();
-
-        //move the arms away from the shooters
-        lift.openArms();
-
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -122,9 +116,6 @@ public class RedAutonomous extends LinearOpMode {
         //move the top grabbing mechanism back to rest position
         lift.topUngrab();
 
-        //move the arms back to rest position
-        lift.grabArms();
-
         //move away from the shooting zone
         drivetrain.moveBackward(-.15, 1000, 5000);
 
@@ -154,13 +145,20 @@ public class RedAutonomous extends LinearOpMode {
         //correct back onto the line
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
+        lift.armsIn();
+
         //Press the beacon 2 times and on the third time correct a bit before the last push
+        boolean blue = beaconPushers.isBackBlue();
         int count = 0;
         while (!beaconPushers.areBothRed()) {
             if(count == 2) {
-                drivetrain.moveForward(.08, .11, 250, 500);
+                if(blue) {
+                    drivetrain.moveForward(.08, .11, 100, 500);
+                } else {
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                }
             }
-            if (beaconPushers.isBackBlue()){
+            if (blue) {
                 beaconPushers.frontPush();
             }
             else {
@@ -169,6 +167,7 @@ public class RedAutonomous extends LinearOpMode {
             if(count == 2)
                 break;
             count++;
+            Thread.sleep(250);
         }
 
         //make sure we didn't hit the wrong color
@@ -177,6 +176,8 @@ public class RedAutonomous extends LinearOpMode {
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+        lift.armsIn();
 
         //display we are moving forwards
         telemetry.addData("currentStep", "movingForward");
@@ -189,16 +190,19 @@ public class RedAutonomous extends LinearOpMode {
         //slow down while finding the line
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
-        //wait for momentum
-        Thread.sleep(200);
-
+        lift.armsDrop();
         //Press the beacon 2 times and on the third time correct a bit before the last push
         count = 0;
+        blue = beaconPushers.isBackBlue();
         while (!beaconPushers.areBothRed()) {
             if(count == 2) {
-                drivetrain.moveForward(.08, .11, 250, 500);
+                if(blue) {
+                    drivetrain.moveForward(.08, .11, 100, 500);
+                } else {
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                }
             }
-            if (beaconPushers.isBackBlue()){
+            if (blue){
                 beaconPushers.frontPush();
             }
             else {
@@ -214,6 +218,8 @@ public class RedAutonomous extends LinearOpMode {
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+        lift.armsIn();
 
         //move forward a bit
         drivetrain.moveForward(.6, 2000, 1000);

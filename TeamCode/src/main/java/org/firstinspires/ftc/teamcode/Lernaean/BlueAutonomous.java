@@ -88,14 +88,6 @@ public class BlueAutonomous extends LinearOpMode {
         //turn the safe off
         manipulator.activateShooter();
 
-        //move the arms out of the way
-        lift.openArms();
-
-        idle();
-
-        //move the top grabber mechanism out of the way
-        lift.topGrab();
-
         //start the shooter at the calculated power from the voltage value saved
         shooter.startShooter(-shooter.getNeededPower(voltage));
 
@@ -125,12 +117,6 @@ public class BlueAutonomous extends LinearOpMode {
 
         //stop the shooter
         shooter.stopShooter();
-
-        //move the top grabber mechanism into its rest postion
-        lift.topUngrab();
-
-        //move the arms into their rest position
-        lift.grabArms();
 
         //stop the collector
         manipulator.runCollector(0);
@@ -185,13 +171,20 @@ public class BlueAutonomous extends LinearOpMode {
         //wait for momentum
         Thread.sleep(100);
 
+        lift.armsOut();
+
         //Press the beacon 2 times and on the third time correct a bit before the last push
         int count = 0;
+        boolean blue = beaconPushers.isBackBlue();
         while (!beaconPushers.areBothBlue()) {
             if(count == 2) {
-                drivetrain.moveForward(.08, .11, 100, 500);
+                if(blue) {
+                    drivetrain.moveForward(.08, .11, 100, 500);
+                } else {
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                }
             }
-            if (beaconPushers.isBackBlue()){
+            if (blue) {
                 beaconPushers.backPush();
             }
             else {
@@ -207,6 +200,8 @@ public class BlueAutonomous extends LinearOpMode {
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+        lift.armsIn();
 
         //move fast towards the next beacon
         drivetrain.moveForward(.3, .7, 5000, 5000);
@@ -223,12 +218,19 @@ public class BlueAutonomous extends LinearOpMode {
         //wait for momentum
         Thread.sleep(250);
 
+        lift.armsOut();
+
         //Press the beacon 2 times and on the third time correct a bit before the last push
+        blue = beaconPushers.isBackBlue();
         while (!beaconPushers.areBothBlue()) {
             if(count == 2) {
-                drivetrain.moveForward(.08, .11, 100, 500);
+                if(blue) {
+                    drivetrain.moveForward(.08, .11, 100, 500);
+                } else {
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                }
             }
-            if (beaconPushers.isBackBlue()){
+            if (blue) {
                 beaconPushers.backPush();
             }
             else {
@@ -245,6 +247,8 @@ public class BlueAutonomous extends LinearOpMode {
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+        lift.armsIn();
 
         //move forward a bit
         drivetrain.moveForward(-.75, 1000, 1000);
