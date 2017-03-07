@@ -132,14 +132,11 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
 
             if(gamepad2.right_bumper || gamepad2.left_bumper) {
-                topGrab();
-                topGrabRun();
-            } else if(gamepad2.right_trigger > .05 || gamepad2.left_trigger > .05) {
-                topUngrab();
-                topGrabReverse();
-            } else {
-                topGrabIdle();
-                topIdle();
+                armsGrab();
+            } else if(gamepad2.right_trigger > .05) {
+                armsOut();
+            } else if(gamepad2.left_trigger > .05) {
+                armsDrop();
             }
 
             if(gamepad2.x) {
@@ -149,15 +146,6 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                     armBlocked();
 
                 while(gamepad2.x);
-            }
-
-            if(gamepad2.b) {
-                if(topGrabber.getPosition() != 1)
-                    topGrab();
-                else
-                    topUngrab();
-
-                while(gamepad2.b);
             }
 
             if(gamepad2.a) {

@@ -25,8 +25,8 @@ public abstract class LernaeanOpMode extends OpMode {
     Servo back;
     private Servo activate;
     Servo armRelease;
-    Servo topGrabber;
-    Servo topGrabberRunner;
+    Servo armLeft;
+    Servo armRight;
     DeviceInterfaceModule cdim;
     private ColorSensor color;
     private ColorSensor color2;
@@ -199,8 +199,8 @@ public abstract class LernaeanOpMode extends OpMode {
         right = hardwareMap.opticalDistanceSensor.get("odsR");
         liftRelease = hardwareMap.dcMotor.get("lrelease");
         armRelease = hardwareMap.servo.get("arelease");
-        topGrabber = hardwareMap.servo.get("topGrabber");
-        topGrabberRunner = hardwareMap.servo.get("topGrabRun");
+        armLeft = hardwareMap.servo.get("aL");
+        armRight = hardwareMap.servo.get("aR");
         shooterPower = .3;
         shooterIntegral = 0;
         speedThread = new Thread(speedCounter);
@@ -208,12 +208,10 @@ public abstract class LernaeanOpMode extends OpMode {
         ABSRightThread = new Thread(ABSright);
         frontIn();
         backIn();
-        topIdle();
-        topGrabIdle();
+        armsIn();
         activateShooter(false);
         unactivateLift();
         armBlocked();
-        topIdle();
         resetStartTime();
     }
 
@@ -293,7 +291,6 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     public void startShooter() {
-        topGrab();
         shooterL.setPower(shooterPower + shooterIntegral);
         shooterR.setPower(-shooterPower - shooterIntegral);
     }
@@ -307,7 +304,6 @@ public abstract class LernaeanOpMode extends OpMode {
         shooterL.setPower(0);
         shooterR.setPower(0);
         shooterIntegral = 0;
-        topUngrab();
     }
 
     @Deprecated
@@ -371,28 +367,24 @@ public abstract class LernaeanOpMode extends OpMode {
         armRelease.setPosition(ARM_RELEASER_CLOSED);
     }
 
-    void topGrab() {
-        topGrabber.setPosition(1);
+    void armsIn() {
+        armLeft.setPosition(.4);
+        armRight.setPosition(.6);
     }
 
-    void topUngrab() {
-        topGrabber.setPosition(-1);
+    void armsOut() {
+        armLeft.setPosition(.37);
+        armRight.setPosition(.63);
     }
 
-    void topIdle() {
-        topGrabber.setPosition(.5);
+    void armsDrop() {
+        armLeft.setPosition(0);
+        armRight.setPosition(1);
     }
 
-    void topGrabRun() {
-        topGrabberRunner.setPosition(-1);
-    }
-
-    void topGrabReverse() {
-        topGrabberRunner.setPosition(1);
-    }
-
-    void topGrabIdle() {
-        topGrabberRunner.setPosition(.5);
+    void armsGrab() {
+        armLeft.setPosition(.53);
+        armRight.setPosition(.47);
     }
 
     void prepareLift() {
