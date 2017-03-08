@@ -95,9 +95,9 @@ public abstract class LernaeanOpMode extends OpMode {
                     avg /= 20;
                     double error = 1.8 - avg;
                     if (getShooterPower() > .04 && Math.abs(error) > .2 && !stopCommandGiven) {
-                        double kP = 1.2;
+                        double kP = 1.2; //12.5
                         power = kP * error;
-                        power = Range.clip(power, 0, .6);
+                        power = Range.clip(power, 0, .6); //0, .65
                         if(power == 0) {
                             power = getShooterPower();
                         }
