@@ -45,20 +45,12 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
 
             if(gamepad2.right_bumper) {
-                if(voltage < 13.5)
-                    shooterIntegral += .007;
-                else if(voltage < 13)
-                    shooterIntegral += .009;
-                else if(voltage < 12.5)
-                    shooterIntegral += .01;
-                else if(voltage < 12)
-                    shooterIntegral += .011;
-                else
-                    shooterIntegral += .005;
+                stopCommandGiven = false;
                 startShooter();
             }
 
             if(gamepad2.left_bumper) {
+                stopCommandGiven = true;
                 stopShooter();
             }
 
@@ -99,7 +91,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         if(!shootMode) {
 
             if((Math.abs(powerR) > .05 || (Math.abs(powerL) > .05))) {
-                startMotors((powerR * .375), (powerL * .375));
+                startMotorsSlowed((powerR), (powerL));
             }
             //if we are not moving stop the motors
             else if(!xPressed && !bPressed) {
@@ -139,7 +131,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 armsDrop();
             }
 
-            if(gamepad2.x) {
+            if(gamepad2.x   ) {
                 if(armRelease.getPosition() < .5)
                     armRelease();
                 else
@@ -189,32 +181,5 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             while (gamepad2.back);
         }
 
-        //calculate velocity of shooter
-//        currentTime = System.nanoTime();
-//        currentEncoder = getShooterEncoderAvg();
-//        velocity = (currentEncoder - lastEncoder) / ((currentTime - lastTime) * 1000000000);
-//        telemetry.addData("time", currentTime);
-//        telemetry.addData("Encoder", currentEncoder + "--" + shooterL.getCurrentPosition() + "--" + shooterR.getCurrentPosition());
-//        if(velocity > 0) {
-//            velocityAvg[currentTick++] = velocity;
-//        }
-//        if(currentTick == 200) {
-//            lastAvg = avg;
-//            avg = 0;
-//            for (double aVelocityAvg : velocityAvg) {
-//                avg += aVelocityAvg;
-//            }
-//            avg /= 200;
-//            currentTick = 0;
-//        }
-//        telemetry.addData("Velocity", avg);
-//        telemetry.update();
-//        lastTime = currentTime;
-//        lastEncoder = currentEncoder;
-//        try{
-//            Thread.sleep(0, 1);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
     }
 }

@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 
@@ -39,13 +40,8 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double BACK_IN = 1;
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
-    private final double ARM_IN = .85;
-    private final double ARM_GRAB = .68;
-    private final double ARM_OPEN = .425;
-    private final double ARM_DROP = .25;
-    private final double ARM_CLOSE = 0;
-    private final double ARM_RELEASER_RELEASED = 1;
-    private final double ARM_RELEASER_CLOSED = 0;
+    private final double ARM_RELEASER_RELEASED = 0;
+    private final double ARM_RELEASER_CLOSED = 1;
     private final double TOP_GRAB = 1;
     private final double TOP_UNGRAB = 0;
     private final double TOP_IDLE = .4;
@@ -55,13 +51,16 @@ public abstract class LernaeanOpMode extends OpMode {
     private final int SLEEP_CYCLE = 50;
 
     private boolean reversed;
+    boolean stopCommandGiven;
 
     Runnable speedCounter = new Runnable() {
 
-        private double[] velocityAvg = new double[400];
+        private double[] velocityAvg = new double[20];
         private int currentTick;
         private double avg = 0;
         private double lastAvg = 0;
+        private int numZero = 0;
+        private double power;
 
         long lastTime = 0;
         int lastEncoder = 0;
@@ -72,35 +71,52 @@ public abstract class LernaeanOpMode extends OpMode {
             while (Thread.currentThread().isAlive()) {
                 long currentTime = System.nanoTime();
                 currentEncoder = getShooterEncoderAvg();
-                velocity = (currentEncoder - lastEncoder) / ((currentTime - lastTime) / 1000000);
+                try {
+                    velocity = (currentEncoder - lastEncoder) / ((currentTime - lastTime) / 1000000);
+                } catch (ArithmeticException e) {
+                    velocity = 0;
+                }
                 opMode.telemetry.addData("velocity", velocity);
                 opMode.telemetry.addData("time", currentTime);
                 opMode.telemetry.addData("Encoder", currentEncoder + "--" + shooterL.getCurrentPosition() + "--" + shooterR.getCurrentPosition());
                 if (velocity > 0) {
                     velocityAvg[currentTick++] = velocity;
+                } else {
+                    if(shooterL.getPower() > 0)
+                        numZero++;
                 }
                 opMode.telemetry.addData("currentTick", currentTick);
-                if (currentTick == 399) {
+                if (currentTick == 19) {
                     lastAvg = avg;
                     avg = 0;
-                    for (int i = 0; i < 400; i++) {
+                    for (int i = 0; i < 20; i++) {
                         avg += velocityAvg[i];
                     }
-                    avg /= 40;
-                    if (getShooterPower() > .04) {
-//                    startPID(avg, lastTime);
+                    avg /= 20;
+                    double error = 1.8 - avg;
+                    if (getShooterPower() > .04 && Math.abs(error) > .2 && !stopCommandGiven) {
+                        double kP = 1.2;
+                        power = kP * error;
+                        power = Range.clip(power, 0, .6);
+                        if(power == 0) {
+                            power = getShooterPower();
+                        }
+                        shooterL.setPower(power);
+                        shooterR.setPower(-power);
                     }
                     currentTick = 0;
                 }
+                opMode.telemetry.addData("Number Of Zeros", numZero);
                 opMode.telemetry.addData("avgVelocity", avg);
                 opMode.telemetry.update();
                 lastTime = currentTime;
                 lastEncoder = currentEncoder;
                 try {
-                    Thread.sleep(0, 10000);
+                    Thread.sleep(10);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
+                opMode.telemetry.addData("power", power);
             }
         }
     };
@@ -175,6 +191,7 @@ public abstract class LernaeanOpMode extends OpMode {
     public void init() {
         opMode = this;
         reversed = false;
+        stopCommandGiven = true;
         composeTelemetry();
         motorBL = hardwareMap.dcMotor.get("BL");
         motorBR = hardwareMap.dcMotor.get("BR");
@@ -217,15 +234,33 @@ public abstract class LernaeanOpMode extends OpMode {
 
     @Override
     public void stop() {
-//        speedThread.interrupt();
+        speedThread.interrupt();
     }
 
     @Override
     public void start() {
-//        speedThread.start();
+        speedThread.start();
     }
 
     public void startMotors(double ri, double le) {
+        if(reversed) {
+            motorBL.setPower(-ri);
+            motorFL.setPower(ri);
+            motorBR.setPower(le);
+            motorFR.setPower(-le);
+        } else {
+            motorBL.setPower(le);
+            motorFL.setPower(-le);
+            motorBR.setPower(-ri);
+            motorFR.setPower(ri);
+        }
+    }
+
+    public void startMotorsSlowed(double ri, double le) {
+        if((ri < -.05 && le < -.05) || (ri > .05 && le > .05)) {
+            ri /= .375;
+            le /= .375;
+        }
         if(reversed) {
             motorBL.setPower(-ri);
             motorFL.setPower(ri);
@@ -368,8 +403,8 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void armsIn() {
-        armLeft.setPosition(.4);
-        armRight.setPosition(.6);
+        armLeft.setPosition(.5);
+        armRight.setPosition(.5);
     }
 
     void armsOut() {
@@ -388,12 +423,13 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void prepareLift() {
-        armRelease();
+        armsDrop();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        armsOut();
     }
 
     private int getShooterEncoderAvg() {
