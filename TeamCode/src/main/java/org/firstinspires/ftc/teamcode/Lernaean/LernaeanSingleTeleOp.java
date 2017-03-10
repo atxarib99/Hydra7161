@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name = "LTeleOp", group = "opMode")
-public class LernaeanTeleOp extends LernaeanOpMode {
+@TeleOp(name = "SingleTeleOp", group = "opMode")
+public class LernaeanSingleTeleOp extends LernaeanOpMode {
     private boolean shootMode = true;
     private boolean bPressed = false;
     private boolean xPressed = false;
@@ -11,37 +11,15 @@ public class LernaeanTeleOp extends LernaeanOpMode {
     @Override
     public void loop()
     {
-        powerR = gamepad1.right_stick_y;
-        powerL = gamepad1.left_stick_y;
+        powerR = gamepad2.right_stick_y;
+        powerL = gamepad2.left_stick_y;
 
         if(shootMode) {
-
-            if(gamepad2.dpad_right) {
-                shooterIntegral = 0.0;
-                startShooter();
-            }
 
             if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)) {
                 startMotors(powerR, powerL);
             } else if (!bPressed && !xPressed){
                 stopMotors();
-            }
-
-            if(gamepad1.b) {
-                bPressed = true;
-                startMotors(-0.8, -0.25);
-            }
-            else {
-                bPressed = false;
-            }
-
-            if(gamepad1.x) {
-                //while(gamepad1.b);
-                xPressed = true;
-                startMotors(0.8, 0.25);
-            }
-            else {
-                xPressed = false;
             }
 
             if(gamepad2.right_bumper) {
@@ -76,12 +54,12 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             if(gamepad2.right_trigger > .05 && gamepad2.left_trigger > .05) {
                 reverseMani();
             } else if(gamepad2.right_trigger > .05) {
-                if(Math.abs(shooterL.getPower()) > 0) {
+                if(shooterL.getPower() > 0) {
                     startManiSlow();
                 }
                 else {
-                    activateShooter(false);
                     startMani();
+                    activateShooter(false);
                 }
             } else if(gamepad2.left_trigger > .05) {
                 stopMani();
@@ -99,24 +77,6 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 stopMotors();
             }
 
-            //glide against the walls
-            if(gamepad1.b) {
-                bPressed = true;
-                startMotors(-0.4, -0.125);
-            }
-            else {
-                bPressed = false;
-            }
-
-            if(gamepad1.x) {
-                //while(gamepad1.b);
-                xPressed = true;
-                startMotors(0.4, 0.125);
-            }
-            else {
-                xPressed = false;
-            }
-
             if(gamepad2.y && gamepad1.y) {
                 activateLift();
 
@@ -132,7 +92,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 armsDrop();
             }
 
-            if(gamepad2.x   ) {
+            if(gamepad2.x) {
                 if(armRelease.getPosition() < .5)
                     armRelease();
                 else
@@ -147,9 +107,9 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
         }
 
-        if(gamepad1.a) {
+        if(gamepad2.dpad_right) {
             reverse();
-            while(gamepad1.a);
+            while(gamepad2.dpad_right);
         }
 
         //if all of our motors are not running get the voltage
