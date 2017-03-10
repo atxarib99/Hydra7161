@@ -46,6 +46,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
             if(gamepad2.right_bumper) {
                 stopCommandGiven = false;
+                activateShooter(true);
                 startShooter();
             }
 
@@ -75,12 +76,12 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             if(gamepad2.right_trigger > .05 && gamepad2.left_trigger > .05) {
                 reverseMani();
             } else if(gamepad2.right_trigger > .05) {
-                startMani();
-                if(shooterL.getPower() > 0) {
-                    activateShooter(true);
+                if(Math.abs(shooterL.getPower()) > 0) {
+                    startManiSlow();
                 }
                 else {
                     activateShooter(false);
+                    startMani();
                 }
             } else if(gamepad2.left_trigger > .05) {
                 stopMani();

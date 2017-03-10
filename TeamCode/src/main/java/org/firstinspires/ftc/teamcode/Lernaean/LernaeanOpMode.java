@@ -47,6 +47,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double TOP_IDLE = .4;
 
     boolean shootMode = true;
+    boolean runThread = true;
 
     private final int SLEEP_CYCLE = 50;
 
@@ -68,7 +69,7 @@ public abstract class LernaeanOpMode extends OpMode {
         double velocity;
         @Override
         public void run() {
-            while (Thread.currentThread().isAlive()) {
+            while (runThread) {
                 long currentTime = System.nanoTime();
                 currentEncoder = getShooterEncoderAvg();
                 try {
@@ -95,9 +96,9 @@ public abstract class LernaeanOpMode extends OpMode {
                     avg /= 20;
                     double error = 1.8 - avg;
                     if (getShooterPower() > .04 && Math.abs(error) > .2 && !stopCommandGiven) {
-                        double kP = 1.2; //12.5
+                        double kP = 1.2;
                         power = kP * error;
-                        power = Range.clip(power, 0, .6); //0, .65
+                        power = Range.clip(power, 0, .5); //0, .65
                         if(power == 0) {
                             power = getShooterPower();
                         }
@@ -157,7 +158,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private Runnable ABSleft = new Runnable() {
 
         double kP = .1;
-        double kI = .01;
+        double kI = .1;
         double kD = .2;
         double lastPower = 0;
         double lastTime = 0;
@@ -235,6 +236,7 @@ public abstract class LernaeanOpMode extends OpMode {
     @Override
     public void stop() {
         speedThread.interrupt();
+        runThread = false;
     }
 
     @Override
@@ -256,10 +258,10 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     }
 
-    public void startMotorsSlowed(double ri, double le) {
+    void startMotorsSlowed(double ri, double le) {
         if((ri < -.05 && le < -.05) || (ri > .05 && le > .05)) {
-            ri /= .375;
-            le /= .375;
+            ri *= .375;
+            le *= .375;
         }
         if(reversed) {
             motorBL.setPower(-ri);
@@ -315,6 +317,10 @@ public abstract class LernaeanOpMode extends OpMode {
 
     void startMani() {
         manipulator.setPower(-1);
+    }
+
+    void startManiSlow() {
+        manipulator.setPower(-.75);
     }
 
     void stopMani() {
@@ -423,6 +429,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void prepareLift() {
+        armRelease();
         armsDrop();
         try {
             Thread.sleep(500);
