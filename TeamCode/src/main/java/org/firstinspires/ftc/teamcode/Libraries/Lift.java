@@ -13,7 +13,6 @@ public class Lift {
     Servo armRight;
     DcMotor liftRelease;
     Servo armRelease;
-    Servo topGrabber;
 
     LinearOpMode opMode;
 
@@ -24,8 +23,8 @@ public class Lift {
     private final double LIFT_UNACTIVATED = 0;
     private final double LIFT_ACTIVATED = 1;
     private final double ARM_IN = .85;
-    private final double ARM_RELEASER_RELEASED = 1;
-    private final double ARM_RELEASER_CLOSED = 0;
+    private final double ARM_RELEASER_RELEASED = 0;
+    private final double ARM_RELEASER_CLOSED = 1;
     private final double TOP_GRAB = 1;
     private final double TOP_UNGRAB = 0;
     private final double TOP_IDLE = .6;
@@ -36,16 +35,33 @@ public class Lift {
         armRight = opMode.hardwareMap.servo.get("aR");
         liftRelease = opMode.hardwareMap.dcMotor.get("lrelease");
         armRelease = opMode.hardwareMap.servo.get("arelease");
+<<<<<<< Updated upstream
         topGrabber = opMode.hardwareMap.servo.get("topGrabber");
+<<<<<<< Updated upstream
         armsIn();
+=======
+        grabArms();
+=======
+        armsIn();
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         unactivateLift();
         armBlocked();
-        topUngrab();
     }
 
     public void armsIn() {
+<<<<<<< Updated upstream
         armLeft.setPosition(.4);
         armRight.setPosition(.6);
+=======
+<<<<<<< Updated upstream
+        armLeft.setPosition(1 - ARM_GRAB - .05);
+        armRight.setPosition(ARM_GRAB);
+=======
+        armLeft.setPosition(.5);
+        armRight.setPosition(.5);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 
     public void armsOut() {
@@ -53,9 +69,21 @@ public class Lift {
         armRight.setPosition(.63);
     }
 
+<<<<<<< Updated upstream
     public void armsDrop() {
         armLeft.setPosition(0);
         armRight.setPosition(1);
+=======
+<<<<<<< Updated upstream
+    public void dropArms() {
+        armLeft.setPosition(ARM_DROP);
+        armRight.setPosition(1 - ARM_DROP);
+=======
+    public void armsDrop() {
+        armLeft.setPosition(.2);
+        armRight.setPosition(.8);
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
     }
 
     public void armsGrab() {
@@ -71,18 +99,9 @@ public class Lift {
         armRelease.setPosition(ARM_RELEASER_CLOSED);
     }
 
-    public void topGrab() {
-        topGrabber.setPosition(TOP_GRAB);
-    }
-
-    public void topUngrab() {
-        topGrabber.setPosition(TOP_UNGRAB);
-    }
-
     public void prepareLift() {
         armsDrop();
         armRelease();
-        topUngrab();
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {

@@ -696,7 +696,7 @@ public class Drivetrain {
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
             power = (pow * (error) * .009) + .08;                      //update p values
-            inte = ((opMode.getRuntime()) * error * .0020);         //update inte value
+            inte = ((opMode.getRuntime()) * error * .002);         //update inte value
             inteNoE = ((opMode.getRuntime()) * .03);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
@@ -935,7 +935,7 @@ public class Drivetrain {
             opMode.telemetry.addData("error", error);
             power = (pow * (error) * .0092) + .025;                   //update p values
             inte = ((opMode.getRuntime()) * error * .005);          //update inte value
-            inteNoE = ((opMode.getRuntime()) * .03);
+            inteNoE = ((opMode.getRuntime()) * .03); //.03
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
             power = power + inteNoE + der;
