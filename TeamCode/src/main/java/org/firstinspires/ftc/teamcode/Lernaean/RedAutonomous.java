@@ -113,9 +113,18 @@ public class RedAutonomous extends LinearOpMode {
         //stop the collector
         manipulator.runCollector(0);
 
+<<<<<<< Updated upstream
         //move the top grabbing mechanism back to rest position
         lift.topUngrab();
 
+<<<<<<< Updated upstream
+=======
+        //move the arms back to rest position
+        lift.grabArms();
+
+=======
+>>>>>>> Stashed changes
+>>>>>>> Stashed changes
         //move away from the shooting zone
         drivetrain.moveBackward(-.15, 1000, 5000);
 
