@@ -40,7 +40,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double BACK_IN = 1;
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
-    private final double ARM_RELEASER_RELEASED = 0;
+    private final double ARM_RELEASER_RELEASED = .75;
     private final double ARM_RELEASER_CLOSED = 1;
     private final double TOP_GRAB = 1;
     private final double TOP_UNGRAB = 0;
@@ -260,8 +260,8 @@ public abstract class LernaeanOpMode extends OpMode {
 
     void startMotorsSlowed(double ri, double le) {
         if((ri < -.05 && le < -.05) || (ri > .05 && le > .05)) {
-            ri *= .375;
-            le *= .375;
+            ri *= .5;
+            le *= .5;
         }
         if(reversed) {
             motorBL.setPower(-ri);
@@ -320,7 +320,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void startManiSlow() {
-        manipulator.setPower(-.75);
+        manipulator.setPower(-.7);
     }
 
     void stopMani() {

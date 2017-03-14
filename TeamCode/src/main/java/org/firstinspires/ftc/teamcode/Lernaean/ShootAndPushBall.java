@@ -78,7 +78,7 @@ public class ShootAndPushBall extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveForward(.35, 4000, 5000);
+        drivetrain.moveForward(.35, 5000, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");

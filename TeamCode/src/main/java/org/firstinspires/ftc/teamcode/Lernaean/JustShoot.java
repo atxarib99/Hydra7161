@@ -64,7 +64,7 @@ public class JustShoot extends LinearOpMode {
         //soft reset the encoders
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.35, 4000, 5000);
+        drivetrain.moveForward(.35, 5000, 5000);
 
         //run a saftey stop command. the previous method has one but this ensures it
         drivetrain.stopMotors();

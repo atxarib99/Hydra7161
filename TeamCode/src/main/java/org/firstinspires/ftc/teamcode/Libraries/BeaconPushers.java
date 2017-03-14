@@ -45,10 +45,7 @@ public class BeaconPushers {
 
     public boolean isBackBlue() throws InterruptedException {
         double blueBeacon = 0;
-        opMode.telemetry.addData("colorR val", colorR.red());
-        opMode.telemetry.addData("colorL val", colorL.red());
-        opMode.telemetry.update();
-        Thread.sleep(1000);
+        Thread.sleep(500);
 
         double bluebeaconL = colorL.blue();
         double bluebeaconR = colorR.blue();

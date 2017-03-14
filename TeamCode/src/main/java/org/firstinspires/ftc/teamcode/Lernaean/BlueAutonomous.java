@@ -79,7 +79,7 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to get into shooting range
-        drivetrain.moveForward(.35, 2000, 5000);
+        drivetrain.moveForward(.35, 2500, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -109,7 +109,7 @@ public class BlueAutonomous extends LinearOpMode {
         //run the rest of the balls for the rest of the time
         manipulator.runCollector(-1);
 
-        Thread.sleep(1750);
+        Thread.sleep(1500);
 
         //display that we are gonna start our rotation
         telemetry.addData("currentStep", "rotating");
@@ -171,16 +171,8 @@ public class BlueAutonomous extends LinearOpMode {
         //wait for momentum
         Thread.sleep(100);
 
-<<<<<<< Updated upstream
-        lift.armsOut();
-
-=======
-<<<<<<< Updated upstream
-=======
         lift.armsDrop();
 
->>>>>>> Stashed changes
->>>>>>> Stashed changes
         //Press the beacon 2 times and on the third time correct a bit before the last push
         int count = 0;
         boolean blue = beaconPushers.isBackBlue();
@@ -226,22 +218,11 @@ public class BlueAutonomous extends LinearOpMode {
         //wait for momentum
         Thread.sleep(250);
 
-<<<<<<< Updated upstream
-        lift.armsOut();
-
-        //Press the beacon 2 times and on the third time correct a bit before the last push
-        blue = beaconPushers.isBackBlue();
-=======
-<<<<<<< Updated upstream
-        //Press the beacon 2 times and on the third time correct a bit before the last push
-=======
         lift.armsDrop();
 
         //Press the beacon 2 times and on the third time correct a bit before the last push
         blue = beaconPushers.isBackBlue();
         count = 0;
->>>>>>> Stashed changes
->>>>>>> Stashed changes
         while (!beaconPushers.areBothBlue()) {
             if(count == 2) {
                 if(blue) {

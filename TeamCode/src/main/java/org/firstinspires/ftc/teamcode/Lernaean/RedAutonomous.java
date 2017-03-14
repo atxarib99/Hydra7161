@@ -99,13 +99,13 @@ public class RedAutonomous extends LinearOpMode {
         manipulator.runCollector(0);
 
         //wait 1/2 second to wait for spinup
-        Thread.sleep(500);
+        Thread.sleep(250);
 
         //let the balls move again
         manipulator.runCollector(-1);
 
         //keep the balls moving for 1.5 seconds
-        Thread.sleep(1500);
+        Thread.sleep(1000);
 
         //stop the shooter
         shooter.stopShooter();
@@ -113,29 +113,20 @@ public class RedAutonomous extends LinearOpMode {
         //stop the collector
         manipulator.runCollector(0);
 
-<<<<<<< Updated upstream
-        //move the top grabbing mechanism back to rest position
-        lift.topUngrab();
-
-<<<<<<< Updated upstream
-=======
         //move the arms back to rest position
-        lift.grabArms();
+        lift.armsGrab();
 
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
         //move away from the shooting zone
-        drivetrain.moveBackward(-.15, 1000, 5000);
+        drivetrain.moveBackward(-.3, 1000, 5000);
 
         //rotate 38 degrees to the left
-        drivetrain.rotateP(.5, -38);
+        drivetrain.rotateP(.435, -38);
 
         //stop after the rotation safety stop
         drivetrain.stopMotors();
 
         //wait 1/2 seconds for momentum
-        Thread.sleep(500);
+        Thread.sleep(250);
 
         //display that we are going to move forward
         telemetry.addData("currentStep", "movingForward");
@@ -143,10 +134,10 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .3, 11500, 10000, 38);
+        drivetrain.moveForwardToWall(1, .4, 12250, 10000, 38);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.13, .18, 4000);
+        drivetrain.moveFowardToLine(.13, .25, 5000);
 
         //wait for momentum
         Thread.sleep(250);
@@ -154,7 +145,7 @@ public class RedAutonomous extends LinearOpMode {
         //correct back onto the line
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
-        lift.armsIn();
+        lift.armsDrop();
 
         //Press the beacon 2 times and on the third time correct a bit before the last push
         boolean blue = beaconPushers.isBackBlue();
@@ -220,6 +211,7 @@ public class RedAutonomous extends LinearOpMode {
             if(count == 2)
                 break;
             count++;
+            Thread.sleep(250);
         }
         //make sure we didnt hit the wrong color
         if(beaconPushers.areBothBlue()) {
