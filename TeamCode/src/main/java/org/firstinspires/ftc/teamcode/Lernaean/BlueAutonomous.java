@@ -79,7 +79,7 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to get into shooting range
-        drivetrain.moveForward(.35, 2500, 5000);
+        drivetrain.moveForward(.5, 2500, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -122,7 +122,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(0);
 
         //move away from shooting zone
-        drivetrain.moveForward(-.35, 1000, 5000);
+        drivetrain.moveForward(-.5, 1000, 5000);
 
         //wait for momentum
         Thread.sleep(100);
@@ -150,7 +150,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //
-        drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
+        drivetrain.moveBackwardToWall(-1, -.4, 12000, 10000, 142);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -233,9 +233,11 @@ public class BlueAutonomous extends LinearOpMode {
             }
             if (blue) {
                 beaconPushers.backPush();
+                Thread.sleep(500);
             }
             else {
                 beaconPushers.frontPush();
+                Thread.sleep(500);
             }
             if(count == 2)
                 break;
@@ -261,8 +263,14 @@ public class BlueAutonomous extends LinearOpMode {
         }
         drivetrain.stopMotors();
 
+        drivetrain.moveForward(-.8, -1, 6000, 5000);
+
         //move to the center zone push and park
-        drivetrain.moveBackward(-1, 6000, 5000);
+        //replaced this with more drift (above)
+        //drivetrain.moveBackward(-1, 6000, 5000);
+
+        //turn to make sure we knock off cap ball
+        drivetrain.moveForward(-1, 0, 500, 2000);
 
         //safety stop for program
         drivetrain.stopMotors();
