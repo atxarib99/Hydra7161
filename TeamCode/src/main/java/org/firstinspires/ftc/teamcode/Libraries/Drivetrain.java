@@ -703,6 +703,96 @@ public class Drivetrain {
         stopMotors();
     }
 
+    public void rotatePDefense(double pow, int deg) throws InterruptedException {
+
+        double power = pow;
+        double angleTo = deg;
+        double error;
+        double inte = 0;
+        double inteNoE = 0;
+        double der;
+
+        double currentAngle = sensor.getGyroYaw();
+        double previousError = angleTo - currentAngle;
+
+        opMode.telemetry.addData("Current Angle", currentAngle + "");
+        opMode.telemetry.addData("Angle To", angleTo + "");
+        opMode.telemetry.update();
+
+        opMode.resetStartTime();
+
+        while(Math.abs(currentAngle) > Math.abs(angleTo + 5)) {
+            currentAngle = sensor.getGyroYaw();
+            error = currentAngle - angleTo;
+            opMode.telemetry.addData("error", error);
+            power = (pow * (error) * .009) + .08;                      //update p values
+            inte = ((opMode.getRuntime()) * error * .002);         //update inte value
+            inteNoE = ((opMode.getRuntime()) * .045);
+            der = (error - previousError) / opMode.getRuntime() * 0; //update der value
+
+            power = power + inteNoE + der;
+
+            Range.clip(power, -1, 1);
+            startMotors(-power, power);
+            opMode.telemetry.addData("PID", power);
+//            opMode.telemetry.addData("integral", inte);
+            opMode.telemetry.addData("integral without error", inteNoE);
+            opMode.telemetry.addData("angle", currentAngle);
+
+            opMode.telemetry.update();
+            previousError = error;
+            opMode.idle();
+        }
+
+        opMode.telemetry.update();
+        stopMotors();
+    }
+
+    public void rotatePDefenseB(double pow, int deg) throws InterruptedException {
+
+        double power = pow;
+        double angleTo = deg;
+        double error;
+        double inte = 0;
+        double inteNoE = 0;
+        double der;
+
+        double currentAngle = sensor.getGyroYaw();
+        double previousError = angleTo - currentAngle;
+
+        opMode.telemetry.addData("Current Angle", currentAngle + "");
+        opMode.telemetry.addData("Angle To", angleTo + "");
+        opMode.telemetry.update();
+
+        opMode.resetStartTime();
+
+        while(Math.abs(currentAngle) > Math.abs(angleTo + 5)) {
+            currentAngle = sensor.getGyroYaw();
+            error = currentAngle - angleTo;
+            opMode.telemetry.addData("error", error);
+            power = (pow * (error) * .009) + .08;                      //update p values
+            inte = ((opMode.getRuntime()) * error * .002);         //update inte value
+            inteNoE = ((opMode.getRuntime()) * .045);
+            der = (error - previousError) / opMode.getRuntime() * 0; //update der value
+
+            power = power + inteNoE + der;
+
+            Range.clip(power, -1, 1);
+            startMotors(-power, power);
+            opMode.telemetry.addData("PID", power);
+//            opMode.telemetry.addData("integral", inte);
+            opMode.telemetry.addData("integral without error", inteNoE);
+            opMode.telemetry.addData("angle", currentAngle);
+
+            opMode.telemetry.update();
+            previousError = error;
+            opMode.idle();
+        }
+
+        opMode.telemetry.update();
+        stopMotors();
+    }
+
     public void rotatePZero(double pow) throws InterruptedException {
 
         double power = pow;
@@ -892,6 +982,57 @@ public class Drivetrain {
     }
 
     public void rotatePB(double pow, int deg) throws InterruptedException {
+
+        double power = pow;
+        double angleTo = deg;
+        double error;
+        double inte = 0;
+        double inteNoE = 0;
+        double der;
+
+        double currentAngle = sensor.getGyroYaw();
+        double previousError = angleTo - currentAngle;
+
+        opMode.telemetry.addData("Current Angle", currentAngle + "");
+        opMode.telemetry.addData("Angle To", angleTo + "");
+        opMode.telemetry.update();
+
+        opMode.resetStartTime();
+
+        currentAngle = 0;
+
+        while(Math.abs(currentAngle) < Math.abs(angleTo) - 2) {
+            currentAngle = sensor.getGyroYaw();
+            error = Math.abs(angleTo) - Math.abs(currentAngle);
+            opMode.telemetry.addData("error", error);
+            power = (pow * (error) * .0092) + .025;                   //update p values
+            inte = ((opMode.getRuntime()) * error * .005);          //update inte value
+            inteNoE = ((opMode.getRuntime()) * .03); //.03
+            der = (error - previousError) / opMode.getRuntime() * 0; //update der value
+
+            power = power + inteNoE + der;
+
+            if(angleTo > 0)
+                power *= -1;
+
+            Range.clip(power, -1, 1);
+            startMotors(-power, power);
+            opMode.telemetry.addData("PID", power);
+//            opMode.telemetry.addData("integral", inte);
+            opMode.telemetry.addData("integral without error", inteNoE);
+            opMode.telemetry.addData("angle", currentAngle + " " + angleTo);
+
+            opMode.telemetry.update();
+            previousError = error;
+            opMode.idle();
+        }
+
+        stopMotors();
+        opMode.telemetry.addData("finished", "done");
+        opMode.telemetry.update();
+    }
+
+    public void rotatePDefenseTwo(double pow, int deg) throws InterruptedException {
 
         double power = pow;
         double angleTo = deg;
