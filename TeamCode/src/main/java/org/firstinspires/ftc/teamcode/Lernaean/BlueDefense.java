@@ -122,15 +122,15 @@ public class BlueDefense extends LinearOpMode {
 
         drivetrain.moveForward(1, 1, 7100, 5000);
 
-        drivetrain.rotatePDefense(.5, 20);
+        drivetrain.rotateP(.5, 20);
 
         drivetrain.stopMotors();
 
         Thread.sleep(250);
 
-        drivetrain.moveForward(1, 1, 6250, 5000);
+        drivetrain.moveForward(1, 1, 6700, 5000);
 
-        drivetrain.rotatePDefenseTwo(.75, -40);
+        drivetrain.rotateP(.75, -40);
 
         drivetrain.stopMotors();
 

@@ -112,8 +112,10 @@ public class RedDefense extends LinearOpMode {
         //stop the shooter
         shooter.stopShooter();
 
+        //stop the collector
         manipulator.runCollector(0);
 
+        //turn towards the opposite starting position
         drivetrain.rotateP(.5, 80);
 
         drivetrain.stopMotors();
@@ -128,7 +130,9 @@ public class RedDefense extends LinearOpMode {
 
         Thread.sleep(250);
 
-        drivetrain.moveForward(1, 1, 6250, 5000);
+        //Move forward, at full power because we don't need as much accuracy
+        drivetrain.moveForward(1, 1, 6700, 5000);
+
 
         drivetrain.rotatePDefenseTwo(.75, -40);
 
