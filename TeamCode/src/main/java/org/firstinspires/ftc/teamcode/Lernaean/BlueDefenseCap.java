@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "BlueDefense", group = "LinearOpMode")
-public class BlueDefense extends LinearOpMode {
+@Autonomous(name = "BlueDefenseCap", group = "LinearOpMode")
+public class BlueDefenseCap extends LinearOpMode {
 
     //create robot objects
     private Drivetrain drivetrain;
@@ -65,7 +65,7 @@ public class BlueDefense extends LinearOpMode {
         drivetrain.resetEncoders();
 
         //wait for the program to actually start in the meantime just display data
-        while(!opModeIsActive()) {
+        while (!opModeIsActive()) {
             telemetry.update();
             idle();
         }
@@ -114,69 +114,59 @@ public class BlueDefense extends LinearOpMode {
 
         manipulator.runCollector(0);
 
-        drivetrain.rotatePB(1, -80);
+        drivetrain.rotatePB(1, -40);
 
         drivetrain.stopMotors();
 
         Thread.sleep(2500);
 
-        drivetrain.moveForward(1, 1, 7100, 5000);
-
-        drivetrain.rotatePDefense(.5, 20);
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(250);
-
-        drivetrain.moveForward(1, 1, 6600, 5000);
-
-        drivetrain.rotateP(.75, 38);
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(250);
-
-        drivetrain.moveForward(1, 4000, 5000);
+        drivetrain.moveForward(1, 1, 5000, 10000);
 
     }
 
     private void composeTelemetry() {
         telemetry.addLine()
                 .addData("AVg", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return "avg: " + drivetrain.getEncoderAvg();
                     }
                 });
         telemetry.addLine()
                 .addData("ods", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return "ods: " + drivetrain.sensor.leftODS() + " " + drivetrain.sensor.rightODS();
                     }
                 });
         telemetry.addLine()
                 .addData("gyro", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return "gyro: " + drivetrain.sensor.getGyroYaw();
                     }
                 });
         telemetry.addLine()
                 .addData("motorLPower", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return "leftPower: " + drivetrain.motorBL.getPower();
                     }
                 });
         telemetry.addLine()
                 .addData("motorRPower", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return "rightPower: " + drivetrain.motorBR.getPower();
                     }
                 });
         telemetry.addLine()
                 .addData("Color", new Func<String>() {
-                    @Override public String value() {
+                    @Override
+                    public String value() {
                         return "Color: " + beaconPushers.getColorVal();
                     }
                 });
     }
-
 }
+

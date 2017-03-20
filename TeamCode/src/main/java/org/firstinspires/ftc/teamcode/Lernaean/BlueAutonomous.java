@@ -128,7 +128,7 @@ public class BlueAutonomous extends LinearOpMode {
         Thread.sleep(100);
 
         //turn PID
-        drivetrain.rotatePB(.4, -142);
+        drivetrain.rotatePB(.4, -141);
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
@@ -150,7 +150,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //
-        drivetrain.moveBackwardToWall(-1, -.4, 12000, 10000, 142);
+        drivetrain.moveBackwardToWall(-1, -.4, 12000, 10000, 141);
 
         //stop moving the collector
         manipulator.runCollector(0);
