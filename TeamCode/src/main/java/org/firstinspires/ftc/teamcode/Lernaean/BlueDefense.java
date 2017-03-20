@@ -114,7 +114,7 @@ public class BlueDefense extends LinearOpMode {
 
         manipulator.runCollector(0);
 
-        drivetrain.rotatePB(1, -80);
+        drivetrain.rotatePB(.75, -80);
 
         drivetrain.stopMotors();
 
