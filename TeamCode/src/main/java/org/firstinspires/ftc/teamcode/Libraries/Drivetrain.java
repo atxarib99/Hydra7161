@@ -585,15 +585,24 @@ public class Drivetrain {
             opMode.telemetry.addData("RightPower", motorBR.getPower());
             opMode.telemetry.update();
 
-            if(angle < startAngle - 2) {
-                startMotors((power), (power * .75));
-            } else if(angle > startAngle + 2) {
-                startMotors((power * .75), (power));
-            } else {
-                startMotors(power, power);
+            if(power > 0) {
+                if (angle < Math.abs(startAngle) - 1) {
+                    startMotors((power * .65), (power));
+                } else if (angle > Math.abs(startAngle) + 1) {
+                    startMotors((power), (power * .65));
+                } else {
+                    startMotors(power, power);
+                }
             }
-
-            startMotors(power, power);
+            else if(power < 0) {
+                if (angle < Math.abs(startAngle) - 1) {
+                    startMotors((power), (power * .65));
+                } else if (angle > Math.abs(startAngle) + 1) {
+                    startMotors((power *.65), (power));
+                } else {
+                    startMotors(power, power);
+                }
+            }
             opMode.idle();
         }
         stopMotors();
@@ -725,12 +734,16 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = currentAngle - angleTo;
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .009) + .08;                      //update p values
+            power = (Math.abs(pow) * (error) * .009) + .08;                      //update p values
             inte = ((opMode.getRuntime()) * error * .002);         //update inte value
             inteNoE = ((opMode.getRuntime()) * .045);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
-            power = power + inteNoE + der;
+            power = power - inteNoE + der;
+
+            if(pow > 0) {
+                power *= -1;
+            }
 
             Range.clip(power, -1, 1);
             startMotors(-power, power);
@@ -1007,7 +1020,7 @@ public class Drivetrain {
             opMode.telemetry.addData("error", error);
             power = (pow * (error) * .0092) + .025;                   //update p values
             inte = ((opMode.getRuntime()) * error * .005);          //update inte value
-            inteNoE = ((opMode.getRuntime()) * .03); //.03
+            inteNoE = ((opMode.getRuntime()) * .04); //.03
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
             power = power + inteNoE + der;

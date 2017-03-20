@@ -40,8 +40,8 @@ public class Lift {
     }
 
     public void armsIn() {
-        armLeft.setPosition(.4);
-        armRight.setPosition(.6);
+        armLeft.setPosition(.5);
+        armRight.setPosition(.5);
     }
 
     public void armsOut() {
