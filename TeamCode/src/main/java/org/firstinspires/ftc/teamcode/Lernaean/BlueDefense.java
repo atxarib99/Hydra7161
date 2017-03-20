@@ -118,7 +118,7 @@ public class BlueDefense extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        Thread.sleep(2500);
+        Thread.sleep(3500);
 
         drivetrain.moveForward(1, 1, 7100, 5000);
 
@@ -136,7 +136,7 @@ public class BlueDefense extends LinearOpMode {
 
         Thread.sleep(250);
 
-        drivetrain.moveForward(1, 4000, 5000);
+        drivetrain.moveForward(1, 5000, 5000);
 
     }
 
