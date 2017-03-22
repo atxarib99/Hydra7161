@@ -66,7 +66,9 @@ public class Drivetrain {
         ElapsedTime time = new ElapsedTime();
         time.startTime();
 
-        //while we havent found the line keep moving at given powers
+        //while we haven't found the line and haven't reached our failsafe
+        //failsafe meaning we haven't gone beyond our time limit
+        //keep moving at given powers
         while(!sensor.isRightLine() && time.milliseconds() < timeout) {
 
             opMode.telemetry.addData("LeftPower", motorBL.getPower());
@@ -169,9 +171,9 @@ public class Drivetrain {
             }
             else if(power < 0) {
                 if (angle < Math.abs(startAngle) - 2) {
-                    startMotors(((power * .65)), power);
+                    startMotors(((power * .6)), power);
                 } else if (angle > Math.abs(startAngle) + 2) {
-                    startMotors((power), (power * .65));
+                    startMotors((power), (power * .6));
                 } else {
                     startMotors(power, power);
                 }
@@ -668,7 +670,6 @@ public class Drivetrain {
         double angleTo = deg;
         double error;
         double inte = 0;
-        double inteNoE = 0;
         double der;
 
         double currentAngle = sensor.getGyroYaw();
@@ -682,25 +683,29 @@ public class Drivetrain {
 
         currentAngle = 0;
 
+        double kP = .08;
+        double kI = .045;
+        double kD = 0;
         while(Math.abs(currentAngle) < Math.abs(angleTo) - 1) {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
-            opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .009) + .08;                      //update p values
-            inte = ((opMode.getRuntime()) * error * .002);         //update inte value
-            inteNoE = ((opMode.getRuntime()) * .045);
-            der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
-            power = power + inteNoE + der;
+            power = (pow * (error) * .009) + kP;
+            inte = ((opMode.getRuntime()) * kI);
+            der = (error - previousError) / opMode.getRuntime() * kD;
+
+            power = power + inte + der;
 
             if(angleTo > 0)
                 power *= -1;
 
             Range.clip(power, -1, 1);
             startMotors(-power, power);
+
+            opMode.telemetry.addData("error", error);
             opMode.telemetry.addData("PID", power);
 //            opMode.telemetry.addData("integral", inte);
-            opMode.telemetry.addData("integral without error", inteNoE);
+            opMode.telemetry.addData("integral without error", inte);
             opMode.telemetry.addData("angle", currentAngle);
 
             opMode.telemetry.update();

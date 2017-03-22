@@ -182,5 +182,6 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             while (gamepad2.back);
         }
 
+        telemetry.update();
     }
 }
