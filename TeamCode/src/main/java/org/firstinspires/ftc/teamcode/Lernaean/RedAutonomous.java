@@ -149,8 +149,9 @@ public class RedAutonomous extends LinearOpMode {
 
         //Press the beacon 2 times and on the third time correct a bit before the last push
         boolean blue = beaconPushers.isBackBlue();
+        boolean attempted = false;
         int count = 0;
-        while (!beaconPushers.areBothRed()) {
+        while (!beaconPushers.areBothRed() || beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
                     drivetrain.moveForward(.08, .11, 100, 500);
@@ -160,9 +161,11 @@ public class RedAutonomous extends LinearOpMode {
             }
             if (blue) {
                 beaconPushers.frontPush();
+                attempted = true;
             }
             else {
                 beaconPushers.backPush();
+                attempted = true;
             }
             if(count == 2)
                 break;
@@ -170,11 +173,25 @@ public class RedAutonomous extends LinearOpMode {
             Thread.sleep(250);
         }
 
-        //make sure we didn't hit the wrong color
-        if(beaconPushers.areBothBlue()) {
-            Thread.sleep(5000);
-            beaconPushers.backPush();
-            beaconPushers.frontPush();
+        //if the loop did not attempt at all
+        if(!attempted) {
+            if (blue) {
+                beaconPushers.frontPush();
+            }
+            else {
+                beaconPushers.backPush();
+            }
+        }
+
+        Thread.sleep(250);
+
+        if(attempted) {
+            //make sure we didn't hit the wrong color
+            if (beaconPushers.areBothBlue()) {
+                Thread.sleep(5000);
+                beaconPushers.backPush();
+                beaconPushers.frontPush();
+            }
         }
 
         lift.armsIn();
@@ -193,8 +210,9 @@ public class RedAutonomous extends LinearOpMode {
         lift.armsDrop();
         //Press the beacon 2 times and on the third time correct a bit before the last push
         count = 0;
+        attempted = false;
         blue = beaconPushers.isBackBlue();
-        while (!beaconPushers.areBothRed()) {
+        while (!beaconPushers.areBothRed() || beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
                     drivetrain.moveForward(.08, .11, 100, 500);
@@ -204,20 +222,25 @@ public class RedAutonomous extends LinearOpMode {
             }
             if (blue){
                 beaconPushers.frontPush();
+                attempted = true;
             }
             else {
                 beaconPushers.backPush();
+                attempted = true;
             }
             if(count == 2)
                 break;
             count++;
             Thread.sleep(250);
         }
-        //make sure we didnt hit the wrong color
-        if(beaconPushers.areBothBlue()) {
-            Thread.sleep(5000);
-            beaconPushers.backPush();
-            beaconPushers.frontPush();
+
+        if(!attempted) {
+            if (blue){
+                beaconPushers.frontPush();
+            }
+            else {
+                beaconPushers.backPush();
+            }
         }
 
         lift.armsIn();

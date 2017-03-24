@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -12,19 +14,20 @@ import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
- * Created by Arib on 2/23/2017.
+ * Created by Arib on 10/20/2016.
  */
-
+@Autonomous(name = "Blue Autonomous Simple Color", group = "LinearOpMode")
 public class BlueAutonomousSimpleColor extends LinearOpMode {
 
-
+    //create class variables
     private Drivetrain drivetrain;
     private Manipulator manipulator;
     private Shooter shooter;
     private BeaconPushers beaconPushers;
     private Lift lift;
-    private double voltage;
 
+    //create class specific variables
+    private double voltage;
     private String version;
 
     @Override
@@ -76,7 +79,7 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
         telemetry.update();
 
         //move forward to get into shooting range
-        drivetrain.moveForward(.35, 2000, 5000);
+        drivetrain.moveForward(.5, 2500, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -106,7 +109,7 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
         //run the rest of the balls for the rest of the time
         manipulator.runCollector(-1);
 
-        Thread.sleep(1750);
+        Thread.sleep(1500);
 
         //display that we are gonna start our rotation
         telemetry.addData("currentStep", "rotating");
@@ -119,13 +122,13 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
         manipulator.runCollector(0);
 
         //move away from shooting zone
-        drivetrain.moveForward(-.35, 1000, 5000);
+        drivetrain.moveForward(-.5, 1000, 5000);
 
         //wait for momentum
         Thread.sleep(100);
 
         //turn PID
-        drivetrain.rotatePB(.4, -142);
+        drivetrain.rotatePB(.4, -141);
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
@@ -147,7 +150,7 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //
-        drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
+        drivetrain.moveBackwardToWall(-1, -.4, 12000, 10000, 141);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -168,18 +171,26 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
         //wait for momentum
         Thread.sleep(100);
 
-        if (beaconPushers.isBackBlue()){
+        lift.armsDrop();
+
+        boolean blue = beaconPushers.isBackBlue();
+        if (blue) {
             beaconPushers.backPush();
         }
         else {
             beaconPushers.frontPush();
         }
 
+        Thread.sleep(1000);
+
+        //make sure we did not hit the wrong color
         if(beaconPushers.areBothRed()) {
             Thread.sleep(5000);
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+        lift.armsIn();
 
         //move fast towards the next beacon
         drivetrain.moveForward(.3, .7, 5000, 5000);
@@ -196,12 +207,18 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
         //wait for momentum
         Thread.sleep(250);
 
-        if (beaconPushers.isBackBlue()){
+        lift.armsDrop();
+
+        //Press the beacon 2 times and on the third time correct a bit before the last push
+        blue = beaconPushers.isBackBlue();
+        if (blue) {
             beaconPushers.backPush();
         }
         else {
             beaconPushers.frontPush();
         }
+
+        Thread.sleep(1000);
 
         //make sure we did not hit the wrong color
         if(beaconPushers.areBothRed()) {
@@ -209,6 +226,8 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+        lift.armsIn();
 
         //move forward a bit
         drivetrain.moveForward(-.75, 1000, 1000);
@@ -220,8 +239,14 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
         }
         drivetrain.stopMotors();
 
+        drivetrain.moveForward(-.8, -1, 6000, 5000);
+
         //move to the center zone push and park
-        drivetrain.moveBackward(-1, 6000, 5000);
+        //replaced this with more drift (above)
+        //drivetrain.moveBackward(-1, 6000, 5000);
+
+        //turn to make sure we knock off cap ball
+        drivetrain.moveForward(-1, 0, 500, 2000);
 
         //safety stop for program
         drivetrain.stopMotors();
@@ -265,5 +290,4 @@ public class BlueAutonomousSimpleColor extends LinearOpMode {
                     }
                 });
     }
-
 }

@@ -13,12 +13,10 @@ import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
- * Created by Arib on 2/23/2017.
+ * Created by Arib on 10/20/2016.
  */
-
-@Autonomous(name = "RedSimpleAuto", group = "RedAuto")
+@Autonomous(name = "RedAutonomous Simple Color", group = "LinearOpMode")
 public class RedAutonomousSimpleColor extends LinearOpMode {
-
     //Create robot objects
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -26,8 +24,7 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
     private BeaconPushers beaconPushers;
     private Lift lift;
 
-    //create local variables
-
+    //create class variables
     private double voltage;
     private String version;
 
@@ -102,13 +99,13 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         manipulator.runCollector(0);
 
         //wait 1/2 second to wait for spinup
-        Thread.sleep(500);
+        Thread.sleep(250);
 
         //let the balls move again
         manipulator.runCollector(-1);
 
         //keep the balls moving for 1.5 seconds
-        Thread.sleep(1500);
+        Thread.sleep(1000);
 
         //stop the shooter
         shooter.stopShooter();
@@ -116,17 +113,20 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         //stop the collector
         manipulator.runCollector(0);
 
+        //move the arms back to rest position
+        lift.armsGrab();
+
         //move away from the shooting zone
-        drivetrain.moveBackward(-.15, 1000, 5000);
+        drivetrain.moveBackward(-.3, 1000, 5000);
 
         //rotate 38 degrees to the left
-        drivetrain.rotateP(.4, -38);
+        drivetrain.rotateP(.435, -38);
 
         //stop after the rotation safety stop
         drivetrain.stopMotors();
 
         //wait 1/2 seconds for momentum
-        Thread.sleep(500);
+        Thread.sleep(250);
 
         //display that we are going to move forward
         telemetry.addData("currentStep", "movingForward");
@@ -134,10 +134,10 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .3, 11500, 10000, 38);
+        drivetrain.moveForwardToWall(1, .4, 12000, 10000, 38);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.13, .18, 4000);
+        drivetrain.moveFowardToLine(.13, .25, 5000);
 
         //wait for momentum
         Thread.sleep(250);
@@ -145,12 +145,18 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         //correct back onto the line
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
-        if (beaconPushers.isBackBlue()){
+        lift.armsDrop();
+
+        //Press the beacon 2 times and on the third time correct a bit before the last push
+        boolean blue = beaconPushers.isBackBlue();
+        if (blue) {
             beaconPushers.frontPush();
         }
         else {
             beaconPushers.backPush();
         }
+
+        Thread.sleep(1000);
 
         //make sure we didn't hit the wrong color
         if(beaconPushers.areBothBlue()) {
@@ -158,6 +164,8 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+        lift.armsIn();
 
         //display we are moving forwards
         telemetry.addData("currentStep", "movingForward");
@@ -170,21 +178,26 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         //slow down while finding the line
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
-        //wait for momentum
-        Thread.sleep(200);
-
-        if (beaconPushers.isBackBlue()){
+        lift.armsDrop();
+        blue = beaconPushers.isBackBlue();
+        if (blue) {
             beaconPushers.frontPush();
         }
         else {
             beaconPushers.backPush();
         }
-        //make sure we didnt hit the wrong color
+
+        Thread.sleep(1000);
+
+        //make sure we didn't hit the wrong color
         if(beaconPushers.areBothBlue()) {
             Thread.sleep(5000);
             beaconPushers.backPush();
             beaconPushers.frontPush();
         }
+
+
+        lift.armsIn();
 
         //move forward a bit
         drivetrain.moveForward(.6, 2000, 1000);
@@ -201,12 +214,14 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
         drivetrain.stopMotors();
 
         //move to push capball off and push
-        drivetrain.moveForward(.5, 6000, 5000);
+        drivetrain.moveForward(1, .8, 6000, 5000);
+
+        //turn to make sure we knock off cap ball
+        drivetrain.moveForward(0, 1, 500, 2000);
 
         //saftey stop for end of program
         drivetrain.stopMotors();
     }
-
 
     private void composeTelemetry() {
         telemetry.addLine()
@@ -246,5 +261,4 @@ public class RedAutonomousSimpleColor extends LinearOpMode {
                     }
                 });
     }
-
 }

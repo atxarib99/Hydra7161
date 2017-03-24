@@ -43,27 +43,40 @@ public class BeaconPushers {
         this.opMode.telemetry.update();
     }
 
-    public boolean isBackBlue() throws InterruptedException {
+    private int comparativeAlgorithmValue() {
         double blueBeacon = 0;
-        Thread.sleep(500);
 
         double bluebeaconL = colorL.blue();
         double bluebeaconR = colorR.blue();
         double redbeaconL = colorL.red();
         double redbeaconR = colorR.red();
-        
+
         blueBeacon += bluebeaconR - bluebeaconL;
         blueBeacon += redbeaconL - redbeaconR;
+
+        return (int) blueBeacon;
+    }
+
+    public boolean isBackBlue() throws InterruptedException {
+        double blueBeacon = 0;
+        Thread.sleep(500);
+
+        blueBeacon = comparativeAlgorithmValue();
 
         return blueBeacon >= 0.0;
     }
 
     public boolean areBothBlue() {
-        return colorL.red() < 2 && colorR.red() < 2;
+        return colorL.red() <= 4 && colorR.red() <= 4;
+    }
+
+    public boolean isBeaconUnpressed() {
+
+        return Math.abs(comparativeAlgorithmValue()) > 3;
     }
 
     public boolean areBothRed() {
-        return colorR.blue() < 2 && colorL.blue() < 2;
+        return colorR.blue() <= 4 && colorL.blue() <= 4;
     }
 
     public String getColorVal() {
@@ -99,6 +112,7 @@ public class BeaconPushers {
 
     }
 
+    @Deprecated
     public boolean isBeaconNotPushed() {
         return colorL.red() < 2 || colorR.red() < 2;
     }
