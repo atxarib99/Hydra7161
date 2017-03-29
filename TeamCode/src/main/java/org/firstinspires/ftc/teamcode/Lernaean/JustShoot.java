@@ -64,7 +64,7 @@ public class JustShoot extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveForward(.35, 7273, 5000);
+        drivetrain.moveForward(.35, 6000, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");

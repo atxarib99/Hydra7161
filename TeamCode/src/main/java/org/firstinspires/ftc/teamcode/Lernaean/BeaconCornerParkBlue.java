@@ -84,7 +84,7 @@ public class BeaconCornerParkBlue extends LinearOpMode {
         telemetry.update();
 
         //move forward to get into shooting range
-        drivetrain.moveForward(.5, 3030, 5000);
+        drivetrain.moveForward(.5, 2500, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -127,7 +127,7 @@ public class BeaconCornerParkBlue extends LinearOpMode {
         manipulator.runCollector(0);
 
         //move away from shooting zone
-        drivetrain.moveForward(-.5, 1212, 5000);
+        drivetrain.moveForward(-.5, 1000, 5000);
 
         //wait for momentum
         Thread.sleep(100);
@@ -155,7 +155,7 @@ public class BeaconCornerParkBlue extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //
-        drivetrain.moveBackwardToWall(-1, -.4, 14545, 10000, 141);
+        drivetrain.moveBackwardToWall(-1, -.4, 12000, 10000, 141);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -168,7 +168,7 @@ public class BeaconCornerParkBlue extends LinearOpMode {
         telemetry.update();
 
         //move towards the beacons at a high correction
-        drivetrain.moveForward(-.2, -.35, 4848, 5000);
+        drivetrain.moveForward(-.2, -.35, 4000, 5000);
 
         //slow down and detect the line
         drivetrain.moveFowardToLine(-.09, -.12, 4000);
@@ -185,9 +185,9 @@ public class BeaconCornerParkBlue extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 121, 500);
+                    drivetrain.moveForward(.08, .11, 100, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 121, 500);
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
                 }
             }
             if (blue) {
@@ -218,7 +218,7 @@ public class BeaconCornerParkBlue extends LinearOpMode {
         lift.armsIn();
 
         //move fast towards the next beacon
-        drivetrain.moveForward(.3, .7, 6061, 5000);
+        drivetrain.moveForward(.3, .7, 5000, 5000);
 
         //move towards the line at a high speed
         drivetrain.moveFowardToLine(.14, .23, 2000);
@@ -241,9 +241,9 @@ public class BeaconCornerParkBlue extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 121, 500);
+                    drivetrain.moveForward(.08, .11, 100, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 121, 500);
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
                 }
             }
             if (blue) {
