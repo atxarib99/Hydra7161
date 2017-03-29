@@ -360,7 +360,7 @@ public abstract class LernaeanOpMode extends OpMode {
         else
             activate.setPosition(.2);
     }
-
+    
     private double getShooterPower() {
         return shooterPower;
     }

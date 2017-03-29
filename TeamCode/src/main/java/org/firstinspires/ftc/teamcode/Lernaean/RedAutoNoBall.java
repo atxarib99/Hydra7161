@@ -74,7 +74,7 @@ public class RedAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         //move forward to get within shooting range
-        drivetrain.moveBackward(.35, 2000, 5000);
+        drivetrain.moveBackward(.35, 2424, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -117,7 +117,7 @@ public class RedAutoNoBall extends LinearOpMode {
         lift.armsGrab();
 
         //move away from the shooting zone
-        drivetrain.moveBackward(-.3, 1000, 5000);
+        drivetrain.moveBackward(-.3, 1212, 5000);
 
         //rotate 38 degrees to the left
         drivetrain.rotateP(.435, -38);
@@ -134,7 +134,7 @@ public class RedAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .4, 12000, 10000, 38);
+        drivetrain.moveForwardToWall(1, .4, 14545, 10000, 38);
 
         //move forward into line
         drivetrain.moveFowardToLine(.13, .25, 5000);
@@ -154,9 +154,9 @@ public class RedAutoNoBall extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 100, 500);
+                    drivetrain.moveForward(.08, .11, 121, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                    drivetrain.moveForward(-.08, -.11, 121, 500);
                 }
             }
             if (blue) {
@@ -191,7 +191,7 @@ public class RedAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         //move forward at high speed towards the next beacon
-        drivetrain.moveForward(-.3, -.7, 6000, 5000);
+        drivetrain.moveForward(-.3, -.7, 7273, 5000);
 
         //slow down while finding the line
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
@@ -204,9 +204,9 @@ public class RedAutoNoBall extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 100, 500);
+                    drivetrain.moveForward(.08, .11, 121, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                    drivetrain.moveForward(-.08, -.11, 121, 500);
                 }
             }
             if (blue){
@@ -235,7 +235,7 @@ public class RedAutoNoBall extends LinearOpMode {
         lift.armsIn();
 
         //move forward a bit
-        drivetrain.moveForward(.6, 2000, 1000);
+        drivetrain.moveForward(.6, 2424, 1000);
 
         //turn off the wall and onto the cap ball
         try {
@@ -249,10 +249,10 @@ public class RedAutoNoBall extends LinearOpMode {
         drivetrain.stopMotors();
 
         //move to push capball off and push
-        drivetrain.moveForward(1, .8, 6000, 5000);
+        drivetrain.moveForward(1, .8, 7273, 5000);
 
         //turn to make sure we knock off cap ball
-        drivetrain.moveForward(0, 1, 500, 2000);
+        drivetrain.moveForward(0, 1, 606, 2000);
 
         //saftey stop for end of program
         drivetrain.stopMotors();

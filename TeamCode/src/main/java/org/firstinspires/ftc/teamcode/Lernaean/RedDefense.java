@@ -77,7 +77,7 @@ public class RedDefense extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveForward(.35, 6000, 5000);
+        drivetrain.moveForward(.35, 7273, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -117,7 +117,7 @@ public class RedDefense extends LinearOpMode {
 
         Thread.sleep(250);
 
-        drivetrain.moveForward(.3, 5000, 5000);
+        drivetrain.moveForward(.3, 6061, 5000);
     }
 
     private void composeTelemetry() {
