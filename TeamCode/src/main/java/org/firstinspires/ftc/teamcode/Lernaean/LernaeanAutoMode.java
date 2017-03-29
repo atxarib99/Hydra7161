@@ -209,6 +209,7 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
         angleError = getGyroYaw();
     }
 
+
     //P loop for PID //TODO: UPDATE VALS AND TEST
     public void pRotate(double pow, double angle) throws InterruptedException {
         resetGyro();
@@ -308,6 +309,8 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
             pRotate(pow, angle);
 
     }
+
+
 
     public void moveXTiles(int numTiles) throws InterruptedException {
         double oneTileInInches = 24;
