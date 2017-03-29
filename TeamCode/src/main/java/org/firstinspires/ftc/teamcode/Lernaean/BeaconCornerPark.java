@@ -79,7 +79,7 @@ public class BeaconCornerPark extends LinearOpMode {
         telemetry.update();
 
         //move forward to get within shooting range
-        drivetrain.moveBackward(.35, 2000, 5000);
+        drivetrain.moveBackward(.35, 1667, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -122,7 +122,7 @@ public class BeaconCornerPark extends LinearOpMode {
         lift.armsGrab();
 
         //move away from the shooting zone
-        drivetrain.moveBackward(-.3, 1000, 5000);
+        drivetrain.moveBackward(-.3, 833, 5000);
 
         //rotate 38 degrees to the left
         drivetrain.rotateP(.435, -38);
@@ -139,7 +139,7 @@ public class BeaconCornerPark extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .4, 12000, 10000, 38);
+        drivetrain.moveForwardToWall(1, .4, 10000, 10000, 38);
 
         //move forward into line
         drivetrain.moveFowardToLine(.13, .25, 4000);
@@ -159,9 +159,9 @@ public class BeaconCornerPark extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 100, 500);
+                    drivetrain.moveForward(.08, .11, 83, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                    drivetrain.moveForward(-.08, -.11, 83, 500);
                 }
             }
             if (blue) {
@@ -196,7 +196,7 @@ public class BeaconCornerPark extends LinearOpMode {
         telemetry.update();
 
         //move forward at high speed towards the next beacon
-        drivetrain.moveForward(-.3, -.7, 6000, 5000);
+        drivetrain.moveForward(-.3, -.7, 5000, 5000);
 
         //slow down while finding the line
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
@@ -209,9 +209,9 @@ public class BeaconCornerPark extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 100, 500);
+                    drivetrain.moveForward(.08, .11, 83, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                    drivetrain.moveForward(-.08, -.11, 83, 500);
                 }
             }
             if (blue){
@@ -240,7 +240,7 @@ public class BeaconCornerPark extends LinearOpMode {
         lift.armsIn();
 
         //move forward a bit
-        drivetrain.moveBackward(-.6, 3000, 1000);
+        drivetrain.moveBackward(-.6, 2500, 1000);
 
         //saftey stop for end of program
         drivetrain.stopMotors();

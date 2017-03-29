@@ -81,7 +81,7 @@ public class BlueDefenseCap extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveBackward(.35, 5750, 5000);
+        drivetrain.moveBackward(.35, 4744, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -123,11 +123,11 @@ public class BlueDefenseCap extends LinearOpMode {
 
         Thread.sleep(5000);
 
-        drivetrain.moveForward(1, 1, 5000, 5000);
+        drivetrain.moveForward(1, 1, 4167, 5000);
 
         Thread.sleep(250);
 
-        drivetrain.moveForward(-1, 0, 1000, 2000);
+        drivetrain.moveForward(-1, 0, 833, 2000);
 
         Thread.sleep(250);
 

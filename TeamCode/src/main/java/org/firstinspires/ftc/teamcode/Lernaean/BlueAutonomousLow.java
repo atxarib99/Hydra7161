@@ -61,7 +61,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         //soft reset the encoders
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.35, 2000, 5000);
+        drivetrain.moveForward(.35, 1667, 5000);
 
         //run a saftey stop command. the previous method has one but this ensures it
         drivetrain.stopMotors();
@@ -106,7 +106,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         //stop the collector
         manipulator.runCollector(0);
 
-        drivetrain.moveForward(-.35, 1000, 5000);
+        drivetrain.moveForward(-.35, 833, 5000);
 
         Thread.sleep(100);
 
@@ -131,7 +131,7 @@ public class BlueAutonomousLow extends LinearOpMode {
 
         manipulator.runCollector(.5);
 
-        drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
+        drivetrain.moveBackwardToWall(-1, -.4, 9488, 10000, 142);
 
         manipulator.runCollector(0);
 
@@ -160,7 +160,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
-        drivetrain.moveForward(-.2, -.35, 4000, 5000);
+        drivetrain.moveForward(-.2, -.35, 3333, 5000);
 
         drivetrain.moveFowardToLine(-.1, -.13, 4000);
 
@@ -171,7 +171,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         int count = 0;
         while (!beaconPushers.areBothBlue()) {
             if(count == 3) {
-                drivetrain.moveForward(.1, .12, 100, 500);
+                drivetrain.moveForward(.1, .12, 83, 500);
             }
             if (beaconPushers.isBackBlue()){
                 beaconPushers.backPush();
@@ -192,7 +192,7 @@ public class BlueAutonomousLow extends LinearOpMode {
 
         drivetrain.setNullValue();
 
-        drivetrain.moveForward(.6, .75, 5000, 5000);
+        drivetrain.moveForward(.6, .75, 4167, 5000);
 
         drivetrain.moveFowardToLine(.14, .23, 2000);
 
@@ -219,7 +219,7 @@ public class BlueAutonomousLow extends LinearOpMode {
 
         while (!beaconPushers.areBothBlue()) {
             if(count == 3) {
-                drivetrain.moveForward(.1, .12, 100, 500);
+                drivetrain.moveForward(.1, .12, 83, 500);
             }
             if (beaconPushers.isBackBlue()){
                 beaconPushers.backPush();
@@ -240,7 +240,7 @@ public class BlueAutonomousLow extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        drivetrain.moveForward(-.75, 1000, 1000);
+        drivetrain.moveForward(-.75, 833, 1000);
 
         while(Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
             drivetrain.startMotors(-.65, 0);
@@ -248,7 +248,7 @@ public class BlueAutonomousLow extends LinearOpMode {
         }
         drivetrain.stopMotors();
 
-        drivetrain.moveBackward(-1, 6000, 5000);
+        drivetrain.moveBackward(-1, 5000, 5000);
 
         drivetrain.stopMotors();
     }
