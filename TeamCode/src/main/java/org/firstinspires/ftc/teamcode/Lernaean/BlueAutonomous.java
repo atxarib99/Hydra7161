@@ -46,15 +46,15 @@ public class BlueAutonomous extends LinearOpMode {
         //wait 2 seconds to regain voltage dropped from init
         Thread.sleep(2000);
 
-        //calculate the voltage
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
-
         /* This is the version number of the current iteration
         this is because sometimes the compiling process build the app but then installs
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
         version = "1.43";
+
+        //calculate the voltage
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
         //display the data for testing purposes
         telemetry.addData("version: ", version);
@@ -70,6 +70,11 @@ public class BlueAutonomous extends LinearOpMode {
             telemetry.update();
             idle();
         }
+
+        //calculate the voltage
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+        Thread.sleep(100);
 
         //start gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -177,7 +182,7 @@ public class BlueAutonomous extends LinearOpMode {
         int count = 0;
         boolean blue = beaconPushers.isBackBlue();
         boolean attempted = false;
-        while (!beaconPushers.areBothBlue() || beaconPushers.isBeaconUnpressed()) {
+        while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
                     drivetrain.moveForward(.08, .11, 100, 500);
@@ -197,10 +202,6 @@ public class BlueAutonomous extends LinearOpMode {
                 break;
             count++;
             Thread.sleep(250);
-        }
-
-        if(attempted) {
-            telemetry.addData("attempted", true);
         }
 
         if(!attempted) {
@@ -237,7 +238,7 @@ public class BlueAutonomous extends LinearOpMode {
         blue = beaconPushers.isBackBlue();
         count = 0;
         attempted = false;
-        while (!beaconPushers.areBothBlue() || beaconPushers.isBeaconUnpressed()) {
+        while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
                     drivetrain.moveForward(.08, .11, 100, 500);

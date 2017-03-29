@@ -58,7 +58,7 @@ public class BeaconPushers {
     }
 
     public boolean isBackBlue() throws InterruptedException {
-        double blueBeacon = 0;
+        double blueBeacon;
         Thread.sleep(500);
 
         blueBeacon = comparativeAlgorithmValue();

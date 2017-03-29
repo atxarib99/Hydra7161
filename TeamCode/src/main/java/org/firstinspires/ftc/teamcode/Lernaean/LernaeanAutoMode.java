@@ -306,6 +306,7 @@ public abstract class LernaeanAutoMode extends LinearOpMode {
 
         if(diff != 0)
             pRotate(pow, angle);
+
     }
 
     public void moveXTiles(int numTiles) throws InterruptedException {

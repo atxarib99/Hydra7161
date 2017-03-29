@@ -73,12 +73,11 @@ public class RedDefense extends LinearOpMode {
         //start the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        //display the current step
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveForward(.35, 6200, 5000);
+        drivetrain.moveForward(.35, 6000, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -102,7 +101,7 @@ public class RedDefense extends LinearOpMode {
         manipulator.runCollector(0);
 
         //wait for spinup
-        Thread.sleep(400);
+        Thread.sleep(600);
 
         //let the rest of the balls go
         manipulator.runCollector(-1);
@@ -112,36 +111,13 @@ public class RedDefense extends LinearOpMode {
         //stop the shooter
         shooter.stopShooter();
 
-        //stop the collector
         manipulator.runCollector(0);
 
-        //turn towards the opposite starting position
-        drivetrain.rotateP(.5, 80);
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(2500);
-
-        drivetrain.moveForward(1, 1, 7100, 5000);
-
-        drivetrain.rotatePDefense(.5, 20);
-
-        drivetrain.stopMotors();
+        drivetrain.basicTurn(-.25, 45);
 
         Thread.sleep(250);
 
-        //Move forward, at full power because we don't need as much accuracy
-        drivetrain.moveForward(1, 1, 6700, 5000);
-
-
-        drivetrain.rotatePDefenseTwo(.75, -40);
-
-        drivetrain.stopMotors();
-
-        Thread.sleep(250);
-
-        drivetrain.moveForward(1, 4000, 5000);
-
+        drivetrain.moveForward(.3, 5000, 5000);
     }
 
     private void composeTelemetry() {

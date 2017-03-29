@@ -132,7 +132,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 armsDrop();
             }
 
-            if(gamepad2.x   ) {
+            if(gamepad2.x) {
                 if(armRelease.getPosition() < .5)
                     armRelease();
                 else

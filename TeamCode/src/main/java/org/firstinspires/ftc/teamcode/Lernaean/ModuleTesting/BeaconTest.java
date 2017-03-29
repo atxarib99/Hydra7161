@@ -14,19 +14,13 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 @Autonomous(name = "BeaconTest", group = "Testing")
 public class BeaconTest extends LinearOpMode {
 
-    Drivetrain drivetrain;
-    Shooter shooter;
     BeaconPushers beaconPushers;
-    Manipulator manipulator;
 
     String version;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        drivetrain      = new Drivetrain(this);
-        shooter         = new Shooter(this);
         beaconPushers   = new BeaconPushers(this);
-        manipulator     = new Manipulator(this);
 
         version = "1.3";
 
@@ -36,10 +30,10 @@ public class BeaconTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()) {
-            boolean backBlue = beaconPushers.isBackBlue();
+            boolean blue = beaconPushers.isBackBlue();
             telemetry.addData("color", beaconPushers);
             String toTele;
-            if(!backBlue) {
+            if(!blue) {
                 toTele = "The back sensor detects red and the front is blank";
             }
             else {
@@ -51,14 +45,23 @@ public class BeaconTest extends LinearOpMode {
 
             Thread.sleep(2000);
 
-            if(backBlue) {
-                beaconPushers.backPush();
+            blue = beaconPushers.isBackBlue();
+            int count = 0;
+            boolean attempted = false;
+            while (beaconPushers.isBeaconUnpressed()) {
+                if (blue) {
+                    beaconPushers.backPush();
+                    attempted = true;
+                }
+                else {
+                    beaconPushers.frontPush();
+                    attempted = true;
+                }
+                if(count == 2)
+                    break;
+                count++;
+                Thread.sleep(250);
             }
-            else {
-                beaconPushers.frontPush();
-            }
-
-            while (!gamepad1.a);
 
         }
     }

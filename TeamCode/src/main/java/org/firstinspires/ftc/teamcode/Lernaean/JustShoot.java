@@ -54,23 +54,17 @@ public class JustShoot extends LinearOpMode {
             idle();
         }
 
+        Thread.sleep(15000);
+
+        //start the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
+        //display the current step
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
-        Thread.sleep(10000);
-
-        //soft reset the encoders
-        drivetrain.setNullValue();
-
-        drivetrain.moveForward(.35, 5000, 5000);
-
-        //run a saftey stop command. the previous method has one but this ensures it
-        drivetrain.stopMotors();
-
-        //soft reset the encoders
-        drivetrain.setNullValue();
+        //move to shooting range
+        drivetrain.moveForward(.35, 6000, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -88,23 +82,23 @@ public class JustShoot extends LinearOpMode {
         //start moving the collecter
         manipulator.runCollector(-1);
 
-        //let the shooter run for 3 seconds
+        //let the shooter run for 1 second
         Thread.sleep(900);
 
         manipulator.runCollector(0);
 
-        Thread.sleep(400);
+        //wait for spinup
+        Thread.sleep(600);
 
+        //let the rest of the balls go
         manipulator.runCollector(-1);
 
         Thread.sleep(1750);
 
-        //display that we are gonna start our rotation
-        telemetry.addData("currentStep", "rotating");
-        telemetry.update();
-
         //stop the shooter
         shooter.stopShooter();
+
+        manipulator.runCollector(0);
     }
 
     private void composeTelemetry() {

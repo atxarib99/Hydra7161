@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -15,17 +16,17 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "Blue Autonomous No Ball", group = "LinearOpMode")
+@Autonomous(name = "Blue Auto No Ball", group = "LinearOpMode")
 public class BlueAutoNoBall extends LinearOpMode {
 
-    //create robot parts
+    //create class variables
     private Drivetrain drivetrain;
     private Manipulator manipulator;
     private Shooter shooter;
     private BeaconPushers beaconPushers;
     private Lift lift;
 
-    //create class variables
+    //create class specific variables
     private double voltage;
     private String version;
 
@@ -78,7 +79,7 @@ public class BlueAutoNoBall extends LinearOpMode {
         telemetry.update();
 
         //move forward to get into shooting range
-        drivetrain.moveForward(.35, 2000, 5000);
+        drivetrain.moveForward(.5, 2500, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -108,7 +109,7 @@ public class BlueAutoNoBall extends LinearOpMode {
         //run the rest of the balls for the rest of the time
         manipulator.runCollector(-1);
 
-        Thread.sleep(1750);
+        Thread.sleep(1500);
 
         //display that we are gonna start our rotation
         telemetry.addData("currentStep", "rotating");
@@ -121,13 +122,13 @@ public class BlueAutoNoBall extends LinearOpMode {
         manipulator.runCollector(0);
 
         //move away from shooting zone
-        drivetrain.moveForward(-.35, 1000, 5000);
+        drivetrain.moveForward(-.5, 1000, 5000);
 
         //wait for momentum
         Thread.sleep(100);
 
         //turn PID
-        drivetrain.rotatePB(.4, -142);
+        drivetrain.rotatePB(.4, -141);
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
@@ -149,7 +150,7 @@ public class BlueAutoNoBall extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //
-        drivetrain.moveBackwardToWall(-1, -.4, 11500, 10000, 142);
+        drivetrain.moveBackwardToWall(-1, -.4, 12000, 10000, 141);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -170,28 +171,50 @@ public class BlueAutoNoBall extends LinearOpMode {
         //wait for momentum
         Thread.sleep(100);
 
+        lift.armsDrop();
+
         //Press the beacon 2 times and on the third time correct a bit before the last push
         int count = 0;
-        while (!beaconPushers.areBothBlue()) {
+        boolean blue = beaconPushers.isBackBlue();
+        boolean attempted = false;
+        while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
-                drivetrain.moveForward(.08, .11, 100, 500);
+                if(blue) {
+                    drivetrain.moveForward(.08, .11, 100, 500);
+                } else {
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                }
             }
-            if (beaconPushers.isBackBlue()){
+            if (blue) {
+                beaconPushers.backPush();
+                attempted = true;
+            }
+            else {
+                beaconPushers.frontPush();
+                attempted = true;
+            }
+            if(count == 2)
+                break;
+            count++;
+            Thread.sleep(250);
+        }
+
+        if(attempted) {
+            telemetry.addData("attempted", true);
+        }
+
+        if(!attempted) {
+            if (blue) {
                 beaconPushers.backPush();
             }
             else {
                 beaconPushers.frontPush();
             }
-            if(count == 2)
-                break;
-            count++;
         }
 
-        if(beaconPushers.areBothRed()) {
-            Thread.sleep(5000);
-            beaconPushers.backPush();
-            beaconPushers.frontPush();
-        }
+        Thread.sleep(250);
+
+        lift.armsIn();
 
         //move fast towards the next beacon
         drivetrain.moveForward(.3, .7, 5000, 5000);
@@ -208,28 +231,66 @@ public class BlueAutoNoBall extends LinearOpMode {
         //wait for momentum
         Thread.sleep(250);
 
+        lift.armsDrop();
+
         //Press the beacon 2 times and on the third time correct a bit before the last push
-        while (!beaconPushers.areBothBlue()) {
+        blue = beaconPushers.isBackBlue();
+        count = 0;
+        attempted = false;
+        while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
-                drivetrain.moveForward(.08, .11, 100, 500);
+                if(blue) {
+                    drivetrain.moveForward(.08, .11, 100, 500);
+                } else {
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                }
             }
-            if (beaconPushers.isBackBlue()){
+            if (blue) {
+                beaconPushers.backPush();
+                attempted = true;
+            }
+            else {
+                beaconPushers.frontPush();
+                attempted = true;
+            }
+            if(count == 2)
+                break;
+            count++;
+            Thread.sleep(250);
+        }
+
+        if(!attempted) {
+            if (blue) {
                 beaconPushers.backPush();
             }
             else {
                 beaconPushers.frontPush();
             }
-            if(count == 2)
-                break;
-            count++;
         }
 
-        //make sure we did not hit the wrong color
-        if(beaconPushers.areBothRed()) {
-            Thread.sleep(5000);
-            beaconPushers.backPush();
-            beaconPushers.frontPush();
+        lift.armsIn();
+
+        //move forward a bit
+        drivetrain.moveForward(-.75, 1000, 1000);
+
+        //turn away from the wall
+        while(opModeIsActive() && Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
+            drivetrain.startMotors(-.65, 0);
+            idle();
         }
+        drivetrain.stopMotors();
+
+        drivetrain.moveForward(-.8, -1, 6000, 5000);
+
+        //move to the center zone push and park
+        //replaced this with more drift (above)
+        //drivetrain.moveBackward(-1, 6000, 5000);
+
+        //turn to make sure we knock off cap ball
+        drivetrain.moveForward(-1, 0, 500, 2000);
+
+        //safety stop for program
+        drivetrain.stopMotors();
     }
 
     private void composeTelemetry() {

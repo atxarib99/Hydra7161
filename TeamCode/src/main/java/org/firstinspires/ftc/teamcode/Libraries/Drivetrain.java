@@ -346,6 +346,24 @@ public class Drivetrain {
 
     }
 
+    public void basicTurn(double pow, double angle) throws InterruptedException {
+        double power = pow;
+        double angleTo = angle;
+        double currentAngle = sensor.getGyroYaw();
+
+        while (currentAngle < angleTo - 2) {
+            currentAngle = sensor.getGyroYaw();
+
+            startMotors(power, power);
+
+            opMode.telemetry.update();
+            opMode.idle();
+        }
+
+        opMode.telemetry.update();
+        stopMotors();
+    }
+
     public void moveForwardUntilZero(double pow, double timeout) throws InterruptedException {
 
         double angle = sensor.getGyroYaw();
@@ -530,7 +548,7 @@ public class Drivetrain {
         angleError = sensor.getGyroYaw();
     }
 
-    public void moveBackward(double pow, int encoderVal, int timeout) throws InterruptedException {
+    public void     moveBackward(double pow, int encoderVal, int timeout) throws InterruptedException {
 //        sensor.resetGyro();
         double angle;
         double startAngle = Math.abs(sensor.getGyroYaw());

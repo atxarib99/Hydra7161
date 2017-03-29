@@ -69,6 +69,7 @@ public class ShootAndPushBall extends LinearOpMode {
             telemetry.update();
             idle();
         }
+        Thread.sleep(15000);
 
         //start the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -78,7 +79,7 @@ public class ShootAndPushBall extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveForward(.35, 5000, 5000);
+        drivetrain.moveForward(.35, 5750, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -102,7 +103,7 @@ public class ShootAndPushBall extends LinearOpMode {
         manipulator.runCollector(0);
 
         //wait for spinup
-        Thread.sleep(400);
+        Thread.sleep(600);
 
         //let the rest of the balls go
         manipulator.runCollector(-1);
@@ -112,14 +113,11 @@ public class ShootAndPushBall extends LinearOpMode {
         //stop the shooter
         shooter.stopShooter();
 
-        //wait 10 seconds so that we dont run the cap ball into other teams
-        Thread.sleep(10000);
+        manipulator.runCollector(0);
 
-        //move onto the capballs spot and park there
-        drivetrain.moveBackward(.2, 5500, 5000);
+        drivetrain.moveBackward(.2, 4000, 5000);
 
-        //saftey stop for the programs
-        drivetrain.stopMotors();
+        drivetrain.moveForward(0, 1, 1000, 2000);
 
     }
 

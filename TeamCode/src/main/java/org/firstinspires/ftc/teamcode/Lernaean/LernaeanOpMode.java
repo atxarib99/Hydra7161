@@ -40,7 +40,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double BACK_IN = 1;
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
-    private final double ARM_RELEASER_RELEASED = .75;
+    private final double ARM_RELEASER_RELEASED = 0;
     private final double ARM_RELEASER_CLOSED = 1;
     private final double TOP_GRAB = 1;
     private final double TOP_UNGRAB = 0;
@@ -56,7 +56,7 @@ public abstract class LernaeanOpMode extends OpMode {
 
     Runnable speedCounter = new Runnable() {
 
-        private double[] velocityAvg = new double[20];
+        private double[] velocityAvg = new double[10];
         private int currentTick;
         private double avg = 0;
         private double lastAvg = 0;
@@ -87,13 +87,13 @@ public abstract class LernaeanOpMode extends OpMode {
                         numZero++;
                 }
                 opMode.telemetry.addData("currentTick", currentTick);
-                if (currentTick == 19) {
+                if (currentTick == velocityAvg.length - 1) {
                     lastAvg = avg;
                     avg = 0;
-                    for (int i = 0; i < 20; i++) {
-                        avg += velocityAvg[i];
+                    for (double aVelocityAvg : velocityAvg) {
+                        avg += aVelocityAvg;
                     }
-                    avg /= 20;
+                    avg /= velocityAvg.length;
                     double error = 1.8 - avg;
                     if (getShooterPower() > .04 && Math.abs(error) > .2 && !stopCommandGiven) {
                         double kP = 1.2;
@@ -118,6 +118,8 @@ public abstract class LernaeanOpMode extends OpMode {
                     e.printStackTrace();
                 }
                 opMode.telemetry.addData("power", power);
+                if(!runThread)
+                    break;
             }
         }
     };
@@ -235,8 +237,8 @@ public abstract class LernaeanOpMode extends OpMode {
 
     @Override
     public void stop() {
-        speedThread.interrupt();
         runThread = false;
+        speedThread.interrupt();
     }
 
     @Override
@@ -320,7 +322,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void startManiSlow() {
-        manipulator.setPower(-.7);
+        manipulator.setPower(-.9);
     }
 
     void stopMani() {

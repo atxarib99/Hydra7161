@@ -66,6 +66,11 @@ public class RedAutonomous extends LinearOpMode {
             idle();
         }
 
+        //calculate the voltage
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+        Thread.sleep(100);
+
         //start the acceleration calculation for the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
@@ -137,7 +142,7 @@ public class RedAutonomous extends LinearOpMode {
         drivetrain.moveForwardToWall(1, .4, 12000, 10000, 38);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.13, .25, 5000);
+        drivetrain.moveFowardToLine(.13, .25, 4000);
 
         //wait for momentum
         Thread.sleep(250);
@@ -151,7 +156,7 @@ public class RedAutonomous extends LinearOpMode {
         boolean blue = beaconPushers.isBackBlue();
         boolean attempted = false;
         int count = 0;
-        while (!beaconPushers.areBothRed() || beaconPushers.isBeaconUnpressed()) {
+        while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
                     drivetrain.moveForward(.08, .11, 100, 500);
@@ -183,17 +188,6 @@ public class RedAutonomous extends LinearOpMode {
             }
         }
 
-        Thread.sleep(250);
-
-        if(attempted) {
-            //make sure we didn't hit the wrong color
-            if (beaconPushers.areBothBlue()) {
-                Thread.sleep(5000);
-                beaconPushers.backPush();
-                beaconPushers.frontPush();
-            }
-        }
-
         lift.armsIn();
 
         //display we are moving forwards
@@ -212,7 +206,7 @@ public class RedAutonomous extends LinearOpMode {
         count = 0;
         attempted = false;
         blue = beaconPushers.isBackBlue();
-        while (!beaconPushers.areBothRed() || beaconPushers.isBeaconUnpressed()) {
+        while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
                     drivetrain.moveForward(.08, .11, 100, 500);
@@ -263,7 +257,7 @@ public class RedAutonomous extends LinearOpMode {
         drivetrain.moveForward(1, .8, 6000, 5000);
 
         //turn to make sure we knock off cap ball
-        drivetrain.moveForward(0, 1, 500, 2000);
+        drivetrain.moveForward(1, 0, 750, 2000);
 
         //saftey stop for end of program
         drivetrain.stopMotors();

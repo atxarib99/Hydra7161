@@ -56,8 +56,6 @@ public class BlueDefenseCap extends LinearOpMode {
          */
         version = "1.43";
 
-        ElapsedTime time = new ElapsedTime();
-
         //display the data to the user
         telemetry.addData("version: ", version);
         telemetry.addData("voltage", voltage);
@@ -72,7 +70,8 @@ public class BlueDefenseCap extends LinearOpMode {
             telemetry.update();
             idle();
         }
-        time.startTime();
+
+        resetStartTime();
 
         //start the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -82,7 +81,7 @@ public class BlueDefenseCap extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveBackward(.35, 6200, 5000);
+        drivetrain.moveBackward(.35, 5750, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -122,31 +121,17 @@ public class BlueDefenseCap extends LinearOpMode {
 
         drivetrain.stopMotors();
 
-        Thread.sleep(500);
+        Thread.sleep(5000);
 
-        while (time.seconds() < 10) {
-            Thread.sleep(250);
-        }
-
-        drivetrain.moveForward(1, 1, 5000, 10000);
+        drivetrain.moveForward(1, 1, 5000, 5000);
 
         Thread.sleep(250);
 
-        drivetrain.rotatePDefense(-.5, 20);
+        drivetrain.moveForward(-1, 0, 1000, 2000);
 
-        Thread.sleep(500);
-
-        drivetrain.moveBackward(1, 6000, 2000);
-
-        while(time.seconds() < 28) {
-            Thread.sleep(250);
-        }
-
-        drivetrain.moveBackward(-1, 3500, 2000);
+        Thread.sleep(250);
 
         drivetrain.stopMotors();
-
-        time.reset();
 
     }
 
