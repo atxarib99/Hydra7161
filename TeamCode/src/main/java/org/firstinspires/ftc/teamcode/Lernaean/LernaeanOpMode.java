@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.Lernaean;
 
+import com.qualcomm.hardware.adafruit.BNO055IMU;
+import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,6 +11,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Func;
+import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 /**
  * Created by Arib on 9/11/2016.
@@ -29,6 +33,12 @@ public abstract class LernaeanOpMode extends OpMode {
     Servo armLeft;
     Servo armRight;
     DeviceInterfaceModule cdim;
+
+    public BNO055IMU gyro;
+    Orientation angles;
+    Acceleration gravity;
+    BNO055IMU.Parameters parameters;
+
     private ColorSensor color;
     private ColorSensor color2;
     private OpticalDistanceSensor left;
@@ -53,6 +63,7 @@ public abstract class LernaeanOpMode extends OpMode {
 
     private boolean reversed;
     boolean stopCommandGiven;
+    boolean defenseMode;
 
     Runnable speedCounter = new Runnable() {
 
@@ -123,6 +134,63 @@ public abstract class LernaeanOpMode extends OpMode {
             }
         }
     };
+
+    Runnable defenseStopperBasic = new Runnable() {
+        double startAngle = 0;
+        boolean firstRun = true;
+        double currentAngle = 0;
+        @Override
+        public void run() {
+            while(defenseMode) {
+                if(firstRun) {
+                    startAngle = getGyroYaw();
+                    firstRun = false;
+                }
+
+                currentAngle = getGyroYaw();
+                double error = startAngle - currentAngle;
+
+                if(Math.abs(error) > 5) {
+                    activateShooter(false);
+                }
+            }
+            firstRun = true;
+        }
+    };
+
+    Runnable defenseStopperAdvanced = new Runnable() {
+        double startAngle = 0;
+        boolean firstRun = true;
+        double currentAngle = 0;
+
+        double kP = .1;
+        double kI = .1;
+        double kD = .1;
+        @Override
+        public void run() {
+            while(defenseMode) {
+                if(firstRun) {
+                    startAngle = getGyroYaw();
+                    firstRun = false;
+                }
+
+                currentAngle = getGyroYaw();
+                double error = startAngle - currentAngle;
+
+                double timeDiff = 0;
+                double startTime = getRuntime();
+                while(Math.abs(error) > 3 && timeDiff < 3) {
+                    activateShooter(false);
+                    timeDiff = getRuntime() - startTime;
+
+                    double power = kP * error;
+                    startMotors(power, power);
+                }
+            }
+            firstRun = true;
+        }
+    };
+
 
     double powerL;
     double powerR;
@@ -226,6 +294,20 @@ public abstract class LernaeanOpMode extends OpMode {
         speedThread = new Thread(speedCounter);
         ABSLeftThread = new Thread(ABSleft);
         ABSRightThread = new Thread(ABSright);
+
+        parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+        parameters.loggingEnabled      = true;
+        parameters.loggingTag          = "IMU";
+        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+        gyro.initialize(parameters);
+
+        angles   = gyro.getAngularOrientation();
+        gravity  = gyro.getGravity();
+
         frontIn();
         backIn();
         armsIn();
@@ -400,6 +482,18 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public int getBlue() {
         return color.blue();
+    }
+
+    private void updateValues() {
+        angles = gyro.getAngularOrientation();
+    }
+
+    public double getGyroYaw() {
+        updateValues();
+        double value = angles.firstAngle * -1;
+        if(angles.firstAngle < -180)
+            value -= 360;
+        return value;
     }
 
     void armRelease() {
