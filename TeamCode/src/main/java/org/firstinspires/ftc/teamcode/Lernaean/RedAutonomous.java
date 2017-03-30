@@ -60,8 +60,48 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.addData("init", "init fully finished");
         telemetry.update();
 
+        boolean startProgram = false;
+        int ballsToShoot = 2;
+        boolean parkCenter = true;
+        //wait for the program to actually start and display data in the meantime
+        while(!startProgram) {
+            if(gamepad1.start)
+                startProgram = true;
+            if(gamepad1.dpad_up) {
+                ballsToShoot++;
+                while(gamepad1.dpad_up);
+            }
+            if(gamepad1.dpad_down) {
+                ballsToShoot--;
+                while(gamepad1.dpad_down);
+            }
+            if(gamepad1.a) {
+                parkCenter = !parkCenter;
+                while (gamepad1.a);
+            }
+            telemetry.addData("Instructions", "Use D-Pad to change shooting");
+            telemetry.addData("Instructions", "Press A to change parking");
+            telemetry.addData("Instructions", "Press Start when finsihed");
+
+            telemetry.addData("Balls to shoot", ballsToShoot);
+
+            if(parkCenter)
+                telemetry.addData("Parking", "Center and Cap Ball");
+            else
+                telemetry.addData("Parking", "Corner Ramp");
+
+            telemetry.update();
+            idle();
+        }
+
         //wait for autonmous to actually start in the meantime return values
         while(!opModeIsActive()) {
+            telemetry.addData("Balls to shoot", ballsToShoot);
+            if(parkCenter)
+                telemetry.addData("Parking", "Center and Cap Ball");
+            else
+                telemetry.addData("Parking", "Corner Ramp");
+
             telemetry.update();
             idle();
         }
@@ -103,23 +143,22 @@ public class RedAutonomous extends LinearOpMode {
         //stop the balls from moving
         manipulator.runCollector(0);
 
-        //wait 1/2 second to wait for spinup
-        Thread.sleep(250);
+        if(ballsToShoot > 1) {
+            //wait 1/2 second to wait for spinup
+            Thread.sleep(500);
 
-        //let the balls move again
-        manipulator.runCollector(-1);
+            //let the balls move again
+            manipulator.runCollector(-1);
 
-        //keep the balls moving for 1.5 seconds
-        Thread.sleep(1000);
+            //keep the balls moving for 1.5 seconds
+            Thread.sleep(1000);
+
+            //stop the collector
+            manipulator.runCollector(0);
+        }
 
         //stop the shooter
         shooter.stopShooter();
-
-        //stop the collector
-        manipulator.runCollector(0);
-
-        //move the arms back to rest position
-        lift.armsGrab();
 
         //move away from the shooting zone
         drivetrain.moveBackward(-.3, 833, 5000);
@@ -130,7 +169,7 @@ public class RedAutonomous extends LinearOpMode {
         //stop after the rotation safety stop
         drivetrain.stopMotors();
 
-        //wait 1/2 seconds for momentum
+        //wait 1/4 seconds for momentum
         Thread.sleep(250);
 
         //display that we are going to move forward
@@ -159,9 +198,9 @@ public class RedAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 83, 500);
+                    drivetrain.moveForward(.08, .11, 100, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 83, 500);
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
                 }
             }
             if (blue) {
@@ -209,9 +248,9 @@ public class RedAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 83, 500);
+                    drivetrain.moveForward(.08, .11, 100, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 83, 500);
+                    drivetrain.moveForward(-.08, -.11, 100, 500);
                 }
             }
             if (blue){
@@ -242,22 +281,27 @@ public class RedAutonomous extends LinearOpMode {
         //move forward a bit
         drivetrain.moveForward(.6, 1667, 1000);
 
-        //turn off the wall and onto the cap ball
-        try {
-            while(opModeIsActive() && drivetrain.sensor.getGyroYaw() < 100) {
-                drivetrain.startMotors(.6, 0);
+        if(parkCenter) {
+
+            //turn off the wall and onto the cap ball
+            try {
+                while (opModeIsActive() && drivetrain.sensor.getGyroYaw() < 100) {
+                    drivetrain.startMotors(.6, 0);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            //stop the motors
+            drivetrain.stopMotors();
+
+            //move to push capball off and push
+            drivetrain.moveForward(1, .8, 5000, 5000);
+
+            //turn to make sure we knock off cap ball
+            drivetrain.moveForward(1, 0, 619, 2000);
+        } else {
+            drivetrain.moveForward(.75, 2500, 5000);
         }
-        //stop the motors
-        drivetrain.stopMotors();
-
-        //move to push capball off and push
-        drivetrain.moveForward(1, .8, 5000, 5000);
-
-        //turn to make sure we knock off cap ball
-        drivetrain.moveForward(1, 0, 619, 2000);
 
         //saftey stop for end of program
         drivetrain.stopMotors();

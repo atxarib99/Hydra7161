@@ -351,7 +351,7 @@ public class Drivetrain {
         double angleTo = angle;
         double currentAngle = sensor.getGyroYaw();
 
-        while (currentAngle < angleTo - 2) {
+        while (currentAngle != angle) {
             currentAngle = sensor.getGyroYaw();
 
             startMotors(power, power);
@@ -548,7 +548,7 @@ public class Drivetrain {
         angleError = sensor.getGyroYaw();
     }
 
-    public void     moveBackward(double pow, int encoderVal, int timeout) throws InterruptedException {
+    public void moveBackward(double pow, int encoderVal, int timeout) throws InterruptedException {
 //        sensor.resetGyro();
         double angle;
         double startAngle = Math.abs(sensor.getGyroYaw());
@@ -557,24 +557,7 @@ public class Drivetrain {
         double error;
         double power;
 
-        motorBL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        opMode.idle();
-
-        motorBL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorBR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFR.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-        motorFL.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        opMode.idle();
-
+        resetEncoders();
 
         setNullValue();
 

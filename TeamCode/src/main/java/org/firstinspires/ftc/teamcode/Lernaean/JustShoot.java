@@ -49,7 +49,65 @@ public class JustShoot extends LinearOpMode {
 
         drivetrain.resetEncoders();
 
+        boolean startProgram = false;
+        int ballsToShoot = 2;
+        int position = 0;
+        String[] afterShootingOptions = {"Cap Ball", "CornerVortex", "Defense", "Nothing", "Move Back"};
+        String afterShooting = "Cap Ball";
+        boolean red = true;
+        //wait for the program to actually start and display data in the meantime
+        while(!startProgram) {
+            if(gamepad1.start)
+                startProgram = true;
+            if(gamepad1.dpad_up) {
+                ballsToShoot++;
+                while(gamepad1.dpad_up);
+            }
+            if(gamepad1.dpad_down) {
+                ballsToShoot--;
+                while(gamepad1.dpad_down);
+            }
+            if(gamepad1.dpad_right) {
+                position++;
+                position %= 5;
+                afterShooting = afterShootingOptions[position];
+                while(gamepad1.dpad_right);
+            }
+            if(gamepad1.dpad_left) {
+                position--;
+                if(position == -1)
+                    position = 4;
+                afterShooting = afterShootingOptions[position];
+                while(gamepad1.dpad_left);
+            }
+            if(gamepad1.guide) {
+                red = !red;
+            }
+            telemetry.addData("Instructions", "Use D-Pad to change shooting");
+            telemetry.addData("Instructions", "Press D-Pad Right Left for after shooting options");
+            telemetry.addData("Instructions", "Press the middle button to change side");
+            telemetry.addData("Instructions", "Press Start when finished");
+
+            telemetry.addData("Balls to shoot", ballsToShoot);
+            telemetry.addData("AfterShooting", afterShooting);
+            if(red) {
+                telemetry.addData("Team", "Red");
+            } else {
+                telemetry.addData("Team", "Blue");
+            }
+
+            telemetry.update();
+            idle();
+        }
+
         while(!opModeIsActive()) {
+            telemetry.addData("Balls to shoot", ballsToShoot);
+            telemetry.addData("AfterShooting", afterShooting);
+            if(red) {
+                telemetry.addData("Team", "Red");
+            } else {
+                telemetry.addData("Team", "Blue");
+            }
             telemetry.update();
             idle();
         }
@@ -87,17 +145,62 @@ public class JustShoot extends LinearOpMode {
 
         manipulator.runCollector(0);
 
-        //wait for spinup
-        Thread.sleep(600);
+        if(ballsToShoot > 1) {
+            //wait for spinup
+            Thread.sleep(600);
 
-        //let the rest of the balls go
-        manipulator.runCollector(-1);
+            //let the rest of the balls go
+            manipulator.runCollector(-1);
 
-        Thread.sleep(1750);
+            Thread.sleep(1750);
+
+            manipulator.runCollector(0);
+        }
 
         //stop the shooter
         shooter.stopShooter();
 
+        //if we are red team
+        if(red) {
+            //if we are to push the Cap Ball
+            if(afterShooting.equals(afterShootingOptions[0])) {
+                drivetrain.moveBackward(.2, 3300, 5000);
+
+                drivetrain.moveForward(0, 1, 833, 2000);
+            }
+            //if we are supposed to park on the corner vortex
+            if(afterShooting.equals(afterShootingOptions[1])) {
+                drivetrain.basicTurn(.25, 45);
+            }
+            //if we are supposed to play defense
+            if(afterShooting.equals(afterShootingOptions[2])) {
+                //TODO: DO RED DEFENSE CODE
+            }
+            //if we are to move back and out of the way
+            if(afterShooting.equals(afterShootingOptions[4])) {
+                drivetrain.moveBackward(-.35, 5000, 5000);
+            }
+        }
+        else {
+            //if we are to push the Cap Ball
+            if(afterShooting.equals(afterShootingOptions[0])) {
+                drivetrain.moveBackward(.2, 3300, 5000);
+
+                drivetrain.moveForward(1, 0, 833, 2000);
+            }
+            //if we are supposed to park on the corner vortex
+            if(afterShooting.equals(afterShootingOptions[1])) {
+                drivetrain.basicTurn(.25, -45);
+            }
+            //if we are supposed to play defense
+            if(afterShooting.equals(afterShootingOptions[2])) {
+                //TODO: DO BLUE DEFENSE CODE
+            }
+            //if we are to move back and out of the way
+            if(afterShooting.equals(afterShootingOptions[4])) {
+                drivetrain.moveBackward(-.35, 5000, 5000);
+            }
+        }
         manipulator.runCollector(0);
     }
 

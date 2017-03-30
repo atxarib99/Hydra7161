@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Lernaean;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -12,6 +13,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
 import org.firstinspires.ftc.teamcode.Libraries.Lift;
 import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
+
+import java.util.Arrays;
 
 /**
 * Created by Arib on 10/20/2016.
@@ -65,8 +68,47 @@ public class BlueAutonomous extends LinearOpMode {
         //reset the encoders
         drivetrain.resetEncoders();
 
+        boolean startProgram = false;
+        int ballsToShoot = 2;
+        boolean parkCenter = true;
         //wait for the program to actually start and display data in the meantime
+        while(!startProgram) {
+            if(gamepad1.start)
+                startProgram = true;
+            if(gamepad1.dpad_up) {
+                ballsToShoot++;
+                while(gamepad1.dpad_up);
+            }
+            if(gamepad1.dpad_down) {
+                ballsToShoot--;
+                while(gamepad1.dpad_down);
+            }
+            if(gamepad1.a) {
+                parkCenter = !parkCenter;
+                while (gamepad1.a);
+            }
+            telemetry.addData("Instructions", "Use D-Pad to change shooting");
+            telemetry.addData("Instructions", "Press A to change parking");
+            telemetry.addData("Instructions", "Press Start when finished");
+
+            telemetry.addData("Balls to shoot", ballsToShoot);
+
+            if(parkCenter)
+                telemetry.addData("Parking", "Center and Cap Ball");
+            else
+                telemetry.addData("Parking", "Corner Ramp");
+
+            telemetry.update();
+            idle();
+        }
+
         while(!opModeIsActive()) {
+            telemetry.addData("Balls to shoot", ballsToShoot);
+            if(parkCenter)
+                telemetry.addData("Parking", "Center and Cap Ball");
+            else
+                telemetry.addData("Parking", "Corner Ramp");
+
             telemetry.update();
             idle();
         }
@@ -105,26 +147,28 @@ public class BlueAutonomous extends LinearOpMode {
         //let the shooter run for 1 seconds
         Thread.sleep(900);
 
-        //stop the balls from moving
-        manipulator.runCollector(0);
+        if(ballsToShoot > 1) {
+            //stop the balls from moving
+            manipulator.runCollector(0);
 
-        //wait for spinup
-        Thread.sleep(400);
+            //wait for spinup
+            Thread.sleep(400);
 
-        //run the rest of the balls for the rest of the time
-        manipulator.runCollector(-1);
+            //run the rest of the balls for the rest of the time
+            manipulator.runCollector(-1);
 
-        Thread.sleep(1500);
+            Thread.sleep(1500);
 
-        //display that we are gonna start our rotation
-        telemetry.addData("currentStep", "rotating");
-        telemetry.update();
+            //display that we are gonna start our rotation
+            telemetry.addData("currentStep", "rotating");
+            telemetry.update();
+
+            //stop the collector
+            manipulator.runCollector(0);
+        }
 
         //stop the shooter
         shooter.stopShooter();
-
-        //stop the collector
-        manipulator.runCollector(0);
 
         //move away from shooting zone
         drivetrain.moveForward(-.5, 833, 5000);
@@ -274,21 +318,25 @@ public class BlueAutonomous extends LinearOpMode {
         //move forward a bit
         drivetrain.moveForward(-.75, 833, 1000);
 
-        //turn away from the wall
-        while(opModeIsActive() && Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
-            drivetrain.startMotors(-.65, 0);
-            idle();
+        if(parkCenter) {
+            //turn away from the wall
+            while (opModeIsActive() && Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
+                drivetrain.startMotors(-.65, 0);
+                idle();
+            }
+            drivetrain.stopMotors();
+
+            drivetrain.moveForward(-.8, -1, 5000, 5000);
+
+            //move to the center zone push and park
+            //replaced this with more drift (above)
+            //drivetrain.moveBackward(-1, 6000, 5000);
+
+            //turn to make sure we knock off cap ball
+            drivetrain.moveForward(-1, 0, 417, 2000);
+        } else {
+            drivetrain.moveBackward(-.75, 2500, 1000);
         }
-        drivetrain.stopMotors();
-
-        drivetrain.moveForward(-.8, -1, 5000, 5000);
-
-        //move to the center zone push and park
-        //replaced this with more drift (above)
-        //drivetrain.moveBackward(-1, 6000, 5000);
-
-        //turn to make sure we knock off cap ball
-        drivetrain.moveForward(-1, 0, 417, 2000);
 
         //safety stop for program
         drivetrain.stopMotors();
