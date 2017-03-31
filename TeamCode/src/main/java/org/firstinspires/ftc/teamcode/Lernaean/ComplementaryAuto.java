@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "JustShoot", group = "LinearOpMode")
-public class JustShoot extends LinearOpMode {
+@Autonomous(name = "ComplementaryAuto", group = "LinearOpMode")
+public class ComplementaryAuto extends LinearOpMode {
 
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -51,8 +51,9 @@ public class JustShoot extends LinearOpMode {
 
         boolean startProgram = false;
         int ballsToShoot = 2;
+        int delay = 0;
         int position = 0;
-        String[] afterShootingOptions = {"Cap Ball", "CornerVortex", "Defense", "Nothing", "Move Back"};
+        String[] afterShootingOptions = {"Cap Ball", "CornerVortex", "DefenseBall", "Nothing", "Move Back", "DefenseBallandBeacons"};
         String afterShooting = "Cap Ball";
         boolean red = true;
         //wait for the program to actually start and display data in the meantime
@@ -69,16 +70,24 @@ public class JustShoot extends LinearOpMode {
             }
             if(gamepad1.dpad_right) {
                 position++;
-                position %= 5;
+                position %= 6;
                 afterShooting = afterShootingOptions[position];
                 while(gamepad1.dpad_right);
             }
             if(gamepad1.dpad_left) {
                 position--;
                 if(position == -1)
-                    position = 4;
+                    position = 5;
                 afterShooting = afterShootingOptions[position];
                 while(gamepad1.dpad_left);
+            }
+            if(gamepad1.right_bumper) {
+                delay += 1000;
+                while(gamepad1.right_bumper);
+            }
+            if(gamepad1.left_bumper) {
+                delay -= 1000;
+                while(gamepad1.left_bumper);
             }
             if(gamepad1.guide) {
                 red = !red;
@@ -87,9 +96,11 @@ public class JustShoot extends LinearOpMode {
             telemetry.addData("Instructions", "Press D-Pad Right Left for after shooting options");
             telemetry.addData("Instructions", "Press the middle button to change side");
             telemetry.addData("Instructions", "Press Start when finished");
+            telemetry.addData("Instructions", "Press right and left bumper to change delay");
 
             telemetry.addData("Balls to shoot", ballsToShoot);
             telemetry.addData("AfterShooting", afterShooting);
+            telemetry.addData("Delay", delay);
             if(red) {
                 telemetry.addData("Team", "Red");
             } else {
@@ -112,7 +123,7 @@ public class JustShoot extends LinearOpMode {
             idle();
         }
 
-        Thread.sleep(15000);
+        Thread.sleep(delay);
 
         //start the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -180,6 +191,9 @@ public class JustShoot extends LinearOpMode {
             if(afterShooting.equals(afterShootingOptions[4])) {
                 drivetrain.moveBackward(-.35, 5000, 5000);
             }
+            if(afterShooting.equals(afterShootingOptions[5])) {
+                //TODO: DO BLUE BALL AND BEACONS DEFENSE
+            }
         }
         else {
             //if we are to push the Cap Ball
@@ -194,14 +208,16 @@ public class JustShoot extends LinearOpMode {
             }
             //if we are supposed to play defense
             if(afterShooting.equals(afterShootingOptions[2])) {
-                //TODO: DO BLUE DEFENSE CODE
+                //TODO: DO BLUE BALL DEFENSE CODE
             }
             //if we are to move back and out of the way
             if(afterShooting.equals(afterShootingOptions[4])) {
                 drivetrain.moveBackward(-.35, 5000, 5000);
             }
+            if(afterShooting.equals(afterShootingOptions[5])) {
+                //TODO: DO BLUE BALL AND BEACONS DEFENSE
+            }
         }
-        manipulator.runCollector(0);
     }
 
     private void composeTelemetry() {

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.Func;
 /**
  * Created by Hunter on 9/15/2016.
  */
+@Deprecated
 public abstract class MagazineOpMode extends OpMode {
 
     DcMotor motorR;

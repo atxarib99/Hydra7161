@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -15,8 +16,10 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "Red Auto No Ball", group = "LinearOpMode")
-public class RedAutoNoBall extends LinearOpMode {
+@Autonomous(name = "RedAutonomousLow", group = "LinearOpMode")
+@Disabled
+@Deprecated
+public class RedAutonomousLow extends LinearOpMode {
     //Create robot objects
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -149,38 +152,20 @@ public class RedAutoNoBall extends LinearOpMode {
 
         //Press the beacon 2 times and on the third time correct a bit before the last push
         boolean blue = beaconPushers.isBackBlue();
-        boolean attempted = false;
-        int count = 0;
-        while (beaconPushers.isBeaconUnpressed()) {
-            if(count == 2) {
-                if(blue) {
-                    drivetrain.moveForward(.08, .11, 83, 500);
-                } else {
-                    drivetrain.moveForward(-.08, -.11, 83, 500);
-                }
-            }
-            if (blue) {
-                beaconPushers.frontPush();
-                attempted = true;
-            }
-            else {
-                beaconPushers.backPush();
-                attempted = true;
-            }
-            if(count == 2)
-                break;
-            count++;
-            Thread.sleep(250);
+        if (blue) {
+            beaconPushers.frontPush();
+        }
+        else {
+            beaconPushers.backPush();
         }
 
-        //if the loop did not attempt at all
-        if(!attempted) {
-            if (blue) {
-                beaconPushers.frontPush();
-            }
-            else {
-                beaconPushers.backPush();
-            }
+        Thread.sleep(1000);
+
+        //make sure we didn't hit the wrong color
+        if(beaconPushers.areBothBlue()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
         }
 
         lift.armsIn();
@@ -198,39 +183,24 @@ public class RedAutoNoBall extends LinearOpMode {
 
         lift.armsDrop();
         //Press the beacon 2 times and on the third time correct a bit before the last push
-        count = 0;
-        attempted = false;
+        //make sure we didnt hit the wrong color
         blue = beaconPushers.isBackBlue();
-        while (beaconPushers.isBeaconUnpressed()) {
-            if(count == 2) {
-                if(blue) {
-                    drivetrain.moveForward(.08, .11, 83, 500);
-                } else {
-                    drivetrain.moveForward(-.08, -.11, 83, 500);
-                }
-            }
-            if (blue){
-                beaconPushers.frontPush();
-                attempted = true;
-            }
-            else {
-                beaconPushers.backPush();
-                attempted = true;
-            }
-            if(count == 2)
-                break;
-            count++;
-            Thread.sleep(250);
+        if (blue) {
+            beaconPushers.frontPush();
+        }
+        else {
+            beaconPushers.backPush();
         }
 
-        if(!attempted) {
-            if (blue){
-                beaconPushers.frontPush();
-            }
-            else {
-                beaconPushers.backPush();
-            }
+        Thread.sleep(1000);
+
+        //make sure we didn't hit the wrong color
+        if(beaconPushers.areBothBlue()) {
+            Thread.sleep(5000);
+            beaconPushers.backPush();
+            beaconPushers.frontPush();
         }
+
 
         lift.armsIn();
 

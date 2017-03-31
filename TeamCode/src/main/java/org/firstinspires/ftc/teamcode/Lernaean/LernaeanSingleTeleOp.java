@@ -77,7 +77,7 @@ public class LernaeanSingleTeleOp extends LernaeanOpMode {
                 stopMotors();
             }
 
-            if(gamepad2.y && gamepad1.y) {
+            if(gamepad2.y) {
                 activateLift();
 
             } else {

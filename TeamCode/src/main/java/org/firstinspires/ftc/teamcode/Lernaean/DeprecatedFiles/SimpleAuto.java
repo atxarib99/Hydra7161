@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
  */
 @Autonomous(name = "slow forward", group = "LinearOpMode")
 @Disabled
+@Deprecated
 public class SimpleAuto extends LinearOpMode {
 
     Drivetrain drivetrain;

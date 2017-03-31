@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
@@ -18,6 +18,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 /**
  * Created by Arib on 9/13/2016.
  */
+
+@Deprecated
 public abstract class LernaeanAutoMode extends LinearOpMode {
 
     BNO055IMU gyro;

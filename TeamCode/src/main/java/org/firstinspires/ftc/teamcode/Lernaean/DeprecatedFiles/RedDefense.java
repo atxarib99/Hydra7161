@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -15,8 +16,10 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "ShootAndPush", group = "LinearOpMode")
-public class ShootAndPushBall extends LinearOpMode {
+@Autonomous(name = "RedDefense", group = "LinearOpMode")
+@Disabled
+@Deprecated
+public class RedDefense extends LinearOpMode {
 
     //create robot objects
     private Drivetrain drivetrain;
@@ -69,17 +72,15 @@ public class ShootAndPushBall extends LinearOpMode {
             telemetry.update();
             idle();
         }
-        Thread.sleep(15000);
 
         //start the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
 
-        //display the current step
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveForward(.35, 4744, 5000);
+        drivetrain.moveForward(.35, 5000, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -115,10 +116,11 @@ public class ShootAndPushBall extends LinearOpMode {
 
         manipulator.runCollector(0);
 
-        drivetrain.moveBackward(.2, 3300, 5000);
+        drivetrain.basicTurn(-.25, 45);
 
-        drivetrain.moveForward(0, 1, 833, 2000);
+        Thread.sleep(250);
 
+        drivetrain.moveForward(.3, 4167, 5000);
     }
 
     private void composeTelemetry() {

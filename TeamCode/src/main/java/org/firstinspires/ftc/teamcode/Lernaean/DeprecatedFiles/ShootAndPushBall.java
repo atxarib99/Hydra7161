@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -16,8 +16,10 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "BlueDefenseCap", group = "LinearOpMode")
-public class BlueDefenseCap extends LinearOpMode {
+@Autonomous(name = "ShootAndPush", group = "LinearOpMode")
+@Disabled
+@Deprecated
+public class ShootAndPushBall extends LinearOpMode {
 
     //create robot objects
     private Drivetrain drivetrain;
@@ -66,12 +68,11 @@ public class BlueDefenseCap extends LinearOpMode {
         drivetrain.resetEncoders();
 
         //wait for the program to actually start in the meantime just display data
-        while (!opModeIsActive()) {
+        while(!opModeIsActive()) {
             telemetry.update();
             idle();
         }
-
-        resetStartTime();
+        Thread.sleep(15000);
 
         //start the gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -81,7 +82,7 @@ public class BlueDefenseCap extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveBackward(.35, 4744, 5000);
+        drivetrain.moveForward(.35, 4744, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
@@ -105,7 +106,7 @@ public class BlueDefenseCap extends LinearOpMode {
         manipulator.runCollector(0);
 
         //wait for spinup
-        Thread.sleep(400);
+        Thread.sleep(600);
 
         //let the rest of the balls go
         manipulator.runCollector(-1);
@@ -117,67 +118,49 @@ public class BlueDefenseCap extends LinearOpMode {
 
         manipulator.runCollector(0);
 
-        drivetrain.rotatePB(.75, -42);
+        drivetrain.moveBackward(.2, 3300, 5000);
 
-        drivetrain.stopMotors();
-
-        Thread.sleep(5000);
-
-        drivetrain.moveForward(1, 1, 4167, 5000);
-
-        Thread.sleep(250);
-
-        drivetrain.moveForward(-1, 0, 833, 2000);
-
-        Thread.sleep(250);
-
-        drivetrain.stopMotors();
+        drivetrain.moveForward(0, 1, 833, 2000);
 
     }
 
     private void composeTelemetry() {
         telemetry.addLine()
                 .addData("AVg", new Func<String>() {
-                    @Override
-                    public String value() {
+                    @Override public String value() {
                         return "avg: " + drivetrain.getEncoderAvg();
                     }
                 });
         telemetry.addLine()
                 .addData("ods", new Func<String>() {
-                    @Override
-                    public String value() {
+                    @Override public String value() {
                         return "ods: " + drivetrain.sensor.leftODS() + " " + drivetrain.sensor.rightODS();
                     }
                 });
         telemetry.addLine()
                 .addData("gyro", new Func<String>() {
-                    @Override
-                    public String value() {
+                    @Override public String value() {
                         return "gyro: " + drivetrain.sensor.getGyroYaw();
                     }
                 });
         telemetry.addLine()
                 .addData("motorLPower", new Func<String>() {
-                    @Override
-                    public String value() {
+                    @Override public String value() {
                         return "leftPower: " + drivetrain.motorBL.getPower();
                     }
                 });
         telemetry.addLine()
                 .addData("motorRPower", new Func<String>() {
-                    @Override
-                    public String value() {
+                    @Override public String value() {
                         return "rightPower: " + drivetrain.motorBR.getPower();
                     }
                 });
         telemetry.addLine()
                 .addData("Color", new Func<String>() {
-                    @Override
-                    public String value() {
+                    @Override public String value() {
                         return "Color: " + beaconPushers.getColorVal();
                     }
                 });
     }
-}
 
+}

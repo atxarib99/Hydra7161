@@ -1,9 +1,7 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.Lernaean.MagazineOpMode;
 
 /**
  * Created by Arib on 4/19/2016.
@@ -11,6 +9,7 @@ import org.firstinspires.ftc.teamcode.Lernaean.MagazineOpMode;
 
 @TeleOp(name = "teleOp" , group = "OpMode")
 @Disabled
+@Deprecated
 public class MagazineTeleOp extends MagazineOpMode {
     boolean isFrontOut = false;
     boolean isBackOut = false;

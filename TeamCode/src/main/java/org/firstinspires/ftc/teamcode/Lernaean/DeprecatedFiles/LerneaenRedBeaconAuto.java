@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 9/14/2016.
  */
-@Autonomous(name="LernaeanRedBeacon", group="Linear Opmode")
-@Disabled
+//@Autonomous(name="LernaeanRedBeacon", group="Linear Opmode")
+@Deprecated
 public class LerneaenRedBeaconAuto extends LinearOpMode {
 
     Drivetrain drivetrain;

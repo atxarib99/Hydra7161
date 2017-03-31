@@ -336,6 +336,7 @@ public class BlueAutonomous extends LinearOpMode {
             drivetrain.moveForward(-1, 0, 417, 2000);
         } else {
             drivetrain.moveBackward(-.75, 2500, 1000);
+            drivetrain.basicArc(1, 0, 0);
         }
 
         //safety stop for program

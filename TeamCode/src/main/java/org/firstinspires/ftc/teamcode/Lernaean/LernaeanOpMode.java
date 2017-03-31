@@ -35,9 +35,9 @@ public abstract class LernaeanOpMode extends OpMode {
     DeviceInterfaceModule cdim;
 
     public BNO055IMU gyro;
-    Orientation angles;
-    Acceleration gravity;
-    BNO055IMU.Parameters parameters;
+    private Orientation angles;
+    private Acceleration gravity;
+    private BNO055IMU.Parameters parameters;
 
     private ColorSensor color;
     private ColorSensor color2;
@@ -263,6 +263,7 @@ public abstract class LernaeanOpMode extends OpMode {
         opMode = this;
         reversed = false;
         stopCommandGiven = true;
+        defenseMode = false;
         composeTelemetry();
         motorBL = hardwareMap.dcMotor.get("BL");
         motorBR = hardwareMap.dcMotor.get("BR");
@@ -295,18 +296,21 @@ public abstract class LernaeanOpMode extends OpMode {
         ABSLeftThread = new Thread(ABSleft);
         ABSRightThread = new Thread(ABSright);
 
-        parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
-        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
-        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
-        parameters.loggingEnabled      = true;
-        parameters.loggingTag          = "IMU";
-        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
-        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
-        gyro.initialize(parameters);
-
-        angles   = gyro.getAngularOrientation();
-        gravity  = gyro.getGravity();
+//        telemetry.addData("INIT", "INITIALIZING");
+        telemetry.update();
+//        gyro = hardwareMap.get(BNO055IMU.class, "gyro");
+//
+//        parameters = new BNO055IMU.Parameters();
+//        parameters.angleUnit           = BNO055IMU.AngleUnit.DEGREES;
+//        parameters.accelUnit           = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+//        parameters.calibrationDataFile = "AdafruitIMUCalibration.json";
+//        parameters.loggingEnabled      = true;
+//        parameters.loggingTag          = "IMU";
+////        parameters.accelerationIntegrationAlgorithm = new JustLoggingAccelerationIntegrator();
+//        gyro.initialize(parameters);
+//
+//        angles   = gyro.getAngularOrientation();
+//        gravity  = gyro.getGravity();
 
         frontIn();
         backIn();
@@ -315,6 +319,8 @@ public abstract class LernaeanOpMode extends OpMode {
         unactivateLift();
         armBlocked();
         resetStartTime();
+        telemetry.addData("INIT", "FINISHED");
+        telemetry.update();
     }
 
     @Override

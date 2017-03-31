@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
+
 import java.util.Random;
 import java.util.regex.Matcher;
 
@@ -60,7 +62,7 @@ public class Drivetrain {
         moveFowardToLine(ri, le, 10000);
     }
 
-    public void moveFowardToLine(double ri, double le, int timeout) throws InterruptedException {
+    public boolean moveFowardToLine(double ri, double le, int timeout) throws InterruptedException {
 
         //create time variable for timeout
         ElapsedTime time = new ElapsedTime();
@@ -78,9 +80,14 @@ public class Drivetrain {
             startMotors(ri, le);
             opMode.idle();
         }
+        boolean toReturn = false;
+        if(time.milliseconds() >= timeout) {
+            toReturn = true;
+        }
         stopMotors();
         opMode.telemetry.update();
         angleError = sensor.getGyroYaw();
+        return toReturn;
     }
 
     public void moveForwardToWall(double pow, double powTwo, int encoderVal, int timeout, int angleTo) throws InterruptedException {
@@ -347,21 +354,30 @@ public class Drivetrain {
     }
 
     public void basicTurn(double pow, double angle) throws InterruptedException {
-        double power = pow;
-        double angleTo = angle;
+        basicArc(pow, pow, angle);
+    }
+
+    public void basicArc(double powR, double powL, double angle) throws InterruptedException {
         double currentAngle = sensor.getGyroYaw();
 
-        while (currentAngle != angle) {
-            currentAngle = sensor.getGyroYaw();
+        if(powR > 0) {
+            while(currentAngle < angle) {
+                startMotors(powR, powL);
+                currentAngle = sensor.getGyroYaw();
 
-            startMotors(power, power);
+                opMode.telemetry.update();
+                opMode.idle();
+            }
+        } else {
+            while(currentAngle > angle) {
+                startMotors(powR, powL);
+                currentAngle = sensor.getGyroYaw();
 
-            opMode.telemetry.update();
-            opMode.idle();
+                opMode.telemetry.update();
+                opMode.idle();
+            }
         }
 
-        opMode.telemetry.update();
-        stopMotors();
     }
 
     public void moveForwardUntilZero(double pow, double timeout) throws InterruptedException {
@@ -684,7 +700,7 @@ public class Drivetrain {
 
         currentAngle = 0;
 
-        double kP = .08;
+        double kP = .1;
         double kI = .045;
         double kD = 0;
         while(Math.abs(currentAngle) < Math.abs(angleTo) - 1) {
@@ -1101,5 +1117,6 @@ public class Drivetrain {
         opMode.telemetry.addData("finished", "done");
         opMode.telemetry.update();
     }
+
 }
 

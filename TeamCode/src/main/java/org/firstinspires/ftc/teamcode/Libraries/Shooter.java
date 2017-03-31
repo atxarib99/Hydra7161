@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.Libraries;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.Lernaean.LernaeanAutoMode;
-import org.firstinspires.ftc.teamcode.Lernaean.LernaeanOpMode;
-
 /**
  * Created by Arib on 10/6/2016.
  */

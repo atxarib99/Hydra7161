@@ -60,13 +60,12 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.addData("init", "init fully finished");
         telemetry.update();
 
-        boolean startProgram = false;
         int ballsToShoot = 2;
         boolean parkCenter = true;
         //wait for the program to actually start and display data in the meantime
-        while(!startProgram) {
-            if(gamepad1.start)
-                startProgram = true;
+
+        //wait for autonmous to actually start in the meantime return values
+        while(!opModeIsActive()) {
             if(gamepad1.dpad_up) {
                 ballsToShoot++;
                 while(gamepad1.dpad_up);
@@ -94,18 +93,6 @@ public class RedAutonomous extends LinearOpMode {
             idle();
         }
 
-        //wait for autonmous to actually start in the meantime return values
-        while(!opModeIsActive()) {
-            telemetry.addData("Balls to shoot", ballsToShoot);
-            if(parkCenter)
-                telemetry.addData("Parking", "Center and Cap Ball");
-            else
-                telemetry.addData("Parking", "Corner Ramp");
-
-            telemetry.update();
-            idle();
-        }
-
         //calculate the voltage
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
@@ -118,53 +105,58 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
-        //move forward to get within shooting range
-        drivetrain.moveBackward(.35, 1667, 5000);
+        if(ballsToShoot > 0) {
+            //move forward to get within shooting range
+            drivetrain.moveBackward(.35, 1667, 5000);
 
-        //display that we are going to shoot
-        telemetry.addData("currentStep", "shooting");
-        telemetry.update();
+            //display that we are going to shoot
+            telemetry.addData("currentStep", "shooting");
+            telemetry.update();
 
-        //turn the safe off
-        manipulator.activateShooter();
+            //turn the safe off
+            manipulator.activateShooter();
 
-        //start the shooter at the calculated power from the voltage value saved
-        shooter.startShooter(-shooter.getNeededPower(voltage));
+            //start the shooter at the calculated power from the voltage value saved
+            shooter.startShooter(-shooter.getNeededPower(voltage));
 
-        //wait one second for the shooter to spin-up
-        Thread.sleep(1000);
-
-        //start moving the collector
-        manipulator.runCollector(-1);
-
-        //let the balls move for 1 second
-        Thread.sleep(1000);
-
-        //stop the balls from moving
-        manipulator.runCollector(0);
-
-        if(ballsToShoot > 1) {
-            //wait 1/2 second to wait for spinup
-            Thread.sleep(500);
-
-            //let the balls move again
-            manipulator.runCollector(-1);
-
-            //keep the balls moving for 1.5 seconds
+            //wait one second for the shooter to spin-up
             Thread.sleep(1000);
 
-            //stop the collector
+            //start moving the collector
+            manipulator.runCollector(-1);
+
+            //let the balls move for 1 second
+            Thread.sleep(1000);
+
+            //stop the balls from moving
             manipulator.runCollector(0);
+
+            if (ballsToShoot > 1) {
+                //wait 1/2 second to wait for spinup
+                Thread.sleep(500);
+
+                //let the balls move again
+                manipulator.runCollector(-1);
+
+                //keep the balls moving for 1.5 seconds
+                Thread.sleep(1000);
+
+                //stop the collector
+                manipulator.runCollector(0);
+            }
+
+            //stop the shooter
+            shooter.stopShooter();
+
+
+            //move away from the shooting zone
+            drivetrain.moveBackward(-.3, 833, 5000);
+        } else {
+            drivetrain.moveForward(.3, 833, 5000);
         }
 
-        //stop the shooter
-        shooter.stopShooter();
-
-        //move away from the shooting zone
-        drivetrain.moveBackward(-.3, 833, 5000);
-
-        //rotate 38 degrees to the left
-        drivetrain.rotateP(.435, -38);
+        //rotate 40 degrees to the left
+        drivetrain.rotateP(.42, -40);
 
         //stop after the rotation safety stop
         drivetrain.stopMotors();
@@ -178,16 +170,16 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .4, 10000, 10000, 38);
+        drivetrain.moveForwardToWall(1, .4, 8250, 10000, 40);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.13, .25, 4000);
+        drivetrain.moveFowardToLine(.15, .25, 3000);
 
         //wait for momentum
         Thread.sleep(250);
 
         //correct back onto the line
-        drivetrain.moveFowardToLine(-.09, -.12, 5000);
+        drivetrain.moveFowardToLine(-.11, -.15, 5000);
 
         lift.armsDrop();
 
@@ -198,9 +190,9 @@ public class RedAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 100, 500);
+                    drivetrain.moveForward(.11, .13, 100, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                    drivetrain.moveForward(-.11, -.15, 100, 500);
                 }
             }
             if (blue) {
@@ -235,11 +227,15 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward at high speed towards the next beacon
-        drivetrain.moveForward(-.3, -.7, 5000, 5000);
+        drivetrain.moveForward(-.3, -.7, 4250, 5000);
 
         //slow down while finding the line
-        drivetrain.moveFowardToLine(-.09, -.12, 5000);
+        boolean failed = drivetrain.moveFowardToLine(-.13, -.2, 4000);
 
+        if(failed) {
+            Thread.sleep(250);
+            drivetrain.moveFowardToLine(.11, .15, 3000);
+        }
         lift.armsDrop();
         //Press the beacon 2 times and on the third time correct a bit before the last push
         count = 0;
@@ -248,9 +244,9 @@ public class RedAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 100, 500);
+                    drivetrain.moveForward(.11, .15, 100, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 100, 500);
+                    drivetrain.moveForward(-.11, -.15, 100, 500);
                 }
             }
             if (blue){
@@ -278,10 +274,10 @@ public class RedAutonomous extends LinearOpMode {
 
         lift.armsIn();
 
-        //move forward a bit
-        drivetrain.moveForward(.6, 1667, 1000);
-
         if(parkCenter) {
+
+            //move forward a bit
+            drivetrain.moveForward(.6, 1667, 1000);
 
             //turn off the wall and onto the cap ball
             try {
@@ -295,12 +291,13 @@ public class RedAutonomous extends LinearOpMode {
             drivetrain.stopMotors();
 
             //move to push capball off and push
-            drivetrain.moveForward(1, .8, 5000, 5000);
+            drivetrain.moveForward(1, .8, 4500, 5000);
 
             //turn to make sure we knock off cap ball
             drivetrain.moveForward(1, 0, 619, 2000);
         } else {
-            drivetrain.moveForward(.75, 2500, 5000);
+            drivetrain.basicArc(1, 0, 150);
+            drivetrain.moveBackward(.5, 10000, 2000);
         }
 
         //saftey stop for end of program

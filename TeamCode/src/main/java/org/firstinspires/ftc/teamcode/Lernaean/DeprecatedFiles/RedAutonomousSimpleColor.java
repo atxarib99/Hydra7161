@@ -1,6 +1,7 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.Func;
@@ -15,8 +16,10 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "RedAutonomousLow", group = "LinearOpMode")
-public class RedAutonomousLow extends LinearOpMode {
+@Autonomous(name = "RedAutonomous Simple Color", group = "LinearOpMode")
+@Disabled
+@Deprecated
+public class RedAutonomousSimpleColor extends LinearOpMode {
     //Create robot objects
     private Drivetrain drivetrain;
     private Manipulator manipulator;
@@ -179,8 +182,6 @@ public class RedAutonomousLow extends LinearOpMode {
         drivetrain.moveFowardToLine(-.09, -.12, 5000);
 
         lift.armsDrop();
-        //Press the beacon 2 times and on the third time correct a bit before the last push
-        //make sure we didnt hit the wrong color
         blue = beaconPushers.isBackBlue();
         if (blue) {
             beaconPushers.frontPush();

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,7 +16,8 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "BlueSecondary", group = "LinearOpMode")
+//@Autonomous(name = "BlueSecondary", group = "LinearOpMode")
+@Deprecated
 public class BlueSecondary extends LinearOpMode {
 
     //create robot objects

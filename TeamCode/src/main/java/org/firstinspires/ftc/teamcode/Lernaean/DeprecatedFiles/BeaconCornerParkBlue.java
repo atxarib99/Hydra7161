@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.Lernaean;
+package org.firstinspires.ftc.teamcode.Lernaean.DeprecatedFiles;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,8 +16,9 @@ import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 /**
  * Created by Arib on 10/20/2016.
  */
-@Autonomous(name = "Blue Auto No Ball", group = "LinearOpMode")
-public class BlueAutoNoBall extends LinearOpMode {
+//@Autonomous(name = "BeaconCornerParkBlue", group = "LinearOpMode")
+@Deprecated
+public class BeaconCornerParkBlue extends LinearOpMode {
 
     //create class variables
     private Drivetrain drivetrain;
@@ -46,15 +47,15 @@ public class BlueAutoNoBall extends LinearOpMode {
         //wait 2 seconds to regain voltage dropped from init
         Thread.sleep(2000);
 
-        //calculate the voltage
-        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
-
         /* This is the version number of the current iteration
         this is because sometimes the compiling process build the app but then installs
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
         version = "1.43";
+
+        //calculate the voltage
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
         //display the data for testing purposes
         telemetry.addData("version: ", version);
@@ -70,6 +71,11 @@ public class BlueAutoNoBall extends LinearOpMode {
             telemetry.update();
             idle();
         }
+
+        //calculate the voltage
+        voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
+
+        Thread.sleep(100);
 
         //start gyro
         drivetrain.sensor.gyro.startAccelerationIntegration(new Position(), new Velocity(), 1000);
@@ -199,10 +205,6 @@ public class BlueAutoNoBall extends LinearOpMode {
             Thread.sleep(250);
         }
 
-        if(attempted) {
-            telemetry.addData("attempted", true);
-        }
-
         if(!attempted) {
             if (blue) {
                 beaconPushers.backPush();
@@ -271,23 +273,7 @@ public class BlueAutoNoBall extends LinearOpMode {
         lift.armsIn();
 
         //move forward a bit
-        drivetrain.moveForward(-.75, 833, 1000);
-
-        //turn away from the wall
-        while(opModeIsActive() && Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
-            drivetrain.startMotors(-.65, 0);
-            idle();
-        }
-        drivetrain.stopMotors();
-
-        drivetrain.moveForward(-.8, -1, 5000, 5000);
-
-        //move to the center zone push and park
-        //replaced this with more drift (above)
-        //drivetrain.moveBackward(-1, 6000, 5000);
-
-        //turn to make sure we knock off cap ball
-        drivetrain.moveForward(-1, 0, 417, 2000);
+        drivetrain.moveBackward(.75, 2500, 1000);
 
         //safety stop for program
         drivetrain.stopMotors();
