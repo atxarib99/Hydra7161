@@ -199,7 +199,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //
-        drivetrain.moveBackwardToWall(-1, -.4, 8333, 10000, 141);
+        drivetrain.moveBackwardToWall(-1, -.4, 7500, 10000, 141);
 
         //stop moving the collector
         manipulator.runCollector(0);
