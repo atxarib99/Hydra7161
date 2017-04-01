@@ -185,18 +185,18 @@ public class ComplementaryAuto extends LinearOpMode {
             }
             //if we are supposed to play defense
             if(afterShooting.equals(afterShootingOptions[2])) {
-                //TODO: DO RED DEFENSE CODE
+                //TODO: DO RED BALL DEFENSE CODE
             }
             //if we are to move back and out of the way
             if(afterShooting.equals(afterShootingOptions[4])) {
                 drivetrain.moveBackward(-.35, 5000, 5000);
             }
             if(afterShooting.equals(afterShootingOptions[5])) {
-                //TODO: DO BLUE BALL AND BEACONS DEFENSE
+                //TODO: DO RED BALL AND BEACONS DEFENSE
             }
         }
         else {
-            //if we are to push the Cap Ball
+            //if we are supposed to push the Cap Ball
             if(afterShooting.equals(afterShootingOptions[0])) {
                 drivetrain.moveBackward(.2, 3300, 5000);
 
@@ -209,6 +209,13 @@ public class ComplementaryAuto extends LinearOpMode {
             //if we are supposed to play defense
             if(afterShooting.equals(afterShootingOptions[2])) {
                 //TODO: DO BLUE BALL DEFENSE CODE
+
+                drivetrain.basicArc(.5, 0, -90 );
+
+                while(getRuntime() < 10) {
+                }
+
+                drivetrain.moveForward(1, 3000, 4000);
             }
             //if we are to move back and out of the way
             if(afterShooting.equals(afterShootingOptions[4])) {
