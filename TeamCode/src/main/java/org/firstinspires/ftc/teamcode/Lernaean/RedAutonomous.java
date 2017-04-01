@@ -227,7 +227,7 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward at high speed towards the next beacon
-        drivetrain.moveForward(-.3, -.7, 4250, 5000);
+        drivetrain.moveForward(-.25, -.6, 4000, 5000);
 
         //slow down while finding the line
         boolean failed = drivetrain.moveFowardToLine(-.13, -.2, 4000);

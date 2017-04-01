@@ -1041,7 +1041,7 @@ public class Drivetrain {
             opMode.telemetry.addData("error", error);
             power = (pow * (error) * .0092) + .025;                   //update p values
             inte = ((opMode.getRuntime()) * error * .007);          //update inte value
-            inteNoE = ((opMode.getRuntime()) * .05); //.03
+            inteNoE = ((opMode.getRuntime()) * .055); //.03
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
             power = power + inteNoE + der;

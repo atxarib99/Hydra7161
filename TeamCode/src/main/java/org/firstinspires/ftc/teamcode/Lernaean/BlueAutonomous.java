@@ -205,10 +205,14 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move towards the beacons at a high speed
-        drivetrain.moveForward(-.2, -.35, 3333, 5000);
+        drivetrain.moveForward(-.2, -.35, 2000, 3000);
 
         //slow down and detect the line
         drivetrain.moveFowardToLine(-.11, -.13, 3000);
+
+        Thread.sleep(250);
+
+        drivetrain.moveFowardToLine(.11, .13, 3000);
 
         //wait for momentum
         Thread.sleep(100);
@@ -308,10 +312,13 @@ public class BlueAutonomous extends LinearOpMode {
 
         lift.armsIn();
 
-        //move forward a bit
-        drivetrain.moveForward(-.75, 833, 1000);
+
 
         if(parkCenter) {
+
+            //move forward a bit
+            drivetrain.moveForward(-.75, 833, 1000);
+
             //turn away from the wall
             while (opModeIsActive() && Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
                 drivetrain.startMotors(-.65, 0);
@@ -328,8 +335,32 @@ public class BlueAutonomous extends LinearOpMode {
             //turn to make sure we knock off cap ball
             drivetrain.moveForward(-1, 0, 417, 2000);
         } else {
-            drivetrain.basicArc(1, 0, -150);
-            drivetrain.moveForward(.5, .7, 10000, 5000);
+            drivetrain.startMotors(-1, 0);
+
+            Thread.sleep(250);
+
+            drivetrain.basicArc(-1, 0, 135);
+
+//            //move forward, towards the initial beacon
+//            drivetrain.moveForward(-.75, 1833, 3000);
+//
+//            //start the motors briefly to ensure we have negative gyro readings
+//            drivetrain.startMotors(.5, 0);
+//
+//            //wait a bit
+//            Thread.sleep(500);
+//
+//            //turn off the wall
+//            drivetrain.basicArc(1, 0, -160);
+//
+//            //turn towards the ramp, getting towards the bottom of the ramp
+//            drivetrain.moveForward(.3, 1, 8000, 5000);
+//
+//            //back up off the ramp
+//            drivetrain.moveForward(-1, 2000, 2000);
+//
+//            //go back on the ramp and park
+//            drivetrain.moveForward(1, 3000, 2000);
         }
 
         //safety stop for program
