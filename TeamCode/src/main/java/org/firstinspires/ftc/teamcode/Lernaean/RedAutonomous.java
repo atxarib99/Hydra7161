@@ -297,7 +297,7 @@ public class RedAutonomous extends LinearOpMode {
             drivetrain.moveForward(1, 0, 619, 2000);
         } else {
             drivetrain.basicArc(1, 0, 150);
-            drivetrain.moveBackward(.5, 10000, 2000);
+            drivetrain.moveBackward(.5, 10000, 5000);
         }
 
         //saftey stop for end of program

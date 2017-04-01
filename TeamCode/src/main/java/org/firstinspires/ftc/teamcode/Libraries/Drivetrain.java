@@ -377,7 +377,6 @@ public class Drivetrain {
                 opMode.idle();
             }
         }
-
     }
 
     public void moveForwardUntilZero(double pow, double timeout) throws InterruptedException {
@@ -1041,8 +1040,8 @@ public class Drivetrain {
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
             power = (pow * (error) * .0092) + .025;                   //update p values
-            inte = ((opMode.getRuntime()) * error * .005);          //update inte value
-            inteNoE = ((opMode.getRuntime()) * .04); //.03
+            inte = ((opMode.getRuntime()) * error * .007);          //update inte value
+            inteNoE = ((opMode.getRuntime()) * .05); //.03
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
             power = power + inteNoE + der;

@@ -54,7 +54,7 @@ public class BlueAutonomous extends LinearOpMode {
         the old version instead of applying updates. This version numbers is displayed over
         telemetry to ensure the autonomous is running the current version.
          */
-        version = "1.43";
+        version = "1.143";
 
         //calculate the voltage
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
@@ -72,9 +72,8 @@ public class BlueAutonomous extends LinearOpMode {
         int ballsToShoot = 2;
         boolean parkCenter = true;
         //wait for the program to actually start and display data in the meantime
-        while(!startProgram) {
-            if(gamepad1.start)
-                startProgram = true;
+
+        while(!opModeIsActive()) {
             if(gamepad1.dpad_up) {
                 ballsToShoot++;
                 while(gamepad1.dpad_up);
@@ -102,17 +101,6 @@ public class BlueAutonomous extends LinearOpMode {
             idle();
         }
 
-        while(!opModeIsActive()) {
-            telemetry.addData("Balls to shoot", ballsToShoot);
-            if(parkCenter)
-                telemetry.addData("Parking", "Center and Cap Ball");
-            else
-                telemetry.addData("Parking", "Corner Ramp");
-
-            telemetry.update();
-            idle();
-        }
-
         //calculate the voltage
         voltage = hardwareMap.voltageSensor.get("Motor Controller 5").getVoltage();
 
@@ -125,53 +113,58 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.addData("currentStep", "moving off the wall");
         telemetry.update();
 
-        //move forward to get into shooting range
-        drivetrain.moveForward(.5, 2083, 5000);
+        if(ballsToShoot > 0) {
+            //move forward to get into shooting range
+            drivetrain.moveForward(.5, 2083, 5000);
 
-        //display that we are going to shoot
-        telemetry.addData("currentStep", "shooting");
-        telemetry.update();
-
-        //turn the safe off
-        manipulator.activateShooter();
-
-        //start the shooter at the calculated power from the voltage value saved
-        shooter.startShooter(-shooter.getNeededPower(voltage));
-
-        //wait one second for the shooter to spin-up
-        Thread.sleep(1000);
-
-        //start moving the collecter
-        manipulator.runCollector(-1);
-
-        //let the shooter run for 1 seconds
-        Thread.sleep(900);
-
-        if(ballsToShoot > 1) {
-            //stop the balls from moving
-            manipulator.runCollector(0);
-
-            //wait for spinup
-            Thread.sleep(400);
-
-            //run the rest of the balls for the rest of the time
-            manipulator.runCollector(-1);
-
-            Thread.sleep(1500);
-
-            //display that we are gonna start our rotation
-            telemetry.addData("currentStep", "rotating");
+            //display that we are going to shoot
+            telemetry.addData("currentStep", "shooting");
             telemetry.update();
 
-            //stop the collector
-            manipulator.runCollector(0);
+            //turn the safe off
+            manipulator.activateShooter();
+
+            //start the shooter at the calculated power from the voltage value saved
+            shooter.startShooter(-shooter.getNeededPower(voltage));
+
+            //wait one second for the shooter to spin-up
+            Thread.sleep(1000);
+
+            //start moving the collecter
+            manipulator.runCollector(-1);
+
+            //let the shooter run for 1 seconds
+            Thread.sleep(900);
+
+            if (ballsToShoot > 1) {
+                //stop the balls from moving
+                manipulator.runCollector(0);
+
+                //wait for spinup
+                Thread.sleep(400);
+
+                //run the rest of the balls for the rest of the time
+                manipulator.runCollector(-1);
+
+                Thread.sleep(1500);
+
+                //display that we are gonna start our rotation
+                telemetry.addData("currentStep", "rotating");
+                telemetry.update();
+            }
+
+            //move away from shooting zone
+            drivetrain.moveForward(-.5, 833, 5000);
+        } else {
+            drivetrain.moveForward(.5, 1250, 5000);
         }
+
+        //stop the collector
+        manipulator.runCollector(0);
 
         //stop the shooter
         shooter.stopShooter();
 
-        //move away from shooting zone
-        drivetrain.moveForward(-.5, 833, 5000);
 
         //wait for momentum
         Thread.sleep(100);
@@ -198,8 +191,8 @@ public class BlueAutonomous extends LinearOpMode {
         //run the collector in reverse to push balls out of the way
         manipulator.runCollector(.5);
 
-        //
-        drivetrain.moveBackwardToWall(-1, -.4, 7500, 10000, 141);
+        //move towards the wall at two different speed and stop when you hit it
+        drivetrain.moveBackwardToWall(-1, -.4, 8500, 10000, 141);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -211,11 +204,11 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.addData("currentStep", "finding the whiteline");
         telemetry.update();
 
-        //move towards the beacons at a high correction
+        //move towards the beacons at a high speed
         drivetrain.moveForward(-.2, -.35, 3333, 5000);
 
         //slow down and detect the line
-        drivetrain.moveFowardToLine(-.09, -.12, 4000);
+        drivetrain.moveFowardToLine(-.11, -.13, 3000);
 
         //wait for momentum
         Thread.sleep(100);
@@ -229,9 +222,9 @@ public class BlueAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 83, 500);
+                    drivetrain.moveForward(.11, .13, 83, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 83, 500);
+                    drivetrain.moveForward(-.11, -.13, 83, 500);
                 }
             }
             if (blue) {
@@ -271,7 +264,7 @@ public class BlueAutonomous extends LinearOpMode {
         Thread.sleep(250);
 
         //correct to line
-        drivetrain.moveFowardToLine(-.09, -.11, 3000); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(-.11, -.15, 3000); //move back to be aligned with white line
 
         //wait for momentum
         Thread.sleep(250);
@@ -285,9 +278,9 @@ public class BlueAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.08, .11, 83, 500);
+                    drivetrain.moveForward(.11, .13, 83, 500);
                 } else {
-                    drivetrain.moveForward(-.08, -.11, 83, 500);
+                    drivetrain.moveForward(-.11, -.13, 83, 500);
                 }
             }
             if (blue) {
@@ -335,8 +328,8 @@ public class BlueAutonomous extends LinearOpMode {
             //turn to make sure we knock off cap ball
             drivetrain.moveForward(-1, 0, 417, 2000);
         } else {
-            drivetrain.moveBackward(-.75, 2500, 1000);
-            drivetrain.basicArc(1, 0, 0);
+            drivetrain.basicArc(1, 0, -150);
+            drivetrain.moveForward(.5, .7, 10000, 5000);
         }
 
         //safety stop for program
