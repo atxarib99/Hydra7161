@@ -339,7 +339,9 @@ public class BlueAutonomous extends LinearOpMode {
 
             Thread.sleep(250);
 
-            drivetrain.basicArc(-1, 0, 135);
+            drivetrain.basicArc(-1, 0, 20);
+
+            drivetrain.moveForward(-1, 8000, 5000);
 
 //            //move forward, towards the initial beacon
 //            drivetrain.moveForward(-.75, 1833, 3000);

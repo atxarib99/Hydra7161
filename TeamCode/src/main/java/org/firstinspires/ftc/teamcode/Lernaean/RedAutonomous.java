@@ -170,10 +170,10 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(1, .4, 8250, 10000, 40);
+        drivetrain.moveForwardToWall(.8, .4, 7500, 10000, 40);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.15, .25, 3000);
+        drivetrain.moveFowardToLine(.2, .4, 5000);
 
         //wait for momentum
         Thread.sleep(250);
