@@ -133,39 +133,41 @@ public class ComplementaryAuto extends LinearOpMode {
         telemetry.update();
 
         //move to shooting range
-        drivetrain.moveForward(.35, 5000, 5000);
+        drivetrain.moveForward(.35, 4500, 5000);
 
         //display that we are going to shoot
         telemetry.addData("currentStep", "shooting");
         telemetry.update();
 
-        //turn the safe off
-        manipulator.activateShooter();
+        if(ballsToShoot > 0) {
+            //turn the safe off
+            manipulator.activateShooter();
 
-        //start the shooter at the calculated power from the voltage value saved
-        shooter.startShooter(-shooter.getNeededPower(voltage));
+            //start the shooter at the calculated power from the voltage value saved
+            shooter.startShooter(-shooter.getNeededPower(voltage));
 
-        //wait one second for the shooter to spin-up
-        Thread.sleep(1000);
+            //wait one second for the shooter to spin-up
+            Thread.sleep(1000);
 
-        //start moving the collecter
-        manipulator.runCollector(-1);
-
-        //let the shooter run for 1 second
-        Thread.sleep(900);
-
-        manipulator.runCollector(0);
-
-        if(ballsToShoot > 1) {
-            //wait for spinup
-            Thread.sleep(600);
-
-            //let the rest of the balls go
+            //start moving the collecter
             manipulator.runCollector(-1);
 
-            Thread.sleep(1750);
+            //let the shooter run for 1 second
+            Thread.sleep(900);
 
             manipulator.runCollector(0);
+
+            if (ballsToShoot > 1) {
+                //wait for spinup
+                Thread.sleep(600);
+
+                //let the rest of the balls go
+                manipulator.runCollector(-1);
+
+                Thread.sleep(1750);
+
+                manipulator.runCollector(0);
+            }
         }
 
         //stop the shooter
@@ -177,15 +179,25 @@ public class ComplementaryAuto extends LinearOpMode {
             if(afterShooting.equals(afterShootingOptions[0])) {
                 drivetrain.moveBackward(.2, 3300, 5000);
 
-                drivetrain.moveForward(0, 1, 833, 2000);
+                drivetrain.basicArc(0.0001, -1, 45);
             }
             //if we are supposed to park on the corner vortex
             if(afterShooting.equals(afterShootingOptions[1])) {
                 drivetrain.basicTurn(.25, 45);
+                drivetrain.moveForward(1, 5000, 5000);
             }
             //if we are supposed to play defense
             if(afterShooting.equals(afterShootingOptions[2])) {
-                //TODO: DO RED BALL DEFENSE CODE
+
+                drivetrain.moveBackward(-.35, 500, 1000);
+
+                Thread.sleep(250);
+
+                drivetrain.basicArc(.6, -.1, 80);
+
+                while(getRuntime() < 10);
+
+                drivetrain.moveForward(1, 4000, 5000);
             }
             //if we are to move back and out of the way
             if(afterShooting.equals(afterShootingOptions[4])) {
@@ -193,12 +205,27 @@ public class ComplementaryAuto extends LinearOpMode {
             }
             if(afterShooting.equals(afterShootingOptions[5])) {
                 //TODO: DO RED BALL AND BEACONS DEFENSE
+
+                drivetrain.basicArc(.5, 0, 40);
+
+                while (getRuntime() < 10);
+
+                drivetrain.moveBackward(1, 5000, 5000);
+
+                drivetrain.basicArc(-.5, 0, 0);
+
+                drivetrain.moveBackward(1, 2500, 5000);
+
+                while(getRuntime() < 28);
+
+                drivetrain.moveBackward(-1, 2500, 5000);
             }
         }
         else {
             //if we are supposed to push the Cap Ball
             if(afterShooting.equals(afterShootingOptions[0])) {
                 drivetrain.moveBackward(.2, 3300, 5000);
+
 
                 drivetrain.moveForward(1, 0, 833, 2000);
             }
@@ -208,14 +235,13 @@ public class ComplementaryAuto extends LinearOpMode {
             }
             //if we are supposed to play defense
             if(afterShooting.equals(afterShootingOptions[2])) {
-                //TODO: DO BLUE BALL DEFENSE CODE
 
-                drivetrain.basicArc(.5, 0, -90 );
+                drivetrain.basicArc(-.5, 0, -80);
 
-                while(getRuntime() < 10) {
-                }
+                while(getRuntime() < 10);
 
-                drivetrain.moveForward(1, 3000, 4000);
+                drivetrain.moveForward(1, 5000, 4000);
+
             }
             //if we are to move back and out of the way
             if(afterShooting.equals(afterShootingOptions[4])) {

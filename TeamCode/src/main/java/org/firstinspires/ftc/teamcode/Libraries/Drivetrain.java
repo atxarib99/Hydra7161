@@ -377,6 +377,8 @@ public class Drivetrain {
                 opMode.idle();
             }
         }
+
+        stopMotors();
     }
 
     public void moveForwardUntilZero(double pow, double timeout) throws InterruptedException {
