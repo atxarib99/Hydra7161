@@ -349,10 +349,8 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void startMotorsSlowed(double ri, double le) {
-        if((ri < -.05 && le < -.05) || (ri > .05 && le > .05)) {
-            ri *= .5;
-            le *= .5;
-        }
+        ri *= .5;
+        le *= .5;
         if(reversed) {
             motorBL.setPower(-ri);
             motorFL.setPower(ri);

@@ -56,10 +56,8 @@ public class ComplementaryAuto extends LinearOpMode {
         String[] afterShootingOptions = {"Cap Ball", "CornerVortex", "DefenseBall", "Nothing", "Move Back", "DefenseBallandBeacons"};
         String afterShooting = "Cap Ball";
         boolean red = true;
-        //wait for the program to actually start and display data in the meantime
-        while(!startProgram) {
-            if(gamepad1.start)
-                startProgram = true;
+
+        while(!opModeIsActive()) {
             if(gamepad1.dpad_up) {
                 ballsToShoot++;
                 while(gamepad1.dpad_up);
@@ -91,6 +89,7 @@ public class ComplementaryAuto extends LinearOpMode {
             }
             if(gamepad1.guide) {
                 red = !red;
+                while(gamepad1.guide);
             }
             telemetry.addData("Instructions", "Use D-Pad to change shooting");
             telemetry.addData("Instructions", "Press D-Pad Right Left for after shooting options");
@@ -107,18 +106,6 @@ public class ComplementaryAuto extends LinearOpMode {
                 telemetry.addData("Team", "Blue");
             }
 
-            telemetry.update();
-            idle();
-        }
-
-        while(!opModeIsActive()) {
-            telemetry.addData("Balls to shoot", ballsToShoot);
-            telemetry.addData("AfterShooting", afterShooting);
-            if(red) {
-                telemetry.addData("Team", "Red");
-            } else {
-                telemetry.addData("Team", "Blue");
-            }
             telemetry.update();
             idle();
         }
@@ -206,19 +193,21 @@ public class ComplementaryAuto extends LinearOpMode {
             if(afterShooting.equals(afterShootingOptions[5])) {
                 //TODO: DO RED BALL AND BEACONS DEFENSE
 
+                drivetrain.moveBackward(-.25, 350, 1000);
+
                 drivetrain.basicArc(.5, 0, 40);
 
                 while (getRuntime() < 10);
 
                 drivetrain.moveBackward(1, 5000, 5000);
 
-                drivetrain.basicArc(-.5, 0, 0);
+                drivetrain.basicArc(-.5, 0, 20);
 
-                drivetrain.moveBackward(1, 2500, 5000);
+                drivetrain.moveBackward(1, 3750, 5000);
 
-                while(getRuntime() < 28);
+                while(getRuntime() < 27);
 
-                drivetrain.moveBackward(-1, 2500, 5000);
+                drivetrain.moveForward(-.4, -1, 3250, 5000);
             }
         }
         else {

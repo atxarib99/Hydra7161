@@ -88,7 +88,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
         }
 
-        //if we are shooting
+        //if we are not shooting
         if(!shootMode) {
 
             if((Math.abs(powerR) > .05 || (Math.abs(powerL) > .05))) {
@@ -133,7 +133,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
 
             if(gamepad2.x) {
-                if(armRelease.getPosition() < .5)
+                if(armRelease.getPosition() > .5)
                     armRelease();
                 else
                     armBlocked();
