@@ -258,13 +258,13 @@ public class Drivetrain {
         }
 
         //give into the wall for a little bit
-        while(angle < startAngle + 3) {
-            startMotors(-.15, 0);
+        while(angle < startAngle + 5) {
+            startMotors(-.2, 0);
             angle = Math.abs(sensor.getGyroYaw());
         }
 
         //reset variables
-        startAngle = 137 + 3;
+        startAngle = 137 + 5;
         power = powTwo;
         startMotors(power, power);
         time.reset();
@@ -656,9 +656,9 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .008) + .1;                      //update p values
+            power = (pow * (error) * .008) + .15;                      //update p values
             inte = ((opMode.getRuntime()) * error * .0015);         //update inte value
-            inteNoE = ((opMode.getRuntime()) * .025);
+            inteNoE = ((opMode.getRuntime()) * .0225);
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value
 
             power = power + inteNoE + der;
@@ -1041,7 +1041,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .0092) + .025;                   //update p values
+            power = (pow * (error) * .0091) + .05;                   //update p values
             inte = ((opMode.getRuntime()) * error * .007);          //update inte value
             inteNoE = ((opMode.getRuntime()) * .055); //.03
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value

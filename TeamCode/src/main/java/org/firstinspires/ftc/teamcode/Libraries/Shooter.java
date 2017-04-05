@@ -68,9 +68,9 @@ public class Shooter {
         if(voltage > 14 && voltage < 14.1)
             return .32;
         if(voltage < 14 && voltage > 13.75)
-            return .33;
+            return .335;
         if(voltage < 13.75 && voltage > 13.5)
-            return .35;
+            return .355;
         if(voltage < 13.5 && voltage > 13)
             return .365;
         if(voltage < 13 && voltage > 12)
