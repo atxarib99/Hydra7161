@@ -56,16 +56,16 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double TOP_UNGRAB = 0;
     private final double TOP_IDLE = .4;
 
-    boolean shootMode = true;
-    boolean runThread = true;
+    private boolean shootMode = true;
+    private boolean runThread = true;
 
     private final int SLEEP_CYCLE = 50;
 
     private boolean reversed;
     boolean stopCommandGiven;
-    boolean defenseMode;
+    private boolean defenseMode;
 
-    Runnable speedCounter = new Runnable() {
+    private Runnable speedCounter = new Runnable() {
 
         private double[] velocityAvg = new double[10];
         private int currentTick;
@@ -88,16 +88,12 @@ public abstract class LernaeanOpMode extends OpMode {
                 } catch (ArithmeticException e) {
                     velocity = 0;
                 }
-                opMode.telemetry.addData("velocity", velocity);
-                opMode.telemetry.addData("time", currentTime);
-                opMode.telemetry.addData("Encoder", currentEncoder + "--" + shooterL.getCurrentPosition() + "--" + shooterR.getCurrentPosition());
                 if (velocity > 0) {
                     velocityAvg[currentTick++] = velocity;
                 } else {
                     if(shooterL.getPower() > 0)
                         numZero++;
                 }
-                opMode.telemetry.addData("currentTick", currentTick);
                 if (currentTick == velocityAvg.length - 1) {
                     lastAvg = avg;
                     avg = 0;
@@ -118,9 +114,6 @@ public abstract class LernaeanOpMode extends OpMode {
                     }
                     currentTick = 0;
                 }
-                opMode.telemetry.addData("Number Of Zeros", numZero);
-                opMode.telemetry.addData("avgVelocity", avg);
-                opMode.telemetry.update();
                 lastTime = currentTime;
                 lastEncoder = currentEncoder;
                 try {
@@ -128,7 +121,6 @@ public abstract class LernaeanOpMode extends OpMode {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                opMode.telemetry.addData("power", power);
                 if(!runThread)
                     break;
             }
