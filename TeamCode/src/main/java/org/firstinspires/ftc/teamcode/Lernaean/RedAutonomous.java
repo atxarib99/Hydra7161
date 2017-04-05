@@ -80,7 +80,6 @@ public class RedAutonomous extends LinearOpMode {
             }
             telemetry.addData("Instructions", "Use D-Pad to change shooting");
             telemetry.addData("Instructions", "Press A to change parking");
-            telemetry.addData("Instructions", "Press Start when finsihed");
 
             telemetry.addData("Balls to shoot", ballsToShoot);
 
@@ -120,13 +119,13 @@ public class RedAutonomous extends LinearOpMode {
             shooter.startShooter(-shooter.getNeededPower(voltage));
 
             //wait one second for the shooter to spin-up
-            Thread.sleep(1000);
+            Thread.sleep(1500);
 
             //start moving the collector
             manipulator.runCollector(-1);
 
             //let the balls move for 1 second
-            Thread.sleep(1000);
+            Thread.sleep(750);
 
             //stop the balls from moving
             manipulator.runCollector(0);
@@ -170,10 +169,10 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.8, .4, 7500, 10000, 40);
+        drivetrain.moveForwardToWall(.8, .4, 7800, 10000, 40);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.2, .4, 5000);
+        drivetrain.moveFowardToLine(.2, .35, 3000);
 
         //wait for momentum
         Thread.sleep(250);
@@ -190,7 +189,7 @@ public class RedAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.11, .13, 100, 500);
+                    drivetrain.moveForward(.11, .15, 100, 500);
                 } else {
                     drivetrain.moveForward(-.11, -.15, 100, 500);
                 }

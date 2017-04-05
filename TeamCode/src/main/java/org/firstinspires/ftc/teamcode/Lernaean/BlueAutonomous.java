@@ -170,7 +170,7 @@ public class BlueAutonomous extends LinearOpMode {
         Thread.sleep(100);
 
         //turn PID
-        drivetrain.rotatePB(.4, -141);
+        drivetrain.rotatePB(.4, -138);
 
         telemetry.addData("currentangle", drivetrain.sensor.getGyroYaw());
         telemetry.update();
@@ -192,7 +192,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //move towards the wall at two different speed and stop when you hit it
-        drivetrain.moveBackwardToWall(-1, -.4, 8500, 10000, 141);
+        drivetrain.moveBackwardToWall(-1, -.4, 8250, 10000, 138);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -205,14 +205,14 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move towards the beacons at a high speed
-        drivetrain.moveForward(-.2, -.35, 2000, 3000);
+        drivetrain.moveForward(-.2, -.35, 2500, 3000);
 
         //slow down and detect the line
-        drivetrain.moveFowardToLine(-.11, -.13, 3000);
+        drivetrain.moveFowardToLine(-.11, -.15, 3000);
 
         Thread.sleep(250);
 
-        drivetrain.moveFowardToLine(.11, .13, 3000);
+        drivetrain.moveFowardToLine(.11, .15, 3000);
 
         //wait for momentum
         Thread.sleep(100);
@@ -226,9 +226,9 @@ public class BlueAutonomous extends LinearOpMode {
         while (beaconPushers.isBeaconUnpressed()) {
             if(count == 2) {
                 if(blue) {
-                    drivetrain.moveForward(.11, .13, 83, 500);
+                    drivetrain.moveForward(.11, .15, 83, 500);
                 } else {
-                    drivetrain.moveForward(-.11, -.13, 83, 500);
+                    drivetrain.moveForward(-.11, -.15, 83, 500);
                 }
             }
             if (blue) {
@@ -326,7 +326,7 @@ public class BlueAutonomous extends LinearOpMode {
             }
             drivetrain.stopMotors();
 
-            drivetrain.moveForward(-.8, -1, 5000, 5000);
+            drivetrain.moveForward(-1, -.8, 5000, 5000);
 
             //move to the center zone push and park
             //replaced this with more drift (above)
