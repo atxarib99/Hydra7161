@@ -32,6 +32,7 @@ public abstract class LernaeanOpMode extends OpMode {
     Servo armRelease;
     Servo armLeft;
     Servo armRight;
+    Servo topGrabber;
     DeviceInterfaceModule cdim;
 
     public BNO055IMU gyro;
@@ -282,6 +283,7 @@ public abstract class LernaeanOpMode extends OpMode {
         armRelease = hardwareMap.servo.get("arelease");
         armLeft = hardwareMap.servo.get("aL");
         armRight = hardwareMap.servo.get("aR");
+        topGrabber = hardwareMap.servo.get("topGrabber");
         shooterPower = .3;
         shooterIntegral = 0;
         speedThread = new Thread(speedCounter);
@@ -518,6 +520,14 @@ public abstract class LernaeanOpMode extends OpMode {
     void armsGrab() {
         armLeft.setPosition(.53);
         armRight.setPosition(.47);
+    }
+
+    void topGrab() {
+        topGrabber.setPosition(1);
+    }
+
+    void topUngrab() {
+        topGrabber.setPosition(0);
     }
 
     void prepareLift() {
