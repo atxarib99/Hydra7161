@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
@@ -65,6 +66,24 @@ public abstract class LernaeanOpMode extends OpMode {
     private boolean reversed;
     boolean stopCommandGiven;
     private boolean defenseMode;
+    boolean liftIsActive;
+
+    private Runnable preventTipping = new Runnable() {
+
+        @Override
+        public void run() {
+            while(liftIsActive) {
+                if(angles.secondAngle > 15) {
+                    startMotors(.35, .35);
+                } else if(angles.secondAngle < 15) {
+                    startMotors(-.35, - .35);
+                }
+                if(Thread.currentThread().isInterrupted())
+                    liftIsActive = false;
+            }
+            Thread.currentThread().interrupt();
+        }
+    }
 
     private Runnable speedCounter = new Runnable() {
 
@@ -257,6 +276,7 @@ public abstract class LernaeanOpMode extends OpMode {
         reversed = false;
         stopCommandGiven = true;
         defenseMode = false;
+        liftIsActive = false;
         composeTelemetry();
         motorBL = hardwareMap.dcMotor.get("BL");
         motorBR = hardwareMap.dcMotor.get("BR");
