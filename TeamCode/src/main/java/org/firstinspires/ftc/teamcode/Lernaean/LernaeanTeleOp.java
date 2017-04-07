@@ -16,9 +16,14 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
         if(shootMode) {
 
-            if(gamepad2.dpad_right) {
-                shooterIntegral = 0.0;
+            if(gamepad2.right_stick_button) {
                 startShooter();
+                topGrab();
+            }
+
+            if(gamepad2.left_stick_button) {
+                topUngrab();
+                stopShooter();
             }
 
             if (Math.abs(powerR) > .05 || (Math.abs(powerL) > .05)) {
@@ -47,13 +52,11 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             if(gamepad2.right_bumper) {
                 stopCommandGiven = false;
                 activateShooter(true);
-                topGrab();
                 startShooter();
             }
 
             if(gamepad2.left_bumper) {
                 stopCommandGiven = true;
-                topUngrab();
                 stopShooter();
             }
 
@@ -121,7 +124,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
             if(gamepad2.y && gamepad1.y) {
                 activateLift();
-
+                liftIsActive = true;
             } else {
                 unactivateLift();
             }
