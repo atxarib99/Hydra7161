@@ -65,6 +65,27 @@ public abstract class LernaeanOpMode extends OpMode {
     private boolean reversed;
     boolean stopCommandGiven;
     private boolean defenseMode;
+<<<<<<< Updated upstream
+=======
+    boolean liftIsActive;
+
+    private Runnable preventTipping = new Runnable() {
+
+        @Override
+        public void run() {
+            while(liftIsActive) {
+                if(angles.secondAngle > 15) {
+                    startMotors(.35, .35);
+                } else if(angles.secondAngle < 15) {
+                    startMotors(-.35, - .35);
+                }
+                if(Thread.currentThread().isInterrupted())
+                    liftIsActive = false;
+            }
+            Thread.currentThread().interrupt();
+        }
+    };
+>>>>>>> Stashed changes
 
     private Runnable speedCounter = new Runnable() {
 
