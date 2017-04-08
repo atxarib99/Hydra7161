@@ -381,6 +381,30 @@ public class Drivetrain {
         stopMotors();
     }
 
+    public void basicArcB(double powR, double powL, double angle) throws InterruptedException {
+        double currentAngle = sensor.getGyroYaw();
+
+        if(powR > 0) {
+            while(currentAngle > angle) {
+                startMotors(powR, powL);
+                currentAngle = sensor.getGyroYaw();
+
+                opMode.telemetry.update();
+                opMode.idle();
+            }
+        } else {
+            while(currentAngle < angle) {
+                startMotors(powR, powL);
+                currentAngle = sensor.getGyroYaw();
+
+                opMode.telemetry.update();
+                opMode.idle();
+            }
+        }
+
+        stopMotors();
+    }
+
     public void moveForwardUntilZero(double pow, double timeout) throws InterruptedException {
 
         double angle = sensor.getGyroYaw();

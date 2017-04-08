@@ -238,6 +238,24 @@ public class ComplementaryAuto extends LinearOpMode {
             }
             if(afterShooting.equals(afterShootingOptions[5])) {
                 //TODO: DO BLUE BALL AND BEACONS DEFENSE
+
+                drivetrain.moveBackward(-.25, 500, 1000);
+
+                drivetrain.basicArc(0, .5, -32);
+
+                while (getRuntime() < 10);
+
+                drivetrain.moveBackward(1, 4000, 5000);
+
+                //wrote this method so I didn't have to rethink the logic or use another method... might be redundant
+                drivetrain.basicArcB(0, -.5, -18);
+
+                drivetrain.moveBackward(1, 5500, 5000);
+
+                while(getRuntime() < 27);
+
+                drivetrain.moveForward(-1, -.4, 3250, 5000);
+
             }
         }
     }
