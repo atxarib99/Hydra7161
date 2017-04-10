@@ -13,6 +13,7 @@ public class Lift {
     Servo armRight;
     DcMotor liftRelease;
     Servo armRelease;
+    Servo topGrabber;
 
     LinearOpMode opMode;
 
@@ -35,6 +36,8 @@ public class Lift {
         armRight = opMode.hardwareMap.servo.get("aR");
         liftRelease = opMode.hardwareMap.dcMotor.get("lrelease");
         armRelease = opMode.hardwareMap.servo.get("arelease");
+        topGrabber = opMode.hardwareMap.servo.get("topGrabber");
+        topGrabber.setPosition(0);
         armsIn();
         armBlocked();
     }
@@ -47,6 +50,7 @@ public class Lift {
     public void armsOut() {
         armLeft.setPosition(.37);
         armRight.setPosition(.63);
+        topGrabber.setPosition(0);
     }
 
     public void armsDrop() {
@@ -57,6 +61,7 @@ public class Lift {
     public void armsGrab() {
         armLeft.setPosition(.53);
         armRight.setPosition(.47);
+        topGrabber.setPosition(1);
     }
 
     public void armRelease() {
