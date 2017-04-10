@@ -83,7 +83,7 @@ public abstract class LernaeanOpMode extends OpMode {
             }
             Thread.currentThread().interrupt();
         }
-    }
+    };
 
     private Runnable speedCounter = new Runnable() {
 
