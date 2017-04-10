@@ -144,6 +144,9 @@ public abstract class LernaeanOpMode extends OpMode {
                 if(!runThread)
                     break;
             }
+            if(Thread.currentThread().isInterrupted()) {
+                Thread.currentThread().stop();
+            }
         }
     };
 
@@ -333,6 +336,7 @@ public abstract class LernaeanOpMode extends OpMode {
         unactivateLift();
         armBlocked();
         resetStartTime();
+        topUngrab();
         telemetry.addData("INIT", "FINISHED");
         telemetry.update();
     }
