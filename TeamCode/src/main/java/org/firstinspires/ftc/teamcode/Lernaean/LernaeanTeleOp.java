@@ -14,6 +14,8 @@ public class LernaeanTeleOp extends LernaeanOpMode {
         powerR = gamepad1.right_stick_y;
         powerL = gamepad1.left_stick_y;
 
+        divisor = 1 - ((gamepad1.right_trigger * .5) + (gamepad1.left_trigger * .25));
+
         if(shootMode) {
 
             if(gamepad2.right_stick_button) {

@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
  * Created by Arib on 9/11/2016.
  */
 public abstract class LernaeanOpMode extends OpMode {
+    //Define Motors, Sensors, and Servos our robot uses
     DcMotor motorBL;
     DcMotor motorBR;
     DcMotor motorFL;
@@ -48,26 +49,27 @@ public abstract class LernaeanOpMode extends OpMode {
     LernaeanOpMode opMode;
 
 
+    //Define final variables for servo values so that they are easily accessible
     private final double BACK_OUT = 0;
     private final double BACK_IN = 1;
     private final double FRONT_OUT = 0;
     private final double FRONT_IN = 1;
     private final double ARM_RELEASER_RELEASED = 0;
     private final double ARM_RELEASER_CLOSED = 1;
-    private final double TOP_GRAB = 1;
-    private final double TOP_UNGRAB = 0;
-    private final double TOP_IDLE = .4;
-
-    private boolean shootMode = true;
-    private boolean runThread = true;
-
     private final int SLEEP_CYCLE = 50;
 
-    private boolean reversed;
+    //define thread run states
+    private boolean shootMode = true;
+    private boolean runThread = true;
     boolean stopCommandGiven;
     private boolean defenseMode;
     boolean liftIsActive;
 
+    //see if the drivetrain needs to be reversed
+    private boolean reversed;
+
+    //Runnable that will prevent us from tipping over
+    //Is only activated while the lift is up.
     private Runnable preventTipping = new Runnable() {
 
         @Override
@@ -85,9 +87,10 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     };
 
+    //Determine the speed of the shooter and compensate if its too high or too low
     private Runnable speedCounter = new Runnable() {
 
-        private double[] velocityAvg = new double[10];
+        private double[] velocityAvg = new double[12];
         private int currentTick;
         private double avg = 0;
         private double lastAvg = 0;
@@ -122,10 +125,11 @@ public abstract class LernaeanOpMode extends OpMode {
                     }
                     avg /= velocityAvg.length;
                     double error = 1.8 - avg;
+                    power = getShooterPower();
                     if (getShooterPower() > .04 && Math.abs(error) > .2 && !stopCommandGiven) {
-                        double kP = 1.2;
-                        power = kP * error;
-                        power = Range.clip(power, 0, .5); //0, .65
+                        double kP = 1.15;
+                        power = getShooterPower() + (getShooterPower() * (kP * error));
+                        power = Range.clip(power, 0, .45); //0, .65
                         if(power == 0) {
                             power = getShooterPower();
                         }
@@ -150,6 +154,7 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     };
 
+    //Uses gyro values to close the manipulator door if we are hit
     Runnable defenseStopperBasic = new Runnable() {
         double startAngle = 0;
         boolean firstRun = true;
@@ -173,6 +178,7 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     };
 
+    //Uses gyro values to compensate with drivetrain if we are hit.
     Runnable defenseStopperAdvanced = new Runnable() {
         double startAngle = 0;
         boolean firstRun = true;
@@ -206,14 +212,17 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     };
 
-
+    //power values for drivetrain and shooter to be accessed by the actual OpMode
     double powerL;
     double powerR;
+    double divisor;
     double shooterPower;
     double shooterIntegral;
 
+    //our current voltage
     double voltage = 0.0;
 
+    //Our automatic braking system for the right side of our drivetrain
     private Runnable ABSright = new Runnable() {
 
         double kP = .1;
@@ -240,6 +249,7 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     };
 
+    //Our automatic braking system for the left side of our drivetrain
     private Runnable ABSleft = new Runnable() {
 
         double kP = .1;
@@ -270,6 +280,7 @@ public abstract class LernaeanOpMode extends OpMode {
         }
     };
 
+    //Threads
     private Thread ABSRightThread;
     private Thread ABSLeftThread;
     private Thread speedThread;
@@ -354,15 +365,15 @@ public abstract class LernaeanOpMode extends OpMode {
 
     public void startMotors(double ri, double le) {
         if(reversed) {
-            motorBL.setPower(-ri);
-            motorFL.setPower(ri);
-            motorBR.setPower(le);
-            motorFR.setPower(-le);
+            motorBL.setPower(-ri * divisor);
+            motorFL.setPower(ri * divisor);
+            motorBR.setPower(le * divisor);
+            motorFR.setPower(-le * divisor);
         } else {
-            motorBL.setPower(le);
-            motorFL.setPower(-le);
-            motorBR.setPower(-ri);
-            motorFR.setPower(ri);
+            motorBL.setPower(le * divisor);
+            motorFL.setPower(-le * divisor);
+            motorBR.setPower(-ri * divisor);
+            motorFR.setPower(ri * divisor);
         }
     }
 
@@ -370,15 +381,15 @@ public abstract class LernaeanOpMode extends OpMode {
         ri *= .5;
         le *= .5;
         if(reversed) {
-            motorBL.setPower(-ri);
-            motorFL.setPower(ri);
-            motorBR.setPower(le);
-            motorFR.setPower(-le);
+            motorBL.setPower(-ri * divisor);
+            motorFL.setPower(ri * divisor);
+            motorBR.setPower(le * divisor);
+            motorFR.setPower(-le * divisor);
         } else {
-            motorBL.setPower(le);
-            motorFL.setPower(-le);
-            motorBR.setPower(-ri);
-            motorFR.setPower(ri);
+            motorBL.setPower(le * divisor);
+            motorFL.setPower(-le * divisor);
+            motorBR.setPower(-ri * divisor);
+            motorFR.setPower(ri * divisor);
         }
     }
 
