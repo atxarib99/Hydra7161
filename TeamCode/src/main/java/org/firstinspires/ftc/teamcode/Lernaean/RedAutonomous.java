@@ -169,10 +169,10 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.8, .4, 7800, 10000, 40);
+        drivetrain.moveForwardToWall(.65, .35, 5500, 10000, 40);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.2, .35, 3000);
+        drivetrain.moveFowardToLine(.2, .4, 2500);
 
         //wait for momentum
         Thread.sleep(250);
@@ -226,7 +226,7 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward at high speed towards the next beacon
-        drivetrain.moveForward(-.25, -.6, 4000, 5000);
+        drivetrain.moveForward(-.25, -.6, 3000, 4000);
 
         //slow down while finding the line
         boolean failed = drivetrain.moveFowardToLine(-.13, -.2, 4000);
@@ -305,7 +305,7 @@ public class RedAutonomous extends LinearOpMode {
 
     private void composeTelemetry() {
         telemetry.addLine()
-                .addData("AVg", new Func<String>() {
+                .addData("Avg", new Func<String>() {
                     @Override public String value() {
                         return "avg: " + drivetrain.getEncoderAvg();
                     }
