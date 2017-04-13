@@ -90,7 +90,7 @@ public abstract class LernaeanOpMode extends OpMode {
     //Determine the speed of the shooter and compensate if its too high or too low
     private Runnable speedCounter = new Runnable() {
 
-        private double[] velocityAvg = new double[12];
+        private double[] velocityAvg = new double[10];
         private int currentTick;
         private double avg = 0;
         private double lastAvg = 0;
@@ -127,9 +127,9 @@ public abstract class LernaeanOpMode extends OpMode {
                     double error = 1.8 - avg;
                     power = getShooterPower();
                     if (getShooterPower() > .04 && Math.abs(error) > .2 && !stopCommandGiven) {
-                        double kP = 1.15;
+                        double kP = 1;
                         power = getShooterPower() + (getShooterPower() * (kP * error));
-                        power = Range.clip(power, 0, .45); //0, .65
+                        power = Range.clip(power, getShooterPower(), .45); //0, .65
                         if(power == 0) {
                             power = getShooterPower();
                         }
@@ -473,11 +473,35 @@ public abstract class LernaeanOpMode extends OpMode {
         if(active)
             activate.setPosition(1);
         else
-            activate.setPosition(.2);
+            activate.setPosition(.35);
     }
 
     private double getShooterPower() {
-        return shooterPower;
+        if (getVoltage() < 12.5) {
+            return shooterPower + .025 ;
+        }
+        else if ((getVoltage() < 12.75) && (getVoltage() > 12.5)) {
+            return shooterPower;
+        }
+        else if ((getVoltage() < 13.00) && (getVoltage() > 12.75)) {
+            return shooterPower - .025;
+        }
+        else if ((getVoltage() < 13.25) && (getVoltage() > 13.00)) {
+            return shooterPower - .05;
+        }
+        else if ((getVoltage() < 13.5) && (getVoltage() > 13.25)) {
+            return shooterPower - .075;
+        }
+        else if ((getVoltage() < 13.75) && (getVoltage() > 13.5)) {
+            return shooterPower - .1;
+        }
+        else if ((getVoltage() < 14.00) && (getVoltage() > 13.75)) {
+            return shooterPower - .125;
+        }
+        else {
+            return shooterPower - .15;
+        }
+
     }
 
     public double getRightODS() {

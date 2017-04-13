@@ -71,12 +71,12 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
 
             if(gamepad2.dpad_up) {
-                shooterPower += .05;
+                shooterPower += .025;
                 while(gamepad2.dpad_up);
             }
 
             if(gamepad2.dpad_down) {
-                shooterPower -= .05;
+                shooterPower -= .025;
                 while(gamepad2.dpad_down);
             }
 
