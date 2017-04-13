@@ -487,16 +487,16 @@ public abstract class LernaeanOpMode extends OpMode {
             return shooterPower - .025;
         }
         else if ((getVoltage() < 13.25) && (getVoltage() > 13.00)) {
-            return shooterPower - .05;
+            return shooterPower - .075;
         }
         else if ((getVoltage() < 13.5) && (getVoltage() > 13.25)) {
             return shooterPower - .075;
         }
         else if ((getVoltage() < 13.75) && (getVoltage() > 13.5)) {
-            return shooterPower - .1;
+            return shooterPower - .115;
         }
         else if ((getVoltage() < 14.00) && (getVoltage() > 13.75)) {
-            return shooterPower - .125;
+            return shooterPower - .140;
         }
         else {
             return shooterPower - .15;
