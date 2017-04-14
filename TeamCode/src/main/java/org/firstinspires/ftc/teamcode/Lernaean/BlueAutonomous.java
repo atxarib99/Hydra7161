@@ -192,7 +192,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //move towards the wall at two different speed and stop when you hit it
-        drivetrain.moveBackwardToWall(-1, -.4, 8250, 10000, 138);
+        drivetrain.moveBackwardToWall(-1, -.4, 5750, 10000, 138);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -205,10 +205,10 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move towards the beacons at a high speed
-        drivetrain.moveForward(-.2, -.35, 2500, 3000);
+        drivetrain.moveForward(-.2, -.35, 1000, 3000);
 
         //slow down and detect the line
-        drivetrain.moveFowardToLine(-.11, -.15, 3000);
+        drivetrain.moveFowardToLine(-.11, -.15, 2000);
 
         Thread.sleep(250);
 
@@ -259,7 +259,7 @@ public class BlueAutonomous extends LinearOpMode {
         lift.armsIn();
 
         //move fast towards the next beacon
-        drivetrain.moveForward(.3, .7, 4167, 5000);
+        drivetrain.moveForward(.3, .7, 3000, 5000);
 
         //move towards the line at a high speed
         drivetrain.moveFowardToLine(.14, .23, 2000);

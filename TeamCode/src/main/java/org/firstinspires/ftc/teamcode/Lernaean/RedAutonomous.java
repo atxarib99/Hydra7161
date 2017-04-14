@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
 import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
 import org.firstinspires.ftc.teamcode.Libraries.Lift;
 import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
+import org.firstinspires.ftc.teamcode.Libraries.Sensor;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
@@ -23,6 +24,7 @@ public class RedAutonomous extends LinearOpMode {
     private Shooter shooter;
     private BeaconPushers beaconPushers;
     private Lift lift;
+    private Sensor sensor;
 
     //create class variables
     private double voltage;
@@ -169,7 +171,7 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.8, .4, 7800, 10000, 40);
+        drivetrain.moveForwardToWall(.8, .4, 5250, 6000, 40);
 
         //move forward into line
         drivetrain.moveFowardToLine(.2, .35, 3000);
@@ -194,6 +196,7 @@ public class RedAutonomous extends LinearOpMode {
                     drivetrain.moveForward(-.11, -.15, 100, 500);
                 }
             }
+
             if (blue) {
                 beaconPushers.frontPush();
                 attempted = true;
@@ -226,7 +229,7 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward at high speed towards the next beacon
-        drivetrain.moveForward(-.25, -.6, 4000, 5000);
+        drivetrain.moveForward(-.2, -.5, 3000, 4000);
 
         //slow down while finding the line
         boolean failed = drivetrain.moveFowardToLine(-.13, -.2, 4000);
@@ -276,7 +279,7 @@ public class RedAutonomous extends LinearOpMode {
         if(parkCenter) {
 
             //move forward a bit
-            drivetrain.moveForward(.6, 1667, 1000);
+            drivetrain.moveForward(.6, 1000, 2000);
 
             //turn off the wall and onto the cap ball
             try {
