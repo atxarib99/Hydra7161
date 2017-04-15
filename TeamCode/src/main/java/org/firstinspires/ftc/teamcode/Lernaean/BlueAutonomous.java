@@ -115,7 +115,7 @@ public class BlueAutonomous extends LinearOpMode {
 
         if(ballsToShoot > 0) {
             //move forward to get into shooting range
-            drivetrain.moveForward(.5, 2083, 5000);
+            drivetrain.moveBackward(.5, 2083, 5000);
 
             //display that we are going to shoot
             telemetry.addData("currentStep", "shooting");
@@ -192,7 +192,7 @@ public class BlueAutonomous extends LinearOpMode {
         manipulator.runCollector(.5);
 
         //move towards the wall at two different speed and stop when you hit it
-        drivetrain.moveBackwardToWall(-1, -.4, 5750, 10000, 138);
+        drivetrain.moveBackwardToWall(-1, -.4, 7250, 10000, 138);
 
         //stop moving the collector
         manipulator.runCollector(0);
@@ -205,7 +205,7 @@ public class BlueAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move towards the beacons at a high speed
-        drivetrain.moveForward(-.2, -.35, 1000, 3000);
+        drivetrain.moveForward(-.2, -.35, 2000, 3000);
 
         //slow down and detect the line
         drivetrain.moveFowardToLine(-.11, -.15, 2000);
@@ -259,10 +259,10 @@ public class BlueAutonomous extends LinearOpMode {
         lift.armsIn();
 
         //move fast towards the next beacon
-        drivetrain.moveForward(.3, .7, 3000, 5000);
+        drivetrain.moveForward(.25, .5, 3250, 4000);
 
         //move towards the line at a high speed
-        drivetrain.moveFowardToLine(.14, .23, 2000);
+        drivetrain.moveFowardToLine(.12, .2, 2000);
 
         //wait for momentum
         Thread.sleep(250);
@@ -321,19 +321,19 @@ public class BlueAutonomous extends LinearOpMode {
 
             //turn away from the wall
             while (opModeIsActive() && Math.abs(drivetrain.sensor.getGyroYaw()) > 85) {
-                drivetrain.startMotors(-.65, 0);
+                drivetrain.startMotors(-.6, 0);
                 idle();
             }
             drivetrain.stopMotors();
 
-            drivetrain.moveForward(-1, -.8, 5000, 5000);
+            drivetrain.moveForward(-.8, -1, 4000, 5000);
 
             //move to the center zone push and park
             //replaced this with more drift (above)
             //drivetrain.moveBackward(-1, 6000, 5000);
 
             //turn to make sure we knock off cap ball
-            drivetrain.moveForward(-1, 0, 417, 2000);
+            drivetrain.moveForward(-1, 0, 400, 2000);
         } else {
             drivetrain.startMotors(-1, 0);
 
