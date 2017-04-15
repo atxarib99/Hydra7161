@@ -16,8 +16,8 @@ import java.util.regex.Matcher;
 public class Drivetrain {
     public DcMotor motorBR;
     public DcMotor motorBL;
-    DcMotor motorFR;
-    DcMotor motorFL;
+    public DcMotor motorFR;
+    public DcMotor motorFL;
 
     LinearOpMode opMode;
 
@@ -354,7 +354,7 @@ public class Drivetrain {
     }
 
     public void basicTurn(double pow, double angle) throws InterruptedException {
-        basicArc(pow, pow, angle);
+        basicArc(pow, -pow, angle);
     }
 
     public void basicArc(double powR, double powL, double angle) throws InterruptedException {
@@ -439,8 +439,7 @@ public class Drivetrain {
     }
 
     public int getEncoderAvg() {
-        return ((Math.abs(motorBR.getCurrentPosition())) + (Math.abs(motorBL.getCurrentPosition())) +
-                (Math.abs(motorFR.getCurrentPosition())) + (Math.abs(motorFL.getCurrentPosition()))) / 4;
+        return (int)((3.0/2.0)*((Math.abs(motorBR.getCurrentPosition())) + Math.abs(motorBL.getCurrentPosition()))) / 4;
     }
 
     public void resetEncoders() throws InterruptedException {
@@ -725,7 +724,7 @@ public class Drivetrain {
 
         currentAngle = 0;
 
-        double kP = .1;
+        double kP = .09;
         double kI = .045;
         double kD = 0;
         while(Math.abs(currentAngle) < Math.abs(angleTo) - 1) {
@@ -1065,7 +1064,7 @@ public class Drivetrain {
             currentAngle = sensor.getGyroYaw();
             error = Math.abs(angleTo) - Math.abs(currentAngle);
             opMode.telemetry.addData("error", error);
-            power = (pow * (error) * .0091) + .05;                   //update p values
+            power = (pow * (error) * .0075) + .05;                   //update p values
             inte = ((opMode.getRuntime()) * error * .007);          //update inte value
             inteNoE = ((opMode.getRuntime()) * .055); //.03
             der = (error - previousError) / opMode.getRuntime() * 0; //update der value

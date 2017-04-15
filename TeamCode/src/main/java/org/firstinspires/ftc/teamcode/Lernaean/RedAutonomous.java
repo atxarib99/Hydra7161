@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.Libraries.BeaconPushers;
 import org.firstinspires.ftc.teamcode.Libraries.Drivetrain;
 import org.firstinspires.ftc.teamcode.Libraries.Lift;
 import org.firstinspires.ftc.teamcode.Libraries.Manipulator;
+import org.firstinspires.ftc.teamcode.Libraries.Sensor;
 import org.firstinspires.ftc.teamcode.Libraries.Shooter;
 
 /**
@@ -23,6 +24,7 @@ public class RedAutonomous extends LinearOpMode {
     private Shooter shooter;
     private BeaconPushers beaconPushers;
     private Lift lift;
+    private Sensor sensor;
 
     //create class variables
     private double voltage;
@@ -169,10 +171,10 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.65, .35, 5500, 10000, 40);
+        drivetrain.moveForwardToWall(.65, .35, 7500, 10000, 40);
 
         //move forward into line
-        drivetrain.moveFowardToLine(.2, .4, 2500);
+        drivetrain.moveFowardToLine(.15, .3, 3000);
 
         //wait for momentum
         Thread.sleep(250);
@@ -194,6 +196,7 @@ public class RedAutonomous extends LinearOpMode {
                     drivetrain.moveForward(-.11, -.15, 100, 500);
                 }
             }
+
             if (blue) {
                 beaconPushers.frontPush();
                 attempted = true;
@@ -226,14 +229,14 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward at high speed towards the next beacon
-        drivetrain.moveForward(-.25, -.6, 3000, 4000);
+        drivetrain.moveForward(-.25, -.5, 3500, 4500);
 
         //slow down while finding the line
-        boolean failed = drivetrain.moveFowardToLine(-.13, -.2, 4000);
+        boolean failed = drivetrain.moveFowardToLine(-.13, -.2, 3000);
 
         if(failed) {
             Thread.sleep(250);
-            drivetrain.moveFowardToLine(.11, .15, 3000);
+            drivetrain.moveFowardToLine(.11, .13, 3000);
         }
         lift.armsDrop();
         //Press the beacon 2 times and on the third time correct a bit before the last push
@@ -276,7 +279,7 @@ public class RedAutonomous extends LinearOpMode {
         if(parkCenter) {
 
             //move forward a bit
-            drivetrain.moveForward(.6, 1667, 1000);
+            drivetrain.moveForward(.6, 1500, 1000);
 
             //turn off the wall and onto the cap ball
             try {
@@ -290,10 +293,10 @@ public class RedAutonomous extends LinearOpMode {
             drivetrain.stopMotors();
 
             //move to push capball off and push
-            drivetrain.moveForward(1, .8, 4500, 5000);
+            drivetrain.moveForward(1, .8, 4000, 5000);
 
             //turn to make sure we knock off cap ball
-            drivetrain.moveForward(1, 0, 619, 2000);
+            drivetrain.moveForward(1, 0, 450, 2000);
         } else {
             drivetrain.basicArc(1, 0, 150);
             drivetrain.moveBackward(.5, 10000, 5000);
@@ -338,6 +341,30 @@ public class RedAutonomous extends LinearOpMode {
                 .addData("Color", new Func<String>() {
                     @Override public String value() {
                         return "Color: " + beaconPushers.getColorVal();
+                    }
+                });
+        telemetry.addLine()
+                .addData("BL", new Func<String>() {
+                    @Override public String value() {
+                        return "BL: " + drivetrain.motorBL.getCurrentPosition();
+                    }
+                });
+        telemetry.addLine()
+                .addData("BR", new Func<String>() {
+                    @Override public String value() {
+                        return "BR: " + drivetrain.motorBR.getCurrentPosition();
+                    }
+                });
+        telemetry.addLine()
+                .addData("FL", new Func<String>() {
+                    @Override public String value() {
+                        return "FL: " + drivetrain.motorFL.getCurrentPosition();
+                    }
+                });
+        telemetry.addLine()
+                .addData("FR", new Func<String>() {
+                    @Override public String value() {
+                        return "FR: " + drivetrain.motorFR.getCurrentPosition();
                     }
                 });
     }
