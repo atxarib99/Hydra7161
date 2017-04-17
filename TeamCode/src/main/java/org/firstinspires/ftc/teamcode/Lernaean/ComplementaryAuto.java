@@ -203,11 +203,11 @@ public class ComplementaryAuto extends LinearOpMode {
 
                 while (getRuntime() < 10);
 
-                drivetrain.moveBackward(1, 4750, 5000);
+                drivetrain.moveBackward(1, 4350, 5000);
 
-                drivetrain.basicArc(-.5, 0, 20);
+                drivetrain.basicArc(-.3, 0, 19);
 
-                drivetrain.moveBackward(1, 3750, 5000);
+                drivetrain.moveBackward(1, 3600, 5000);
 
                 while(getRuntime() < 27);
 
@@ -254,16 +254,20 @@ public class ComplementaryAuto extends LinearOpMode {
 
                 while (getRuntime() < 10);
 
-                drivetrain.moveBackward(1, 4750, 5000);
+                boolean safe = drivetrain.moveBackwardWithPitchSaftey(1, 4750, 5000);
 
-                //wrote this method so I didn't have to rethink the logic or use another method... might be redundant
-                drivetrain.basicArc(.000001, -.5, -17);
+                if(safe) {
 
-                drivetrain.moveBackward(1, 3750, 5000);
+                    drivetrain.basicArc(.000001, -.3, -17);
 
-                while(getRuntime() < 27);
+                    safe = drivetrain.moveBackwardWithPitchSaftey(1, 4250, 5000);
 
-                drivetrain.moveForward(-1, -.4, 3500, 5000);
+                    if(safe) {
+                        while (getRuntime() < 27) ;
+
+                        drivetrain.moveForward(-1, -.4, 3500, 5000);
+                    }
+                }
 
             }
         }

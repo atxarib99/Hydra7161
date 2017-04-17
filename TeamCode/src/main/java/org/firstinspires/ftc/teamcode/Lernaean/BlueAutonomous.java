@@ -268,7 +268,7 @@ public class BlueAutonomous extends LinearOpMode {
         Thread.sleep(250);
 
         //correct to line
-        drivetrain.moveFowardToLine(-.11, -.15, 3000); //move back to be aligned with white line
+        drivetrain.moveFowardToLine(-.11, -.15, 3500); //move back to be aligned with white line
 
         //wait for momentum
         Thread.sleep(250);
