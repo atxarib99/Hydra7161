@@ -54,6 +54,11 @@ public class Sensor {
         return value;
     }
 
+    public double getGyroPitch() {
+        updateValues();
+        return (angles.thirdAngle);
+    }
+
     public boolean isRightLine() throws InterruptedException {
         return right.getRawLightDetected() > 2;
     }
