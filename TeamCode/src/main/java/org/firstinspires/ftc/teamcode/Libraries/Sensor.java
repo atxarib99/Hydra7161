@@ -1,15 +1,21 @@
 package org.firstinspires.ftc.teamcode.Libraries;
 
+import android.support.annotation.RequiresPermission;
+
 import com.qualcomm.hardware.adafruit.BNO055IMU;
 import com.qualcomm.hardware.adafruit.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.OpticalDistanceSensor;
+import com.qualcomm.robotcore.util.ReadWriteFile;
 
 import org.firstinspires.ftc.robotcore.external.navigation.Acceleration;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.internal.AppUtil;
+
+import java.io.File;
 
 /**
  * Created by Arib on 10/10/2016.
@@ -40,6 +46,13 @@ public class Sensor {
         // and named "imu".
         gyro = opMode.hardwareMap.get(BNO055IMU.class, "gyro");
         gyro.initialize(parameters);
+
+//        File file = AppUtil.getInstance().getSettingsFile("AdafruitIMUCalibration.json");
+//        String fileString = ReadWriteFile.readFile(file);
+//
+//        BNO055IMU.CalibrationData calibrationData = BNO055IMU.CalibrationData.deserialize(fileString);
+//
+//        gyro.writeCalibrationData(calibrationData);
 
         angles   = gyro.getAngularOrientation();
         gravity  = gyro.getGravity();

@@ -672,6 +672,7 @@ public class Drivetrain {
         time.startTime();
 
         int currentEncoder = getEncoderAvg() - nullValue;
+        boolean works = true;
         while(encoderVal > currentEncoder && time.milliseconds() < timeout) {
             opMode.telemetry.update();
             angle = Math.abs(sensor.getGyroYaw());
@@ -715,13 +716,14 @@ public class Drivetrain {
             if(sensor.getGyroPitch() < 2) {
                 stopMotors();
                 opMode.telemetry.update();
-                return false;
+                works = false;
+                break;
             }
         }
         stopMotors();
         opMode.telemetry.update();
         angleError = sensor.getGyroYaw();
-        return true;
+        return works;
     }
 
 

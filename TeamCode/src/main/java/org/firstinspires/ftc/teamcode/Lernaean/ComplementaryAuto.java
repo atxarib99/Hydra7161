@@ -180,13 +180,13 @@ public class ComplementaryAuto extends LinearOpMode {
             //if we are supposed to play defense
             if(afterShooting.equals(afterShootingOptions[2])) {
 
-                drivetrain.moveBackward(-.35, 500, 1000);
+                drivetrain.moveBackward(-.35, 1200, 1000);
 
                 Thread.sleep(250);
 
                 drivetrain.basicArc(.6, -.1, 90);
 
-                while(getRuntime() < 11);
+                while(getRuntime() < 10);
 
                 drivetrain.moveForward(1, 3500, 5000);
             }

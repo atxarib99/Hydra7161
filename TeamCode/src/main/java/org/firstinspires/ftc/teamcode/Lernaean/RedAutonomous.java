@@ -171,7 +171,7 @@ public class RedAutonomous extends LinearOpMode {
         telemetry.update();
 
         //move forward to the wall
-        drivetrain.moveForwardToWall(.65, .35, 7500, 10000, 40);
+        drivetrain.moveForwardToWall(.75, .4, 7350, 10000, 40);
 
         //move forward into line
         drivetrain.moveFowardToLine(.15, .3, 3000);
@@ -293,7 +293,7 @@ public class RedAutonomous extends LinearOpMode {
             drivetrain.stopMotors();
 
             //move to push capball off and push
-            drivetrain.moveForward(1, .8, 4000, 5000);
+            drivetrain.moveForward(.8, 1, 4000, 5000);
 
             //turn to make sure we knock off cap ball
             drivetrain.moveForward(1, 0, 450, 2000);
