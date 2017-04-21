@@ -4,6 +4,7 @@ import android.widget.ThemedSpinnerAdapter;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ThreadPool;
 
 import org.firstinspires.ftc.robotcore.external.Func;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
@@ -57,39 +58,39 @@ public class ComplementaryAuto extends LinearOpMode {
         String afterShooting = "Cap Ball";
         boolean red = true;
 
-        while(!opModeIsActive()) {
-            if(gamepad1.dpad_up) {
+        while (!opModeIsActive()) {
+            if (gamepad1.dpad_up) {
                 ballsToShoot++;
-                while(gamepad1.dpad_up);
+                while (gamepad1.dpad_up) ;
             }
-            if(gamepad1.dpad_down) {
+            if (gamepad1.dpad_down) {
                 ballsToShoot--;
-                while(gamepad1.dpad_down);
+                while (gamepad1.dpad_down) ;
             }
-            if(gamepad1.dpad_right) {
+            if (gamepad1.dpad_right) {
                 position++;
                 position %= 6;
                 afterShooting = afterShootingOptions[position];
-                while(gamepad1.dpad_right);
+                while (gamepad1.dpad_right) ;
             }
-            if(gamepad1.dpad_left) {
+            if (gamepad1.dpad_left) {
                 position--;
-                if(position == -1)
+                if (position == -1)
                     position = 5;
                 afterShooting = afterShootingOptions[position];
-                while(gamepad1.dpad_left);
+                while (gamepad1.dpad_left) ;
             }
-            if(gamepad1.right_bumper) {
+            if (gamepad1.right_bumper) {
                 delay += 1000;
-                while(gamepad1.right_bumper);
+                while (gamepad1.right_bumper) ;
             }
-            if(gamepad1.left_bumper) {
+            if (gamepad1.left_bumper) {
                 delay -= 1000;
-                while(gamepad1.left_bumper);
+                while (gamepad1.left_bumper) ;
             }
-            if(gamepad1.guide) {
+            if (gamepad1.guide) {
                 red = !red;
-                while(gamepad1.guide);
+                while (gamepad1.guide) ;
             }
             telemetry.addData("Instructions", "Use D-Pad to change shooting");
             telemetry.addData("Instructions", "Press D-Pad Right Left for after shooting options");
@@ -100,7 +101,7 @@ public class ComplementaryAuto extends LinearOpMode {
             telemetry.addData("Balls to shoot", ballsToShoot);
             telemetry.addData("AfterShooting", afterShooting);
             telemetry.addData("Delay", delay);
-            if(red) {
+            if (red) {
                 telemetry.addData("Team", "Red");
             } else {
                 telemetry.addData("Team", "Blue");
@@ -128,7 +129,7 @@ public class ComplementaryAuto extends LinearOpMode {
         telemetry.addData("currentStep", "shooting");
         telemetry.update();
 
-        if(ballsToShoot > 0) {
+        if (ballsToShoot > 0) {
             //turn the safe off
             manipulator.activateShooter();
 
@@ -163,22 +164,22 @@ public class ComplementaryAuto extends LinearOpMode {
         shooter.stopShooter();
 
         //if we are red team
-        if(red) {
+        if (red) {
             //if we are to push the Cap Ball
-            if(afterShooting.equals(afterShootingOptions[0])) {
+            if (afterShooting.equals(afterShootingOptions[0])) {
                 drivetrain.moveBackward(.2, 3300, 5000);
 
                 drivetrain.basicArc(0.0001, 1, 45);
             }
             //if we are supposed to park on the corner vortex
-            if(afterShooting.equals(afterShootingOptions[1])) {
+            if (afterShooting.equals(afterShootingOptions[1])) {
                 drivetrain.moveForward(-1, 500, 1000);
                 Thread.sleep(10000);
                 drivetrain.basicTurn(-.25, -50);
                 drivetrain.moveForward(.5, 7000, 7000);
             }
             //if we are supposed to play defense
-            if(afterShooting.equals(afterShootingOptions[2])) {
+            if (afterShooting.equals(afterShootingOptions[2])) {
 
                 drivetrain.moveBackward(-.35, 1200, 1000);
 
@@ -186,22 +187,22 @@ public class ComplementaryAuto extends LinearOpMode {
 
                 drivetrain.basicArc(.6, -.1, 90);
 
-                while(getRuntime() < 10);
+                while (getRuntime() < 10) ;
 
                 drivetrain.moveForward(1, 3500, 5000);
             }
             //if we are to move back and out of the way
-            if(afterShooting.equals(afterShootingOptions[4])) {
+            if (afterShooting.equals(afterShootingOptions[4])) {
                 drivetrain.moveBackward(-.35, 5000, 5000);
             }
-            if(afterShooting.equals(afterShootingOptions[5])) {
+            if (afterShooting.equals(afterShootingOptions[5])) {
                 //TODO: DO RED BALL AND BEACONS DEFENSE
 
                 drivetrain.moveBackward(-.25, 400, 1000);
 
                 drivetrain.basicArc(.5, 0, 40);
 
-                while (getRuntime() < 10);
+                while (getRuntime() < 10) ;
 
                 drivetrain.moveBackward(1, 4350, 5000);
 
@@ -209,21 +210,20 @@ public class ComplementaryAuto extends LinearOpMode {
 
                 drivetrain.moveBackward(1, 3600, 5000);
 
-                while(getRuntime() < 27);
+                while (getRuntime() < 27) ;
 
                 drivetrain.moveForward(-.4, -1, 3500, 5000);
             }
-        }
-        else {
+        } else {
             //if we are supposed to push the Cap Ball
-            if(afterShooting.equals(afterShootingOptions[0])) {
+            if (afterShooting.equals(afterShootingOptions[0])) {
                 drivetrain.moveBackward(.2, 3300, 5000);
 
                 //turn
 //                drivetrain.moveForward(1, 0, 833, 2000);
             }
             //if we are supposed to park on the corner vortex
-            if(afterShooting.equals(afterShootingOptions[1])) {
+            if (afterShooting.equals(afterShootingOptions[1])) {
                 drivetrain.basicTurn(.25, 60);
 
                 Thread.sleep(10000);
@@ -231,44 +231,83 @@ public class ComplementaryAuto extends LinearOpMode {
                 drivetrain.moveForward(.5, 8000, 10000);
             }
             //if we are supposed to play defense
-            if(afterShooting.equals(afterShootingOptions[2])) {
+            if (afterShooting.equals(afterShootingOptions[2])) {
+
+                drivetrain.moveForward(-.5, 1000, 2000);
 
                 drivetrain.basicArc(-.5, 0, -80);
 
-                while(getRuntime() < 11);
+                while (getRuntime() < 10) ;
 
                 drivetrain.moveForward(1, 4500, 4000);
 
             }
             //if we are to move back and out of the way
-            if(afterShooting.equals(afterShootingOptions[4])) {
+            if (afterShooting.equals(afterShootingOptions[4])) {
                 drivetrain.moveBackward(-.35, 5000, 5000);
             }
             //if we are to play defense against beacons
-            if(afterShooting.equals(afterShootingOptions[5])) {
+            if (afterShooting.equals(afterShootingOptions[5])) {
                 //TODO: DO BLUE BALL AND BEACONS DEFENSE
 
                 drivetrain.moveBackward(-.25, 400, 1000);
 
-                drivetrain.basicArc(0, .5, -40);
+                drivetrain.basicArc(0, .5, -39);
 
-                while (getRuntime() < 10);
+                while (getRuntime() < 10) ;
 
-                boolean safe = drivetrain.moveBackwardWithPitchSaftey(1, 4750, 5000);
+                drivetrain.moveForward(1, 1500, 3000);
 
-                if(safe) {
+                drivetrain.basicArc(0, .5, -60);
 
-                    drivetrain.basicArc(.000001, -.3, -17);
+                Thread.sleep(250);
 
-                    safe = drivetrain.moveBackwardWithPitchSaftey(1, 4250, 5000);
+                drivetrain.basicArc(.0000001, -.5, -50);
 
-                    if(safe) {
-                        while (getRuntime() < 27) ;
+                drivetrain.moveForward(1, 4250, 5000);
 
-                        drivetrain.moveForward(-1, -.4, 3500, 5000);
-                    }
-                }
+                while (getRuntime() < 27);
 
+                drivetrain.moveForward(-1, -.4, 3500, 5000);
+
+
+//                boolean safe = drivetrain.moveBackwardWithPitchSaftey(1, 4750, 5000);
+//
+//                if (safe) {
+//
+//                    drivetrain.basicArc(.000001, -.3, -17);
+//
+//                    safe = drivetrain.moveBackwardWithPitchSaftey(1, 4250, 5000);
+//
+//
+//
+//                    if (safe) {
+//                        while (getRuntime() < 27) ;
+//
+//                        drivetrain.moveForward(-1, -.4, 3500, 5000);
+//                    }
+//                } else {
+//                    drivetrain.moveForward(.5, 1000, 2000);
+//
+//                    Thread.sleep(250);
+//
+//                    drivetrain.moveForward(-.5, 500, 1000);
+//
+//                    drivetrain.basicArc(-.5, 0, -60);
+//
+//                    drivetrain.basicArc(.5, 0, -40);
+//
+//                    drivetrain.basicArc(.000001, -.3, -17);
+//
+//                    safe = drivetrain.moveBackwardWithPitchSaftey(1, 4250, 5000);
+//
+//                    if (safe) {
+//                        while (getRuntime() < 27) ;
+//
+//                        drivetrain.moveForward(-1, -.4, 3500, 5000);
+//                    }
+//
+//                }
             }
         }
     }

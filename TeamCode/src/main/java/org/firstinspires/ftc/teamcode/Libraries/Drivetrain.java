@@ -713,7 +713,7 @@ public class Drivetrain {
                 }
             }
             opMode.idle();
-            if(sensor.getGyroPitch() < 2) {
+            if(sensor.getGyroPitch() > 5) {
                 stopMotors();
                 opMode.telemetry.update();
                 works = false;
