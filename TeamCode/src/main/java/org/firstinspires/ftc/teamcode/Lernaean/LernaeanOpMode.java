@@ -61,6 +61,7 @@ public abstract class LernaeanOpMode extends OpMode {
     //define thread run states
     private boolean shootMode = true;
     private boolean runThread = true;
+    private boolean runThreadBang = true;
     boolean stopCommandGiven;
     private boolean defenseMode;
     boolean liftIsActive;
@@ -84,6 +85,71 @@ public abstract class LernaeanOpMode extends OpMode {
                     liftIsActive = false;
             }
             Thread.currentThread().interrupt();
+        }
+    };
+
+    private Runnable bangBang = new Runnable() {
+
+        private double[] velocityAvgBang = new double[10];
+        private int currentTickBang;
+        private double avgBang = 0;
+        private double lastAvgBang = 0;
+        private int numZeroBang = 0;
+        private double powerBang;
+
+        long lastTimeBang = 0;
+        int lastEncoderBang = 0;
+        int currentEncoderBang;
+        double velocityBang;
+        long currentTimeBang = 0;
+
+        @Override
+        public void run() {
+            while (runThreadBang) {
+                currentTimeBang = System.nanoTime();
+                currentEncoderBang = getShooterEncoderAvg();
+                try {
+                    velocityBang = (currentEncoderBang - lastEncoderBang) / ((currentTimeBang - lastTimeBang) / 1000000);
+                } catch (ArithmeticException e) {
+                    velocityBang = 0;
+                }
+                if (velocityBang > 0) {
+                    velocityAvgBang[currentTickBang++] = velocityBang;
+                } else {
+                    if (shooterL.getPower() > 0)
+                        numZeroBang++;
+                }
+                if (currentTickBang == velocityAvgBang.length - 1) {
+                    lastAvgBang = avgBang;
+                    avgBang = 0;
+                    for (double aVelocityAvg : velocityAvgBang) {
+                        avgBang += aVelocityAvg;
+                    }
+                    avgBang /= velocityAvgBang.length;
+                }
+                if (avgBang > 1.8) {
+                    shooterL.setPower(0);
+                    shooterR.setPower(0);
+                } else {
+                    shooterL.setPower(1);
+                    shooterR.setPower(-1);
+                }
+                currentTickBang = 0;
+                lastTimeBang = currentTimeBang;
+                lastEncoderBang = currentEncoderBang;
+                try {
+                    Thread.sleep(10);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!runThreadBang) {
+                    break;
+                }
+                if (Thread.currentThread().isInterrupted()) {
+                    Thread.currentThread().stop();
+                }
+            }
+
         }
     };
 
@@ -284,6 +350,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private Thread ABSRightThread;
     private Thread ABSLeftThread;
     private Thread speedThread;
+    private Thread bangThread;
     @Override
     public void init() {
         opMode = this;
@@ -323,6 +390,7 @@ public abstract class LernaeanOpMode extends OpMode {
         speedThread = new Thread(speedCounter);
         ABSLeftThread = new Thread(ABSleft);
         ABSRightThread = new Thread(ABSright);
+        bangThread = new Thread(bangBang);
 
 //        telemetry.addData("INIT", "INITIALIZING");
         telemetry.update();
@@ -354,13 +422,16 @@ public abstract class LernaeanOpMode extends OpMode {
 
     @Override
     public void stop() {
-        runThread = false;
-        speedThread.interrupt();
+        //runThread = false;
+        runThreadBang = false;
+        bangThread.interrupt();
+        //speedThread.interrupt();
     }
 
     @Override
     public void start() {
-        speedThread.start();
+        bangThread.start();
+        //speedThread.start();
     }
 
     public void startMotors(double ri, double le) {
