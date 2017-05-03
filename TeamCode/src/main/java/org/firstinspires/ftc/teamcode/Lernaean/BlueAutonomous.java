@@ -194,9 +194,6 @@ public class BlueAutonomous extends LinearOpMode {
         //move towards the wall at two different speed and stop when you hit it
         drivetrain.moveBackwardToWall(-1, -.4, 7250, 10000, 138);
 
-        //stop moving the collector
-        manipulator.runCollector(0);
-
         telemetry.addData("currentStep", "turning back");
         //wait for momentum
         Thread.sleep(100);
@@ -208,9 +205,11 @@ public class BlueAutonomous extends LinearOpMode {
         drivetrain.moveForward(-.2, -.35, 2000, 3000);
 
         //slow down and detect the line
-        drivetrain.moveFowardToLine(-.11, -.15, 2000);
+        drivetrain.moveFowardToLine(-.13, -.15, 3000);
 
         Thread.sleep(250);
+
+        manipulator.runCollector(0);
 
         drivetrain.moveFowardToLine(.11, .15, 3000);
 

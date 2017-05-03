@@ -36,7 +36,10 @@ public class LernaeanTeleOp extends LernaeanOpMode {
 
             if(gamepad1.b) {
                 bPressed = true;
-                startMotors(-0.8, -0.25);
+                if(reversed)
+                    startMotors(-0.8, -0.25);
+                else
+                    startMotors(-.25, -.8);
             }
             else {
                 bPressed = false;
@@ -45,7 +48,10 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             if(gamepad1.x) {
                 //while(gamepad1.b);
                 xPressed = true;
-                startMotors(0.8, 0.25);
+                if(reversed)
+                    startMotors(0.8, 0.25);
+                else
+                    startMotors(.25, .8);
             }
             else {
                 xPressed = false;
@@ -109,7 +115,10 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             //glide against the walls
             if(gamepad1.b) {
                 bPressed = true;
-                startMotors(-0.4, -0.125);
+                if(reversed)
+                    startMotors(-0.4, -0.125);
+                else
+                    startMotors(-.125, -.4);
             }
             else {
                 bPressed = false;
@@ -118,7 +127,10 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             if(gamepad1.x) {
                 //while(gamepad1.b);
                 xPressed = true;
-                startMotors(0.4, 0.125);
+                if(reversed)
+                    startMotors(0.4, 0.125);
+                else
+                    startMotors(.125, .4);
             }
             else {
                 xPressed = false;

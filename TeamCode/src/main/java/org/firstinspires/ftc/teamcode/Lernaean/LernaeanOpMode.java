@@ -67,7 +67,7 @@ public abstract class LernaeanOpMode extends OpMode {
     boolean liftIsActive;
 
     //see if the drivetrain needs to be reversed
-    private boolean reversed;
+    boolean reversed;
 
     //Runnable that will prevent us from tipping over
     //Is only activated while the lift is up.
@@ -127,12 +127,14 @@ public abstract class LernaeanOpMode extends OpMode {
                     }
                     avgBang /= velocityAvgBang.length;
                 }
-                if (avgBang > 1.8) {
-                    shooterL.setPower(0);
-                    shooterR.setPower(0);
-                } else {
-                    shooterL.setPower(1);
-                    shooterR.setPower(-1);
+                if(!stopCommandGiven) {
+                    if (avgBang > 1.8) {
+                        shooterL.setPower(0);
+                        shooterR.setPower(0);
+                    } else {
+                        shooterL.setPower(1);
+                        shooterR.setPower(-1);
+                    }
                 }
                 currentTickBang = 0;
                 lastTimeBang = currentTimeBang;
@@ -548,30 +550,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     private double getShooterPower() {
-        if (getVoltage() < 12.5) {
-            return shooterPower + .025 ;
-        }
-        else if ((getVoltage() < 12.75) && (getVoltage() > 12.5)) {
-            return shooterPower;
-        }
-        else if ((getVoltage() < 13.00) && (getVoltage() > 12.75)) {
-            return shooterPower - .025;
-        }
-        else if ((getVoltage() < 13.25) && (getVoltage() > 13.00)) {
-            return shooterPower - .075;
-        }
-        else if ((getVoltage() < 13.5) && (getVoltage() > 13.25)) {
-            return shooterPower - .075;
-        }
-        else if ((getVoltage() < 13.75) && (getVoltage() > 13.5)) {
-            return shooterPower - .115;
-        }
-        else if ((getVoltage() < 14.00) && (getVoltage() > 13.75)) {
-            return shooterPower - .140;
-        }
-        else {
-            return shooterPower - .15;
-        }
+        return shooterPower;
 
     }
 
