@@ -90,6 +90,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
                 reverseMani();
             } else if(gamepad2.right_trigger > .05) {
                 if(Math.abs(shooterL.getPower()) > 0) {
+                    activateShooter(true);
                     startManiSlow();
                 }
                 else {
