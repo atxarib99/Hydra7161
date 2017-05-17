@@ -103,6 +103,8 @@ public abstract class LernaeanOpMode extends OpMode {
         int currentEncoderBang;
         double velocityBang;
         long currentTimeBang = 0;
+        int numTicks = 0;
+        double firstTick = 0;
 
         @Override
         public void run() {
@@ -126,7 +128,7 @@ public abstract class LernaeanOpMode extends OpMode {
                     currentTickBang = 0;
                 }
                 if(!stopCommandGiven) {
-                    if (avgBang > 1.8) {
+                    if (avgBang > 2.0) {
                         shooterL.setPower(.2);
                         shooterR.setPower(-.2);
                     } else {
@@ -152,6 +154,7 @@ public abstract class LernaeanOpMode extends OpMode {
             }
 
         }
+
     };
 
     //Determine the speed of the shooter and compensate if its too high or too low
@@ -631,7 +634,7 @@ public abstract class LernaeanOpMode extends OpMode {
     }
 
     void topGrab() {
-        topGrabber.setPosition(1);
+        topGrabber.setPosition(.95);
     }
 
     void topUngrab() {
