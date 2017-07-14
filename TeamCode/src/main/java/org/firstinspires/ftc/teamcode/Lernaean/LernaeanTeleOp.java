@@ -9,8 +9,7 @@ public class LernaeanTeleOp extends LernaeanOpMode {
     private boolean xPressed = false;
 
     @Override
-    public void loop()
-    {
+    public void loop() {
         powerR = gamepad1.right_stick_y;
         powerL = gamepad1.left_stick_y;
 
@@ -77,12 +76,12 @@ public class LernaeanTeleOp extends LernaeanOpMode {
             }
 
             if(gamepad2.dpad_up) {
-                shooterPower += .025;
+                rpm += .05;
                 while(gamepad2.dpad_up);
             }
 
             if(gamepad2.dpad_down) {
-                shooterPower -= .025;
+                rpm -= .05;
                 while(gamepad2.dpad_down);
             }
 

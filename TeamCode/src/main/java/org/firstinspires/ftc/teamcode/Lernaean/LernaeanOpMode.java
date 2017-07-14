@@ -58,6 +58,7 @@ public abstract class LernaeanOpMode extends OpMode {
     private final double ARM_RELEASER_CLOSED = 1;
     private final int SLEEP_CYCLE = 50;
     private double AVG_BANG = 0;
+    double rpm;
 
     //define thread run states
     private boolean shootMode = true;
@@ -128,7 +129,7 @@ public abstract class LernaeanOpMode extends OpMode {
                     currentTickBang = 0;
                 }
                 if(!stopCommandGiven) {
-                    if (avgBang > 2.0) {
+                    if (avgBang > rpm) {
                         shooterL.setPower(.2);
                         shooterR.setPower(-.2);
                     } else {
@@ -391,6 +392,7 @@ public abstract class LernaeanOpMode extends OpMode {
         topGrabber = hardwareMap.servo.get("topGrabber");
         shooterPower = .3;
         shooterIntegral = 0;
+        rpm = 1.8;
         speedThread = new Thread(speedCounter);
         ABSLeftThread = new Thread(ABSleft);
         ABSRightThread = new Thread(ABSright);
@@ -752,6 +754,12 @@ public abstract class LernaeanOpMode extends OpMode {
                 .addData("RPM:", new Func<String>() {
                     @Override public String value() {
                         return " " + AVG_BANG;
+                    }
+                });
+        telemetry.addLine()
+                .addData("desiredRPM", new Func<String>() {
+                    @Override public String value() {
+                        return " " + rpm;
                     }
                 });
     }
